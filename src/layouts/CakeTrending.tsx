@@ -6,7 +6,7 @@ const CakeTrending = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center">
-            <div className="mr-2 h-8 w-2 bg-bgr-gradient"></div>
+            <div className="mr-2 h-8 w-4 bg-bgr-gradient"></div>
             <h2 className="text-4xl font-bold">Xu hướng - tháng 5</h2>
           </div>
           <span className="text-blue-500 underline">View All</span>

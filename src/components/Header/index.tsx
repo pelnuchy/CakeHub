@@ -1,22 +1,25 @@
 import { FaSearch, FaShoppingCart, FaUser } from 'react-icons/fa';
+
 const Header = () => {
   return (
-    <header className="w-full h-[100px] bg-black flex items-center justify-between px-4">
-      <div className="flex items-center">
+    <header className="flex h-[100px] w-full items-center justify-between bg-black px-4">
+      <div className="flex flex-1 items-center">
         <img src={require('../../assets/logo/black-hub-logo.png')} alt="Logo" className="h-16 w-16" />
       </div>
-      <div className="flex items-center bg-white rounded-2xl px-4 py-2">
-        <input
-          type="text"
-          placeholder="Tìm kiếm bánh"
-          className="w-full bg-transparent outline-none text-black focus:ring-2 focus:ring-white focus:ring-opacity-50 rounded-l-full px-3 py-1"
-        />
-        <FaSearch className="h-10 w-10 text-black mr-2 bg-white px-2 py-1" />
+      <div className="flex flex-1 items-center justify-center">
+        <div className="flex h-10 w-72 items-center rounded-xl bg-white px-4 py-1">
+          <input
+            type="text"
+            placeholder="Tìm kiếm bánh"
+            className="w-full rounded-l-full bg-transparent px-2 py-1 text-black outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+          />
+          <FaSearch className="mr-2 h-8 w-8 bg-white p-1 text-black" />
+        </div>
       </div>
-      <div className="flex items-center space-x-4">
+      <div className="flex flex-1 items-center justify-end space-x-4">
         <div className="relative">
           <FaShoppingCart className="h-6 w-6 text-white" />
-          <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+          <span className="absolute right-0 top-0 inline-flex items-center justify-center rounded-full bg-red-600 px-2 py-1 text-xs font-bold leading-none text-red-100">
             2
           </span>
         </div>

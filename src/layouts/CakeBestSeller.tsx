@@ -7,7 +7,7 @@ const CakeBestSeller = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center">
-            <div className="mr-2 h-8 w-2 bg-red-500"></div>
+            <div className="mr-2 h-8 w-4 bg-red-500"></div>
             <h2 className="text-4xl font-bold">Bánh bán chạy</h2>
           </div>
         </div>
