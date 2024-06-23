@@ -1,13 +1,23 @@
-import React from 'react';
+import Header from '../../components/Header';
+import Nav from '../../components/Nav';
+import Footer from '../../components/Footer';
+import CakeTrending from '../../layouts/CakeTrending';
+import CakeBestSeller from '../../layouts/CakeBestSeller';
 
-const HomePage: React.FC = () => {
+const Homepage = () => {
   return (
-    <div className="w-full h-full">
-      <h1>Welcome to CakeHub!</h1>
-      <p>Discover a wide variety of delicious cakes for every occasion.</p>
-      <button>Shop Now</button>
-    </div>
+    <>
+      <Header />
+      <Nav />
+      <main>
+
+          <CakeBestSeller />
+          <CakeTrending />
+
+      </main>
+      <Footer />
+    </>
   );
 };
 
-export default HomePage;
+export default Homepage;

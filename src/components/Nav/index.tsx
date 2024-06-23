@@ -2,8 +2,8 @@ import React from 'react';
 
 const Nav = () => {
   return (
-    <nav className="w-full bg-gray-500 border-b border-gray-900">
-      <div className="flex justify-between py-2 px-8 ">
+    <nav className="w-full bg-gray-500">
+      <div className="flex justify-between px-8 py-2">
         <a href="#!" className="text-black hover:underline">
           Bánh trang trí
         </a>

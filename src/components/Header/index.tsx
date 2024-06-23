@@ -1,12 +1,17 @@
-import { FaShoppingCart, FaUser } from 'react-icons/fa';
+import { FaSearch, FaShoppingCart, FaUser } from 'react-icons/fa';
 const Header = () => {
   return (
     <header className="w-full h-[100px] bg-black flex items-center justify-between px-4">
       <div className="flex items-center">
         <img src={require('../../assets/logo/black-hub-logo.png')} alt="Logo" className="h-16 w-16" />
       </div>
-      <div className="flex-1 mx-4">
-        <input type="text" placeholder="Tìm kiếm bánh" className="w-full h-10 px-4 rounded-full" />
+      <div className="flex items-center bg-white rounded-2xl px-4 py-2">
+        <input
+          type="text"
+          placeholder="Tìm kiếm bánh"
+          className="w-full bg-transparent outline-none text-black focus:ring-2 focus:ring-white focus:ring-opacity-50 rounded-l-full px-3 py-1"
+        />
+        <FaSearch className="h-10 w-10 text-black mr-2 bg-white px-2 py-1" />
       </div>
       <div className="flex items-center space-x-4">
         <div className="relative">

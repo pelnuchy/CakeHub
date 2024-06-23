@@ -5,6 +5,7 @@ module.exports = {
       fontFamily: { cabin: 'Cabin' },
       backgroundImage: {
         'btn-gradient': 'linear-gradient(to right,  #ffe72f, #ffa31a)',
+        'bgr-gradient': 'linear-gradient(to bottom,  #ffe72f, #ffa31a)',
       },
       colors: {
         'primary-50': '#fff6e8',
