@@ -1,7 +1,19 @@
-import React from 'react';
+import Header from '../../components/Header';
+import Nav from '../../components/Nav';
+import Footer from '../../components/Footer';
+import CakeInfo from '../../layouts/CakeInfo';
 
-const index = () => {
-  return <div>index</div>;
+const CakeDetail = () => {
+  return (
+    <>
+      <Header />
+      <Nav />
+      <main>
+        <CakeInfo />
+      </main>
+      <Footer />
+    </>
+  );
 };
 
-export default index;
+export default CakeDetail;

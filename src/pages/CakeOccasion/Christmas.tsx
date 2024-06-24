@@ -1,19 +1,19 @@
 import Header from '../../components/Header';
 import Nav from '../../components/Nav';
 import Footer from '../../components/Footer';
-import CakeBirthday from '../../layouts/Occasion/CakeBirthday';
+import CakeChristmas from '../../layouts/Occasion/CakeChristmas';
 
-const Birthday = () => {
+const Christmas = () => {
   return (
     <>
       <Header />
       <Nav />
       <main>
-        <CakeBirthday />
+        <CakeChristmas />
       </main>
       <Footer />
     </>
   );
 };
 
-export default Birthday;
+export default Christmas;

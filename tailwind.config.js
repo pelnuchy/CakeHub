@@ -1,8 +1,10 @@
 module.exports = {
   content: ['./src/**/**/*.{js,jsx,ts,tsx}'],
   theme: {
+    fontFamily: {
+      sans: ['Roboto Mono', 'sans-serif'],
+    },
     extend: {
-      fontFamily: { cabin: 'Cabin' },
       backgroundImage: {
         'btn-gradient': 'linear-gradient(to right,  #ffe72f, #ffa31a)',
         'bgr-gradient': 'linear-gradient(to bottom,  #ffe72f, #ffa31a)',

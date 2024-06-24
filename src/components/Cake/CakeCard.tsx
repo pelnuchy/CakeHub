@@ -1,10 +1,20 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Cake } from '../../utils/cakeData';
 
 const CakeCard = ({ cake }: { cake: Cake }) => {
   const { id, img_url, cakeName, price } = cake;
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/cake/${id}`);
+  };
 
   return (
-    <div className="flex h-[360px] w-[270px] flex-col rounded-xl border border-gray-700 bg-white">
+    <div
+      className="flex h-[360px] w-[270px] cursor-pointer flex-col rounded-xl border border-gray-700 bg-white"
+      onClick={handleClick}
+    >
       <div className="flex justify-center">
         <img src={img_url} alt={cakeName} className="mt-3 h-[240px] w-[240px] rounded-xl object-cover" />
       </div>
