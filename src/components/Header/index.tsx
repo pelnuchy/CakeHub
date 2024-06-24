@@ -4,7 +4,9 @@ const Header = () => {
   return (
     <header className="flex h-[100px] w-full items-center justify-between bg-black px-4">
       <div className="flex flex-1 items-center">
-        <img src={require('../../assets/logo/black-hub-logo.png')} alt="Logo" className="h-16 w-16" />
+        <a href="/" className="cursor-pointer">
+          <img src={require('../../assets/logo/black-hub-logo.png')} alt="Logo" className="h-16 w-16" />
+        </a>
       </div>
       <div className="flex flex-1 items-center justify-center">
         <div className="flex h-10 w-72 items-center rounded-xl bg-white px-4 py-1">

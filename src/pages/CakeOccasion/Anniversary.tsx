@@ -1,21 +1,19 @@
 import Header from '../../components/Header';
 import Nav from '../../components/Nav';
 import Footer from '../../components/Footer';
-import Trending from '../../layouts/CakeList/Trending';
-import BestSeller from '../../layouts/CakeList/BestSeller';
+import CakeAnniversary from '../../layouts/Occasion/CakeAnniversary';
 
-const Homepage = () => {
+const Anniversary = () => {
   return (
     <>
       <Header />
       <Nav />
       <main>
-        <BestSeller />
-        <Trending />
+        <CakeAnniversary />
       </main>
       <Footer />
     </>
   );
 };
 
-export default Homepage;
+export default Anniversary;

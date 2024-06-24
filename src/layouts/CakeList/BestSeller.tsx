@@ -1,7 +1,7 @@
-import CakeCard from '../components/Cake/CakeCard';
-import { cakeData } from '../utils/cakeData';
+import CakeCard from '../../components/Cake/CakeCard';
+import { cakeData } from '../../utils/cakeData';
 
-const CakeBestSeller = () => {
+const BestSeller = () => {
   return (
     <div className="bg-bgr-gradient px-8 py-1">
       <div className="container mx-auto px-4 py-8">
@@ -22,4 +22,4 @@ const CakeBestSeller = () => {
   );
 };
 
-export default CakeBestSeller;
+export default BestSeller;
