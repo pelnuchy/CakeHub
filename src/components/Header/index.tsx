@@ -21,7 +21,7 @@ const Header = () => {
       <div className="flex flex-1 items-center justify-end space-x-4">
         <div className="relative">
           <FaShoppingCart className="h-6 w-6 text-white" />
-          <span className="absolute right-0 top-0 inline-flex items-center justify-center rounded-full bg-red-600 px-2 py-1 text-xs font-bold leading-none text-red-100">
+          <span className="absolute right-0 top-0 -mr-2 -mt-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs font-bold leading-none text-red-100">
             2
           </span>
         </div>
