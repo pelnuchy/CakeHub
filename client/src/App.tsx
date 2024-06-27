@@ -8,6 +8,8 @@ import Birthday from './pages/CakeOccasion/Birthday';
 import Custom from './pages/CakeOccasion/Custom';
 import Christmas from './pages/CakeOccasion/Christmas';
 import CakeDetail from './pages/CakeDetail';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 export default function App() {
   return (
@@ -20,6 +22,8 @@ export default function App() {
         <Route path="/christmas" element={<Christmas />} />
         <Route path="/custom" element={<Custom />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
     </div>
   );

@@ -10,7 +10,7 @@ const CakeCustom = () => {
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center">
             <div className="mr-2 h-8 w-4 bg-bgr-gradient"></div>
-            <h2 className="text-4xl font-bold">Bánh sinh nhật</h2>
+            <h2 className="text-4xl font-bold">Bánh trang trí</h2>
           </div>
           <span className="text-blue-500 underline">View All</span>
         </div>

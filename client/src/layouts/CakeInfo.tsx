@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { cakeData } from '../utils/cakeData';
 import Related from './CakeList/Related';
 
@@ -52,9 +52,9 @@ const CakeInfo = () => {
             <button className="rounded border px-4 py-2">+</button>
           </div>
 
-          <button className="mt-6 w-full rounded bg-bgr-gradient py-3 font-semibold text-white">
-            Thêm vào giỏ hàng
-          </button>
+          <Link to="/login" className="mt-6 w-full">
+            <button className="w-full rounded bg-bgr-gradient py-3 font-semibold text-white">Thêm vào giỏ hàng</button>
+          </Link>
         </div>
       </div>
 

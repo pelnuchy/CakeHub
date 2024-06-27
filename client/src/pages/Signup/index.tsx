@@ -1,9 +1,19 @@
-import React from 'react'
+import Header from '../../components/Header';
+import Nav from '../../components/Nav';
+import Footer from '../../components/Footer';
+import SignupForm from '../../layouts/Signup';
 
-const index = () => {
+const Signup = () => {
   return (
-    <div>index</div>
-  )
-}
+    <>
+      <Header />
+      <Nav />
+      <main>
+        <SignupForm />
+      </main>
+      <Footer />
+    </>
+  );
+};
 
-export default index
+export default Signup;

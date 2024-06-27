@@ -6,7 +6,6 @@ module.exports = {
     },
     extend: {
       backgroundImage: {
-        'btn-gradient': 'linear-gradient(to right,  #ffe72f, #ffa31a)',
         'bgr-gradient': 'linear-gradient(to bottom,  #ffe72f, #ffa31a)',
       },
       colors: {
