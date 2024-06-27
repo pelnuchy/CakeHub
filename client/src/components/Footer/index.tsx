@@ -22,7 +22,7 @@ const Footer = () => {
         </div>
         <div className="flex flex-1 flex-col space-y-2">
           <h4 className="font-semibold">Liên kết nhanh</h4>
-          <a href="!#" className="hover:underline">
+          <a href="/FAQ" className="hover:underline">
             FAQ
           </a>
           <a href="!#" className="hover:underline">

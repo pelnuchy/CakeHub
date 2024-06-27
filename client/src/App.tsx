@@ -10,6 +10,7 @@ import Christmas from './pages/CakeOccasion/Christmas';
 import CakeDetail from './pages/CakeDetail';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import FAQPage from './pages/FAQ';
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/FAQ" element={<FAQPage />} />
       </Routes>
     </div>
   );
