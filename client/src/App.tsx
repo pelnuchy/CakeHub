@@ -11,6 +11,7 @@ import CakeDetail from './pages/CakeDetail';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import FAQPage from './pages/FAQ';
+import NotFoundPage from './pages/404';
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/FAQ" element={<FAQPage />} />
+        <Route path="/*" element={<NotFoundPage />} />
       </Routes>
     </div>
   );
