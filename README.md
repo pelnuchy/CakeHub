@@ -2,6 +2,15 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+If you don't have yarn, you must install it.
+### `npm install --global yarn`
+
+Check installation 
+### `yarn --version`
+
+To install modules in package.json, you need move to folder having that file then run:
+### `yarn install`
+
 ## Available Scripts
 
 In the project directory, you can run:
