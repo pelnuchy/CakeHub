@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
+import axios from 'axios';
 import Homepage from './pages/Home';
 import Checkout from './pages/Checkout';
 import Anniversary from './pages/CakeOccasion/Anniversary';
@@ -13,6 +14,8 @@ import Signup from './pages/Signup';
 import FAQPage from './pages/FAQ';
 import NotFoundPage from './pages/404';
 
+// axios.defaults.baseURL = 'http://localhost:8000';
+// axios.defaults.withCredentials = true;
 export default function App() {
   return (
     <div className="h-screen">

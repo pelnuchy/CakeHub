@@ -2,15 +2,21 @@ import User from '../models/User.js';
 
 const userController = {};
 
+userController.test = (req, res) => {
+    res.status(200).json({ message: 'User controller works' });
+};
 userController.signupUser = async (req, res) => {
-    const { username, password, repassword } = req.body;
+    const { username, password, rePassword } = req.body;
 
     // Confirm data
-    if (!username || !password || !repassword) {
+    if (!username || !password || !rePassword) {
         return res.status(400).json({ message: 'Please fill in all fields' });
     }
-    if (password !== repassword) {
-        return res.status(400).json({ message: 'Password do not match' });
+
+    //Check password match
+    if (password !== rePassword) {
+        console.log(password,rePassword);
+        return res.status(400).json({ message: `Password in signup do not match` });
     }
     //check duplicate username
     const duplicate = await User.findOne({ username }).lean().exec();
@@ -44,6 +50,7 @@ userController.loginUser = async (req, res) => {
     if (!user) {
         return res.status(404).json({ message: 'User not found' });
     }
+
 
     // Check password
     if (password === user.password) {
