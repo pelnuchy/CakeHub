@@ -13,6 +13,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import FAQPage from './pages/FAQ';
 import NotFoundPage from './pages/404';
+import ShoppingCart from './pages/Cart';
 
 // axios.defaults.baseURL = 'http://localhost:8000';
 // axios.defaults.withCredentials = true;
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/birthday" element={<Birthday />} />
         <Route path="/christmas" element={<Christmas />} />
         <Route path="/custom" element={<Custom />} />
+        <Route path="/cart" element={<ShoppingCart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
