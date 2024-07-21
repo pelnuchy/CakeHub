@@ -1,9 +1,26 @@
 import CakeCard from '../../components/Cake/CakeCard';
-import { cakeData } from '../../utils/cakeData';
-
+import { Link, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 const CakeAnniversary = () => {
-  const anniversaryCakes = cakeData.filter((cake) => cake.occasion === 'Anniversary');
+  const occasion  = useLocation();
+  const [anniversaryCakes, setCakeAnni] = useState<object[]>([]);
+  useEffect(() => {
+    const getAllCakeAnniversary = async () => {
+      const cakes = await fetchCakeAnniversary(occasion);// Pass the id to your fetch function
+      setCakeAnni(cakes);
+    };
+    getAllCakeAnniversary();
+  }, [occasion]);// Add id as a dependency to useEffect
 
+  const fetchCakeAnniversary = async (occasion: any) => {
+    try {
+      const response = await axios.get(`http://localhost:8000/get-all-cakes-occasion${occasion.pathname}`); // path name đã bao gồm dấu /
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <div className="bg-white px-8 py-1">
       <div className="container mx-auto px-4 py-8">
@@ -16,8 +33,10 @@ const CakeAnniversary = () => {
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {anniversaryCakes.slice(0, 8).map((cake) => (
-            <CakeCard key={cake.id} cake={cake} />
+          {anniversaryCakes.map((cake, index) => (
+            <CakeCard
+              key={index}
+              cake={cake} />
           ))}
         </div>
       </div>

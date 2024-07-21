@@ -1,27 +1,76 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { cakeData } from '../utils/cakeData';
+import axios from 'axios';
 import Related from './CakeList/Related';
+
+import Cake1 from '../assets/cake/cake1.jpg';
+import Cake2 from '../assets/cake/cake2.jpg';
+import Cake3 from '../assets/cake/cake3.jpg';
+import Cake4 from '../assets/cake/cake4.jpg';
+import Cake5 from '../assets/cake/cake5.jpg';
+import Cake6 from '../assets/cake/cake6.jpg';
+import Cake7 from '../assets/cake/cake7.jpg';
+import Cake8 from '../assets/cake/cake8.jpg';
+import Cake9 from '../assets/cake/cake9.jpg';
+import Cake10 from '../assets/cake/cake10.jpg';
 
 const CakeInfo = () => {
   const { id } = useParams();
-  const cake = cakeData.find((cake) => cake.id === id);
+  const [cake, setCake] = useState(Object);
+  //const cake = cakeData.find((cake) => cake.id === id);
+
+  useEffect(() => {
+    const getCakeDetail = async () => {
+      const cakes = await fetchCakeDetail(id);// Pass the id to your fetch function
+      setCake(cakes);
+      //console.log(cakeDB); 
+    };
+    getCakeDetail();
+  }, [id]);// Add id as a dependency to useEffect
+
+  const fetchCakeDetail = async (id: any) => {
+    try {
+      const response = await axios.get(`http://localhost:8000/get-details-cake/${id}`);
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   if (!cake) {
     return <div>Cake not found</div>;
   }
 
+  type Images = {
+    [key: string]: string;
+  };
+  const images: Images = {
+    '../../assets/cake/cake1.jpg': Cake1,
+    '../../assets/cake/cake2.jpg': Cake2,
+    '../../assets/cake/cake3.jpg': Cake3,
+    '../../assets/cake/cake4.jpg': Cake4,
+    '../../assets/cake/cake5.jpg': Cake5,
+    '../../assets/cake/cake6.jpg': Cake6,
+    '../../assets/cake/cake7.jpg': Cake7,
+    '../../assets/cake/cake8.jpg': Cake8,
+    '../../assets/cake/cake9.jpg': Cake9,
+    '../../assets/cake/cake10.jpg': Cake10
+    // Thêm các ảnh khác vào đối tượng này
+  };
+
   return (
     <div className="container mx-auto p-8">
       <div className="flex">
         <div className="w-2/3 pr-8">
-          <img src={cake.img_url} alt={cake.cakeName} className="w-full rounded-xl object-cover" />
+          <img src={images[cake.img_url]} alt={cake.cakeName} className="w-full rounded-xl object-cover" />
         </div>
         <div className="w-1/3">
           <div className="font-sans text-3xl font-bold">{cake.cakeName}</div>
           <p className="mt-2 text-2xl font-semibold text-red-500">{cake.price} VNĐ</p>
           <p className="mt-4">{cake.description}</p>
-          <p className="mt-4 text-sm text-gray-600">Mã bánh: {cake.id}</p>
+          <p className="mt-4 text-sm text-gray-600">Mã bánh: {cake.cakeID}</p>
 
           <div className="mt-6">
             <p className="text-sm font-semibold">Nhân bánh:</p>
