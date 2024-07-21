@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { cakeData } from '../utils/cakeData';
 import axios from 'axios';
+import { useCart } from '../contexts/CartContext';
 import Related from './CakeList/Related';
+import { cakeData } from '../utils/cakeData';
+import Button from '../components/Button';
 
 import Cake1 from '../assets/cake/cake1.jpg';
 import Cake2 from '../assets/cake/cake2.jpg';
@@ -39,6 +41,42 @@ const CakeInfo = () => {
     }
   }
 
+  const { addToCart } = useCart();
+  const [notification, setNotification] = useState('');
+  const [selectedSize, setSelectedSize] = useState('M');
+  const [selectedFlavor, setSelectedFlavor] = useState('Socola');
+  const [selectedQuantity, setSelectedQuantity] = useState(1);
+
+  const handleAddToCart = () => {
+    if (cake) {
+      addToCart({
+        id: cake.id,
+        name: cake.cakeName,
+        price: Number(cake.price),
+        size: selectedSize,
+        flavor: selectedFlavor,
+        quantity: selectedQuantity,
+        image: cake.img_url,
+      });
+      setNotification(`${cake.cakeName} đã được thêm vào giỏ hàng.`);
+    }
+  };
+
+  const handleSizeChange = (size: string) => {
+    setSelectedSize(size);
+  };
+
+  const handleFlavorChange = (flavor: string) => {
+    setSelectedFlavor(flavor);
+  };
+
+  const handleQuantityChange = (quantity: number) => {
+    if (quantity < 1) {
+      quantity = 1;
+    }
+    setSelectedQuantity(quantity);
+  };
+
   if (!cake) {
     return <div>Cake not found</div>;
   }
@@ -62,11 +100,13 @@ const CakeInfo = () => {
 
   return (
     <div className="container mx-auto p-8">
-      <div className="flex">
-        <div className="w-2/3 pr-8">
-          <img src={images[cake.img_url]} alt={cake.cakeName} className="w-full rounded-xl object-cover" />
+      <div className="flex flex-col lg:flex-row">
+        <div className="mb-8 lg:mb-0 lg:w-2/3 lg:pr-8">
+          <div className="h-[80vh]">
+            <img src={images[cake.img_url]} alt={cake.cakeName} className="w-full rounded-xl object-cover" />
+          </div>
         </div>
-        <div className="w-1/3">
+        <div className="lg:w-1/3">
           <div className="font-sans text-3xl font-bold">{cake.cakeName}</div>
           <p className="mt-2 text-2xl font-semibold text-red-500">{cake.price} VNĐ</p>
           <p className="mt-4">{cake.description}</p>
@@ -75,18 +115,48 @@ const CakeInfo = () => {
           <div className="mt-6">
             <p className="text-sm font-semibold">Nhân bánh:</p>
             <div className="mt-2 flex">
-              <button className="mr-2 rounded border px-4 py-2">Chanh dây</button>
-              <button className="mr-2 rounded border px-4 py-2">Dâu tây</button>
-              <button className="rounded border px-4 py-2">Socola</button>
+              <button
+                className={`mr-2 rounded border px-4 py-2 ${selectedFlavor === 'Chanh dây' ? 'bg-red-500 text-white' : ''}`}
+                onClick={() => handleFlavorChange('Chanh dây')}
+              >
+                Chanh dây
+              </button>
+              <button
+                className={`mr-2 rounded border px-4 py-2 ${selectedFlavor === 'Dâu tây' ? 'bg-red-500 text-white' : ''}`}
+                onClick={() => handleFlavorChange('Dâu tây')}
+              >
+                Dâu tây
+              </button>
+              <button
+                className={`rounded border px-4 py-2 ${selectedFlavor === 'Socola' ? 'bg-red-500 text-white' : ''}`}
+                onClick={() => handleFlavorChange('Socola')}
+              >
+                Socola
+              </button>
             </div>
           </div>
 
           <div className="mt-6">
             <p className="text-sm font-semibold">Kích thước:</p>
             <div className="mt-2 flex">
-              <button className="mr-2 rounded border px-4 py-2">S</button>
-              <button className="mr-2 rounded border bg-red-500 px-4 py-2 text-white">M</button>
-              <button className="rounded border px-4 py-2">L</button>
+              <button
+                className={`mr-2 rounded border px-4 py-2 ${selectedSize === 'S' ? 'bg-red-500 text-white' : ''}`}
+                onClick={() => handleSizeChange('S')}
+              >
+                S
+              </button>
+              <button
+                className={`mr-2 rounded border px-4 py-2 ${selectedSize === 'M' ? 'bg-red-500 text-white' : ''}`}
+                onClick={() => handleSizeChange('M')}
+              >
+                M
+              </button>
+              <button
+                className={`rounded border px-4 py-2 ${selectedSize === 'L' ? 'bg-red-500 text-white' : ''}`}
+                onClick={() => handleSizeChange('L')}
+              >
+                L
+              </button>
             </div>
           </div>
 
@@ -96,14 +166,20 @@ const CakeInfo = () => {
           </div>
 
           <div className="mt-6 flex items-center">
-            <button className="rounded border px-4 py-2">-</button>
-            <span className="mx-4">2</span>
-            <button className="rounded border px-4 py-2">+</button>
+            <button className="rounded border px-4 py-2" onClick={() => handleQuantityChange(selectedQuantity - 1)}>
+              -
+            </button>
+            <span className="mx-4">{selectedQuantity}</span>
+            <button className="rounded border px-4 py-2" onClick={() => handleQuantityChange(selectedQuantity + 1)}>
+              +
+            </button>
           </div>
 
-          <Link to="/login" className="mt-6 w-full">
-            <button className="w-full rounded bg-bgr-gradient py-3 font-semibold text-white">Thêm vào giỏ hàng</button>
-          </Link>
+          <Button onClick={handleAddToCart} className="mt-6 w-full">
+            Thêm vào giỏ hàng
+          </Button>
+
+          {notification && <div className="mt-4 text-green-500">{notification}</div>}
         </div>
       </div>
 

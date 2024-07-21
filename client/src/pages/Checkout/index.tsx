@@ -1,7 +1,19 @@
-import React from 'react';
+import Header from '../../components/Header';
+import Nav from '../../components/Nav';
+import Footer from '../../components/Footer';
+import Checkout from '../../layouts/Checkout';
 
-const index = () => {
-  return <div>index</div>;
+const CheckoutPage = () => {
+  return (
+    <>
+      <Header />
+      <Nav />
+      <main>
+        <Checkout />
+      </main>
+      <Footer />
+    </>
+  );
 };
 
-export default index;
+export default CheckoutPage;
