@@ -1,17 +1,38 @@
-// ShoppingCart.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { useCart } from '../contexts/CartContext';
+import Button from '../components/Button';
 
 const ShoppingCart: React.FC = () => {
-  const { cartItems } = useCart();
+  const { cartItems, removeFromCart, updateCartItem } = useCart();
+  const [notification, setNotification] = useState('');
 
-  const totalCakePrice = cartItems.reduce((acc, item) => acc + Number(item.price) * item.quantity, 0);
+  const handleQuantityChange = (itemId: string, quantity: number) => {
+    if (quantity === 0) {
+      if (window.confirm('Số lượng bằng 0. Bạn có muốn xóa sản phẩm khỏi giỏ hàng không?')) {
+        removeFromCart(itemId);
+        setNotification('Sản phẩm đã được xóa khỏi giỏ hàng.');
+      }
+    } else {
+      updateCartItem(itemId, { quantity });
+    }
+  };
+
+  const handleSizeChange = (itemId: string, size: string) => {
+    updateCartItem(itemId, { size });
+  };
+
+  const handleFlavorChange = (itemId: string, flavor: string) => {
+    updateCartItem(itemId, { flavor });
+  };
+
+  const totalCakePrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const shippingFee = 50000;
   const totalPrice = totalCakePrice + shippingFee;
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="mb-6 text-2xl font-bold">Giỏ hàng</h1>
+      {notification && <div className="mb-4 text-green-500">{notification}</div>}
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>
@@ -22,6 +43,7 @@ const ShoppingCart: React.FC = () => {
               <th className="p-4 text-left">Nhân bánh</th>
               <th className="p-4 text-left">Số lượng</th>
               <th className="p-4 text-left">Tổng tiền</th>
+              <th className="p-4 text-left">Thao tác</th>
             </tr>
           </thead>
           <tbody>
@@ -33,21 +55,53 @@ const ShoppingCart: React.FC = () => {
                 </td>
                 <td className="p-4">{item.price.toLocaleString()} VND</td>
                 <td className="p-4">
-                  <select className="rounded border px-2 py-1">
-                    <option>{item.size}</option>
+                  <select
+                    value={item.size}
+                    onChange={(e) => handleSizeChange(item.id, e.target.value)}
+                    className="rounded border px-2 py-1"
+                  >
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
                   </select>
                 </td>
                 <td className="p-4">
-                  <select className="rounded border px-2 py-1">
-                    <option>{item.flavor}</option>
+                  <select
+                    value={item.flavor}
+                    onChange={(e) => handleFlavorChange(item.id, e.target.value)}
+                    className="rounded border px-2 py-1"
+                  >
+                    <option value="Chanh dây">Chanh dây</option>
+                    <option value="Dâu tây">Dâu tây</option>
+                    <option value="Socola">Socola</option>
                   </select>
                 </td>
                 <td className="p-4">
-                  <select className="rounded border px-2 py-1">
-                    <option>{String(item.quantity).padStart(2, '0')}</option>
-                  </select>
+                  <div className="flex items-center">
+                    <button
+                      onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                      className="mr-2 rounded bg-gray-300 px-2 py-1"
+                    >
+                      -
+                    </button>
+                    <span className="mx-2">{item.quantity}</span>
+                    <button
+                      onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                      className="ml-2 rounded bg-gray-300 px-2 py-1"
+                    >
+                      +
+                    </button>
+                  </div>
                 </td>
-                <td className="p-4">{(Number(item.price) * item.quantity).toLocaleString()} VND</td>
+                <td className="p-4">{(item.price * item.quantity).toLocaleString()} VND</td>
+                <td className="p-4">
+                  <button
+                    onClick={() => removeFromCart(item.id)}
+                    className="rounded bg-red-500 px-2 py-1 text-white hover:bg-red-600"
+                  >
+                    Xóa
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -68,9 +122,7 @@ const ShoppingCart: React.FC = () => {
             <span>Tổng tiền thanh toán:</span>
             <span>{totalPrice.toLocaleString()} VND</span>
           </div>
-          <button className="w-full rounded-lg bg-yellow-500 py-2 font-semibold text-black hover:bg-yellow-600">
-            Đặt bánh
-          </button>
+          <Button className="w-full">Đặt bánh</Button>
         </div>
       </div>
     </div>

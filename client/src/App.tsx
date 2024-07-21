@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
-import axios from 'axios';
+// import axios from 'axios';
 import Homepage from './pages/Home';
 import Checkout from './pages/Checkout';
 import Anniversary from './pages/CakeOccasion/Anniversary';

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import Related from './CakeList/Related';
 import { cakeData } from '../utils/cakeData';
+import Button from '../components/Button';
 
 const CakeInfo = () => {
   const { id } = useParams<{ id: string }>();
@@ -10,16 +11,16 @@ const CakeInfo = () => {
 
   const { addToCart } = useCart();
   const [notification, setNotification] = useState('');
-  const [selectedSize, setSelectedSize] = useState('M'); // Default size
-  const [selectedFlavor, setSelectedFlavor] = useState('Sô cô la'); // Default flavor
-  const [selectedQuantity, setSelectedQuantity] = useState(1); // Default quantity
+  const [selectedSize, setSelectedSize] = useState('M');
+  const [selectedFlavor, setSelectedFlavor] = useState('Socola');
+  const [selectedQuantity, setSelectedQuantity] = useState(1);
 
   const handleAddToCart = () => {
     if (cake) {
       addToCart({
         id: cake.id,
         name: cake.cakeName,
-        price: cake.price,
+        price: Number(cake.price),
         size: selectedSize,
         flavor: selectedFlavor,
         quantity: selectedQuantity,
@@ -38,6 +39,9 @@ const CakeInfo = () => {
   };
 
   const handleQuantityChange = (quantity: number) => {
+    if (quantity < 1) {
+      quantity = 1;
+    }
     setSelectedQuantity(quantity);
   };
 
@@ -47,13 +51,15 @@ const CakeInfo = () => {
 
   return (
     <div className="container mx-auto p-8">
-      <div className="flex">
-        <div className="w-2/3 pr-8">
-          <img src={cake.img_url} alt={cake.cakeName} className="w-full rounded-xl object-cover" />
+      <div className="flex flex-col lg:flex-row">
+        <div className="mb-8 lg:mb-0 lg:w-2/3 lg:pr-8">
+          <div className="h-[80vh]">
+            <img src={cake.img_url} alt={cake.cakeName} className="h-full w-full rounded-xl object-cover" />
+          </div>
         </div>
-        <div className="w-1/3">
+        <div className="lg:w-1/3">
           <div className="font-sans text-3xl font-bold">{cake.cakeName}</div>
-          <p className="mt-2 text-2xl font-semibold text-red-500">{cake.price} VNĐ</p>
+          <p className="mt-2 text-2xl font-semibold text-red-500">{cake.price.toLocaleString()} VNĐ</p>
           <p className="mt-4">{cake.description}</p>
           <p className="mt-4 text-sm text-gray-600">Mã bánh: {cake.id}</p>
 
@@ -120,9 +126,9 @@ const CakeInfo = () => {
             </button>
           </div>
 
-          <button onClick={handleAddToCart} className="mt-6 w-full">
-            <div className="w-full rounded bg-bgr-gradient py-3 font-semibold text-white">Thêm vào giỏ hàng</div>
-          </button>
+          <Button onClick={handleAddToCart} className="mt-6 w-full">
+            Thêm vào giỏ hàng
+          </Button>
 
           {notification && <div className="mt-4 text-green-500">{notification}</div>}
         </div>
