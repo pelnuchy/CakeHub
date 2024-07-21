@@ -1,36 +1,17 @@
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import cakeImage1 from '../assets/cake/cake1.jpg';
-import cakeImage2 from '../assets/cake/cake2.jpg';
+import Button from '../components/Button';
+import { useCart } from '../contexts/CartContext';
 
 const Checkout: React.FC = () => {
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [address, setAddress] = useState('146 Võ Thị Sáu, Phường 8, Quận 3, TP.HCM');
   const [time, setTime] = useState('13:00');
 
-  const items = [
-    {
-      id: 1,
-      name: 'Bánh sinh nhật tím',
-      price: 300000,
-      size: 'M',
-      flavor: 'Sô cô la',
-      quantity: 1,
-      image: cakeImage1,
-    },
-    {
-      id: 2,
-      name: 'Bánh sinh nhật dâu',
-      price: 500000,
-      size: 'M',
-      flavor: 'Dâu tây',
-      quantity: 1,
-      image: cakeImage2,
-    },
-  ];
+  const { cartItems } = useCart();
 
-  const totalCakePrice = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const totalCakePrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const shippingFee = 50000;
   const totalPrice = totalCakePrice + shippingFee;
 
@@ -39,8 +20,8 @@ const Checkout: React.FC = () => {
       <h1 className="mb-8 text-3xl font-bold">THÔNG TIN GIAO HÀNG</h1>
       <div className="rounded-lg bg-white p-8 shadow-lg">
         <h2 className="mb-6 text-2xl font-semibold">Thông tin đơn hàng</h2>
-        <div className="mb-6">
-          {items.map((item) => (
+        <div className="mb-6 bg-gray-500">
+          {cartItems.map((item) => (
             <div key={item.id} className="mb-4 flex items-center justify-between rounded-lg bg-gray-50 p-4 shadow-sm">
               <div className="flex items-center">
                 <img src={item.image} alt={item.name} className="mr-4 h-20 w-20 rounded-lg object-cover" />
@@ -66,12 +47,14 @@ const Checkout: React.FC = () => {
           </div>
           <div className="mb-6 flex justify-between text-lg font-bold">
             <span>Tổng tiền thanh toán:</span>
-            <span>{totalPrice.toLocaleString()} VND</span>
+            <span className="text-red-500">{totalPrice.toLocaleString()} VND</span>
           </div>
         </div>
         <h2 className="mb-6 text-2xl font-semibold">Địa điểm giao bánh và thời gian</h2>
         <div className="mb-6">
-          <label className="mb-2 block font-semibold">Địa chỉ giao hàng*</label>
+          <label className="mb-2 block font-semibold">
+            Địa chỉ giao hàng<span className="text-red-500">*</span>
+          </label>
           <input
             type="text"
             value={address}
@@ -81,7 +64,10 @@ const Checkout: React.FC = () => {
         </div>
         <div className="mb-6 flex justify-between">
           <div className="mr-2 w-1/2">
-            <label className="mb-2 block font-semibold">Ngày nhận hàng*</label>
+            <label className="mb-2 block font-semibold">
+              Ngày nhận hàng<span className="text-red-500">*</span>
+            </label>
+
             <DatePicker
               selected={startDate}
               onChange={(date) => setStartDate(date ? date : new Date())}
@@ -89,7 +75,9 @@ const Checkout: React.FC = () => {
             />
           </div>
           <div className="ml-2 w-1/2">
-            <label className="mb-2 block font-semibold">Giờ*</label>
+            <label className="mb-2 block font-semibold">
+              Giờ<span className="text-red-500">*</span>
+            </label>
             <select
               value={time}
               onChange={(e) => setTime(e.target.value)}
@@ -104,9 +92,9 @@ const Checkout: React.FC = () => {
             </select>
           </div>
         </div>
-        <button className="w-full rounded-lg bg-yellow-500 py-3 font-bold text-black shadow-md hover:bg-yellow-600">
-          Thanh Toán
-        </button>
+        <div className="flex justify-center">
+          <Button className="w-[50vh]">Thanh Toán</Button>
+        </div>
       </div>
     </div>
   );

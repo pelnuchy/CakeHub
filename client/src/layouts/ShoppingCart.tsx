@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import { useCart } from '../contexts/CartContext';
 import Button from '../components/Button';
+import { useNavigate } from 'react-router-dom';
 
 const ShoppingCart: React.FC = () => {
+  const navigate = useNavigate();
+  const gotoCheckout = () => {
+    navigate('/checkout');
+  };
   const { cartItems, removeFromCart, updateCartItem } = useCart();
   const [notification, setNotification] = useState('');
 
@@ -109,7 +114,7 @@ const ShoppingCart: React.FC = () => {
       </div>
       <div className="mt-8 flex justify-end">
         <div className="w-1/3 rounded-lg border p-4 shadow-md">
-          <h2 className="mb-4 text-xl font-bold">Tổng giá hàng</h2>
+          <h2 className="mb-4 text-xl font-bold">Tổng đơn hàng</h2>
           <div className="mb-2 flex justify-between">
             <span>Tổng tiền bánh:</span>
             <span>{totalCakePrice.toLocaleString()} VND</span>
@@ -122,7 +127,9 @@ const ShoppingCart: React.FC = () => {
             <span>Tổng tiền thanh toán:</span>
             <span>{totalPrice.toLocaleString()} VND</span>
           </div>
-          <Button className="w-full">Đặt bánh</Button>
+          <Button onClick={gotoCheckout} className="w-full">
+            Đặt bánh
+          </Button>
         </div>
       </div>
     </div>
