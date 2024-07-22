@@ -1,4 +1,4 @@
-import signupImage from '../assets/cake/signup.jpg';
+
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -25,7 +25,7 @@ const SignupForm = () => {
     <div className="flex h-screen items-center justify-center bg-gray-100">
       <div className="flex w-3/5 overflow-hidden rounded-lg bg-white shadow-lg">
         <div className="w-1/2">
-          <img src={signupImage} alt="Signup" className="h-full w-full object-cover" />
+          <img src={'../../assets/cake/signup.jpg'} alt="Signup" className="h-full w-full object-cover" />
         </div>
         <div className="w-1/2 p-8">
           <h2 className="mb-6 text-2xl font-semibold text-black">Nhập thông tin đăng ký</h2>

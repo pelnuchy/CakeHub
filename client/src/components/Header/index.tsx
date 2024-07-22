@@ -28,7 +28,7 @@ const Header: React.FC = () => {
     <header className="flex h-[100px] w-full items-center justify-between bg-black px-4">
       <div className="flex flex-1 items-center">
         <Link to="/" className="cursor-pointer">
-          <img src={require('../../assets/logo/black-hub-logo.png')} alt="Logo" className="h-16 w-16" />
+          <img src={'../assets/logo/black-hub-logo.png'} alt="Logo" className="h-16 w-16" />
         </Link>
       </div>
       <div className="flex flex-1 items-center justify-center">

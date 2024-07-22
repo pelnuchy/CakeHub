@@ -1,12 +1,11 @@
 import React from 'react';
-import logo from '../../assets/logo/black-hub-logo.png';
 
 const Footer = () => {
   return (
     <footer className="bg-black py-8 text-white">
       <div className="container mx-auto flex justify-between">
         <div className="flex flex-1 flex-col items-center justify-center">
-          <img src={logo} alt="Cake Hub Logo" className="h-20 w-20" />
+          <img src={'../../assets/logo/black-hub-logo.png'} alt="Cake Hub Logo" className="h-20 w-20" />
         </div>
         <div className="flex flex-1 flex-col space-y-2">
           <h4 className="font-semibold">Hỗ trợ</h4>
