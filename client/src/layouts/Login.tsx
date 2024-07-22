@@ -12,7 +12,9 @@ const LoginForm = () => {
     const auth = { username, password };
 
     try {
-      await axios.post('http://localhost:8000/login', auth);
+      const response = await axios.post('http://localhost:8000/login', auth);
+      //console.log(response.data);
+      sessionStorage.setItem('userInfo', JSON.stringify(response.data.session));
       alert('Đăng nhập thành công');
       navigate('/');
     } catch (err) {

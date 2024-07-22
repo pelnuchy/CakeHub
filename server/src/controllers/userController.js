@@ -1,3 +1,4 @@
+import session from 'express-session';
 import User from '../models/User.js';
 
 const userController = {};
@@ -12,7 +13,7 @@ userController.signupUser = async (req, res) => {
 
     //Check password match
     if (password !== rePassword) {
-        console.log(password,rePassword);
+        console.log(password, rePassword);
         return res.status(400).json({ message: `Password in signup do not match` });
     }
     //check duplicate username
@@ -22,7 +23,7 @@ userController.signupUser = async (req, res) => {
     }
 
     // Create new user
-    const user = await User.create({ userID : username + password, username, password, role: 'customer'});
+    const user = await User.create({ userID: username + password, username, password, role: 'customer' });
     if (user) {
         res.status(201).json({ message: `User ${username} created successfully` });
     }
@@ -51,7 +52,9 @@ userController.loginUser = async (req, res) => {
 
     // Check password
     if (password === user.password) {
-        return res.status(200).json({ message: 'Login successful' });
+        const userInfo = { userID: user.userID, role: user.role, username: user.username };
+        Object.assign(req.session, { userInfo });
+        return res.status(200).json({ message: 'Login successful', session: req.session.userInfo });
     }
     else {
         return res.status(401).json({ message: 'Invalid credentials' });

@@ -5,6 +5,9 @@ import Trending from '../../layouts/CakeList/Trending';
 import BestSeller from '../../layouts/CakeList/BestSeller';
 
 const Homepage = () => {
+  const userInfo = sessionStorage.getItem('userInfo');
+  const sessionStorageData = userInfo ? JSON.parse(userInfo) : null;
+  console.log(sessionStorageData);
   return (
     <>
       <Header />
