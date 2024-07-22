@@ -1,10 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import CakeCard from '../../components/Cake/CakeCard';
 import { useShuffledCakes } from '../../hooks/useShuffledCakes';
-
 const BestSeller = () => {
   const randomCakes = useShuffledCakes(4);
-
   return (
     <div className="bg-bgr-gradient px-8 py-1">
       <div className="container mx-auto px-4 py-8">
@@ -15,8 +13,10 @@ const BestSeller = () => {
           </div>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {randomCakes.map((cake) => (
-            <CakeCard key={cake.id} cake={cake} />
+          {randomCakes.map((cake, index) => (
+            <CakeCard
+              key={index}
+              cake={cake} />
           ))}
         </div>
       </div>

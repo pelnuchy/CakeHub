@@ -1,6 +1,6 @@
 import { Cake } from './cakeData';
 
-export const shuffleArray = (array: Cake[]): Cake[] => {
+export const shuffleArray = (array: object[]): object[] => {
   const shuffledArray = [...array];
   for (let i = shuffledArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));

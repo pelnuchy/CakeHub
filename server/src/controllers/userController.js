@@ -2,9 +2,6 @@ import User from '../models/User.js';
 
 const userController = {};
 
-userController.test = (req, res) => {
-    res.status(200).json({ message: 'User controller works' });
-};
 userController.signupUser = async (req, res) => {
     const { username, password, rePassword } = req.body;
 
