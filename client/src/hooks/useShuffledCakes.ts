@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { cakeData, Cake } from '../utils/cakeData';
 import { shuffleArray } from '../utils/shuffleArray';
 import axios from 'axios';
 export const useShuffledCakes = (numCake: number): object[] => {
