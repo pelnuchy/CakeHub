@@ -2,6 +2,7 @@ import signupImage from '../assets/cake/signup.jpg';
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Button from '../components/Button';
 const SignupForm = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -59,12 +60,12 @@ const SignupForm = () => {
                 onChange={(e) => setRePassword(e.target.value)}
               />
             </div>
-            <button
+            <Button
               type="submit"
               className="mt-4 w-full rounded-lg bg-bgr-gradient py-2 font-semibold text-black hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
             >
               ĐĂNG KÝ
-            </button>
+            </Button>
           </form>
           <div className="mt-4 text-center">
             <p>

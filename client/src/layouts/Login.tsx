@@ -2,10 +2,11 @@ import loginImage from '../assets/cake/login.jpg';
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Button from '../components/Button';
 
 const LoginForm = () => {
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const navigate = useNavigate();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -34,7 +35,8 @@ const LoginForm = () => {
                 type="text"
                 className="mt-2 w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                 placeholder="Tên đăng nhập"
-                name="username" required
+                name="username"
+                required
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>
@@ -44,16 +46,14 @@ const LoginForm = () => {
                 type="password"
                 className="mt-2 w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                 placeholder="Mật khẩu"
-                name="password" required
+                name="password"
+                required
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <button
-              type="submit"
-              className="mt-4 w-full rounded-lg bg-bgr-gradient py-2 font-semibold text-black hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-            >
+            <Button type="submit" className="mt-4 w-full">
               ĐĂNG NHẬP
-            </button>
+            </Button>
           </form>
           <div className="mt-4 text-center">
             <p>
