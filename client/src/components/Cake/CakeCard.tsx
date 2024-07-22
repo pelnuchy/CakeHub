@@ -20,7 +20,7 @@ const CakeCard = ({ cake }: { cake: any }) => {
       <div className="flex-grow p-4">
         <h3 className="mb-2 truncate text-base font-medium">{cakeName}</h3>
         <h4 className="mb-2 text-sm font-normal text-gray-600">{cakeID}</h4>
-        <p className="text-base font-bold text-red-500">{price} VNĐ</p>
+        <p className="text-base font-bold text-red-500">{Number(price).toLocaleString()} VNĐ</p>
       </div>
     </div>
   );
