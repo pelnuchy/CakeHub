@@ -22,7 +22,7 @@ userController.signupUser = async (req, res) => {
     }
 
     // Create new user
-    const user = await User.create({ userID : 'kh', username, password, role: 'customer'});
+    const user = await User.create({ userID : username + password, username, password, role: 'customer'});
     if (user) {
         res.status(201).json({ message: `User ${username} created successfully` });
     }
