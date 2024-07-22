@@ -419,7 +419,7 @@ db.createCollection("carts", {
                                 "bsonType": "string"
                             },
                             "cakeQuantity": {
-                                "bsonType": "string"
+                                "bsonType": "number"
                             },
                             "total_price": {
                                 "bsonType": "number"
