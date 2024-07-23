@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import {
   FaSearch,
@@ -15,14 +16,17 @@ import { useCart } from '../../contexts/CartContext';
 const Header: React.FC = () => {
   const { cartItems } = useCart();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [userLoggedIn, setUserLoggedIn] = useState(true);
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const navigate = useNavigate()
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
   const handleLogout = () => {
+    sessionStorage.clear();
     setUserLoggedIn(false);
     setDropdownOpen(false);
+    navigate('/');
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -32,6 +36,8 @@ const Header: React.FC = () => {
   };
 
   useEffect(() => {
+    const userInfo = sessionStorage.getItem('userInfo');
+    setUserLoggedIn(userInfo ? JSON.parse(userInfo) : null);
     if (dropdownOpen) {
       document.addEventListener('click', handleClickOutside);
     } else {
