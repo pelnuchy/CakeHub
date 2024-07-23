@@ -66,13 +66,14 @@ const Header: React.FC = () => {
         </div>
       </div>
       <div className="flex flex-auto items-center justify-end space-x-4">
-        <Link to="/cart" className="relative">
+        <Link to={userLoggedIn ? "/cart" : "/login"} className="relative">
           <FaShoppingCart className="h-6 w-6 transform cursor-pointer text-white transition-transform duration-300 ease-in-out hover:scale-110" />
-          {cartItems.length > 0 && (
+          {userLoggedIn ? (cartItems.length > 0 && (
             <span className="absolute right-0 top-0 -mr-2 -mt-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs font-bold leading-none text-red-100">
               {cartItems.length}
             </span>
-          )}
+          )) :
+            null}
         </Link>
         <div className="relative" ref={dropdownRef}>
           <FaUser
