@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   FaSearch,
@@ -16,6 +16,7 @@ const Header: React.FC = () => {
   const { cartItems } = useCart();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [userLoggedIn, setUserLoggedIn] = useState(true);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
@@ -24,11 +25,28 @@ const Header: React.FC = () => {
     setDropdownOpen(false);
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (dropdownOpen) {
+      document.addEventListener('click', handleClickOutside);
+    } else {
+      document.removeEventListener('click', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [dropdownOpen]);
+
   return (
     <header className="flex h-[100px] w-full items-center justify-between bg-black px-4">
       <div className="flex flex-1 items-center">
         <Link to="/" className="cursor-pointer">
-          <img src={'../assets/logo/black-hub-logo.png'} alt="Logo" className="h-16 w-16" />
+          <img src={'../../assets/logo/black-hub-logo.png'} alt="Logo" className="h-16 w-16" />
         </Link>
       </div>
       <div className="flex flex-1 items-center justify-center">
@@ -50,13 +68,13 @@ const Header: React.FC = () => {
             </span>
           )}
         </Link>
-        <div className="relative">
+        <div className="relative" ref={dropdownRef}>
           <FaUser
             className="h-6 w-6 transform cursor-pointer text-white transition-transform duration-300 ease-in-out hover:scale-110"
             onClick={toggleDropdown}
           />
           {dropdownOpen && (
-            <div className="absolute right-0 top-8 mt-2 w-56 rounded-lg bg-yellow-50 text-black opacity-100 shadow-lg ring-1 ring-black ring-opacity-5 transition-opacity duration-300 ease-in-out">
+            <div className="absolute right-0 top-8 mt-2 w-56 rounded-lg bg-primary-50 text-black opacity-100 shadow-lg ring-1 ring-black ring-opacity-5 transition-opacity duration-300 ease-in-out">
               <ul className="py-2">
                 {!userLoggedIn ? (
                   <>
@@ -81,7 +99,7 @@ const Header: React.FC = () => {
                   <>
                     <li>
                       <Link
-                        to="/orders"
+                        to="/purchase"
                         className="flex items-center px-4 py-2 transition-colors duration-300 hover:bg-gray-200"
                       >
                         <FaList className="mr-2 text-gray-700" /> Đơn hàng của tôi
@@ -89,7 +107,7 @@ const Header: React.FC = () => {
                     </li>
                     <li>
                       <Link
-                        to="/order-history"
+                        to="/purchased"
                         className="flex items-center px-4 py-2 transition-colors duration-300 hover:bg-gray-200"
                       >
                         <FaHistory className="mr-2 text-gray-700" /> Lịch sử mua hàng
