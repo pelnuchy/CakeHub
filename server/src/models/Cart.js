@@ -15,7 +15,7 @@ const cartSchema = new mongoose.Schema(
     {
         cartID: {type: String, required: true},
         user_id: {type: String, required: true},    
-        cakes: {type: [cakeSchema], required:true} 
+        cakes: {type: [cakeSchema], required: false} 
     },
     {
         timestamps: true

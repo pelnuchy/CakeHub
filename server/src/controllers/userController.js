@@ -1,5 +1,6 @@
 import session from 'express-session';
 import User from '../models/User.js';
+import Cart from '../models/Cart.js';
 
 const userController = {};
 
@@ -25,13 +26,12 @@ userController.signupUser = async (req, res) => {
     // Create new user
     const user = await User.create({ userID: username + password, username, password, role: 'customer' });
     if (user) {
-        res.status(201).json({ message: `User ${username} created successfully` });
+        await Cart.create({cartID: 'cus' + user.userID, user_id: user.userID});
+        return res.status(201).json({ message: `User ${username} created successfully` });
     }
     else {
-        res.status(400).json({ message: 'Invalid user data received' });
+        return res.status(400).json({ message: 'Invalid user data received' });
     }
-
-
 };
 
 userController.loginUser = async (req, res) => {
