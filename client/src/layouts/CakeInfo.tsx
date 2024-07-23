@@ -14,8 +14,8 @@ const CakeInfo = () => {
     const getCakeDetail = async () => {
       const cakes = await fetchCakeDetail(id); // Pass the id to your fetch function
       setCake(cakes);
-      //console.log(cakeDB);
     };
+    
     getCakeDetail();
   }, [id]); // Add id as a dependency to useEffect
 
@@ -30,8 +30,8 @@ const CakeInfo = () => {
 
   const { addToCart } = useCart();
   const [notification, setNotification] = useState('');
-  const [selectedSize, setSelectedSize] = useState('M');
-  const [selectedFlavor, setSelectedFlavor] = useState('Socola');
+  const [selectedSize, setSelectedSize] = useState('S');
+  const [selectedFlavor, setSelectedFlavor] = useState('Chanh dây');
   const [selectedQuantity, setSelectedQuantity] = useState(1);
 
   const handleAddToCart = () => {
@@ -45,12 +45,13 @@ const CakeInfo = () => {
         quantity: selectedQuantity,
         image: cake.img_url,
       });
-      setNotification(`${cake.cakeName} đã được thêm vào giỏ hàng.`);
+      setNotification(`${cake.cakeID} đã được thêm vào giỏ hàng.`);
     }
   };
 
   const handleSizeChange = (size: string) => {
     setSelectedSize(size);
+
   };
 
   const handleFlavorChange = (flavor: string) => {
