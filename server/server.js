@@ -4,12 +4,25 @@ import "dotenv/config"
 import userRoutes from './src/routes/userRoutes.js';
 import cakeRoutes from './src/routes/cakeRoutes.js';
 import bodyParser from 'body-parser';
+import session from 'express-session';
 import cors from 'cors';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
+
+app.use(session({
+    name: 'sid',
+    resave: false,
+    saveUninitialized: false,
+    secret: 'kobietgihet',
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 2,
+        sameSite: true,
+        secure: false,
+    }
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
