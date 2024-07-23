@@ -1124,7 +1124,7 @@ db.cakes.insertMany([
         cakeName: 'Bánh hoa bắp',
         size: 10,
         jamFilling: 'Corn',
-        price: 600.000,
+        price: 600000,
         img_url: '../../assets/cake/cake5.jpg',
         cakeType: 'Sponge cake',
         occasion: 'birthday',
@@ -1135,7 +1135,7 @@ db.cakes.insertMany([
         time_grill: 35,
     },
     {
-        cakeID: 'BG50023',
+        cakeID: 'BG50033',
         cakeName: 'Bánh hạt bắp',
         size: 10,
         jamFilling: 'Corn',
@@ -1195,7 +1195,7 @@ db.cakes.insertMany([
         time_grill: 25,
     },
     {
-        cakeID: 'BG50024',
+        cakeID: 'BG50044',
         cakeName: 'Bánh hoa hồng',
         size: 24,
         jamFilling: 'Strawberry',

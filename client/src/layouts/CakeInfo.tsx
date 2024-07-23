@@ -37,7 +37,7 @@ const CakeInfo = () => {
   const handleAddToCart = () => {
     if (cake) {
       addToCart({
-        id: cake.id,
+        id: cake.cakeID,
         name: cake.cakeName,
         price: Number(cake.price),
         size: selectedSize,
@@ -80,7 +80,7 @@ const CakeInfo = () => {
           <div className="font-sans text-3xl font-bold">{cake.cakeName}</div>
           <p className="mt-2 text-2xl font-semibold text-red-500">{Number(cake.price).toLocaleString()} VNĐ</p>
           <p className="mt-4">{cake.description}</p>
-          <p className="mt-4 text-sm text-gray-600">Mã bánh: {cake.id}</p>
+          <p className="mt-4 text-sm text-gray-600">Mã bánh: {cake.cakeID}</p>
 
           <div className="mt-6">
             <p className="text-sm font-semibold">Nhân bánh:</p>
