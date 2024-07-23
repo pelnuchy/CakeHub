@@ -5,7 +5,7 @@ const Trending = () => {
 
   return (
     <div className="bg-white px-8 py-1">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto ml-9 px-4 py-8">
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center">
             <div className="mr-2 h-8 w-4 bg-bgr-gradient"></div>
@@ -15,10 +15,8 @@ const Trending = () => {
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {randomCakes.map((cake,index) => (
-            <CakeCard
-            key={index} 
-            cake={cake} />
+          {randomCakes.map((cake, index) => (
+            <CakeCard key={index} cake={cake} />
           ))}
         </div>
       </div>
