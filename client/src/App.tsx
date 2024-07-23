@@ -3,6 +3,7 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import Preloader from './components/Preloader';
 import usePageLoading from './hooks/usePageLoading';
+import DashBoard from './pages/DashBoard';
 
 const Homepage = lazy(() => import('./pages/Home'));
 const Checkout = lazy(() => import('./pages/Checkout'));
@@ -41,6 +42,7 @@ export default function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/FAQ" element={<FAQPage />} />
           <Route path="/*" element={<NotFoundPage />} />
+          <Route path="/admin/dashboard" element={<DashBoard />} />
         </Routes>
       </Suspense>
     </div>
