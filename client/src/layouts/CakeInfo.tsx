@@ -5,21 +5,21 @@ import { useCart } from '../contexts/CartContext';
 import Related from './CakeList/Related';
 import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
+import { set } from 'react-datepicker/dist/date_utils';
 const CakeInfo = () => {
   const { id } = useParams();
-  const [cake, setCake] = useState(Object);
+
+  const [cakeDetail, setCakeDetail] = useState(Object);
+
+  const { addToCart } = useCart();
+  const [notification, setNotification] = useState('');
+  const [selectedSize, setSelectedSize] = useState('S');
+  const [selectedFlavor, setSelectedFlavor] = useState('Chanh dây');
+  const [selectedQuantity, setSelectedQuantity] = useState(1);
+
   const navigate = useNavigate();
-  //const cake = cakeData.find((cake) => cake.id === id);
 
-  useEffect(() => {
-    const getCakeDetail = async () => {
-      const cakes = await fetchCakeDetail(id); // Pass the id to your fetch function
-      setCake(cakes);
-    };
-    
-    getCakeDetail();
-  }, [id]); // Add id as a dependency to useEffect
-
+  // fetch API
   const fetchCakeDetail = async (id: any) => {
     try {
       const response = await axios.get(`http://localhost:8000/get-details-cake/${id}`);
@@ -29,32 +29,63 @@ const CakeInfo = () => {
     }
   };
 
-  const { addToCart } = useCart();
-  const [notification, setNotification] = useState('');
-  const [selectedSize, setSelectedSize] = useState('S');
-  const [selectedFlavor, setSelectedFlavor] = useState('Chanh dây');
-  const [selectedQuantity, setSelectedQuantity] = useState(1);
+  // Add this function to abbreviate the flavor
+  const abbreviateFlavor = (flavor: string): string => {
+    const flavorAbbreviations: { [key: string]: string } = {
+      "Chanh dây": "CD",
+      "Dâu tây": "DT",
+      "Socola": "Soco"
+    };
+
+    return flavorAbbreviations[flavor] || flavor;
+  }
+
+  // Add this function to calculate
+  const calculateCakeID = () => {
+    const abbreviated = abbreviateFlavor(selectedFlavor);
+    return `${id}-${abbreviated}-${selectedSize}`;
+  };
+
+  const findCakeWithNewCakeID = (cakes: {}[], cakeID: string) => {
+    if (!Array.isArray(cakes)) {
+      console.error('cakes is not an array', cakes);
+      return undefined; // or return a default value or throw an error based on your use case
+    }
+    return cakes.find((cake: any) => cake.cakeID === cakeID);
+  };
+
+  useEffect(() => {
+    const getCakeDetail = async () => {
+      const cakes = await fetchCakeDetail(id); // Pass the id to your fetch function
+
+      const newCakeID = await calculateCakeID();
+
+      const cakeNew = await findCakeWithNewCakeID(cakes, newCakeID);
+      setCakeDetail(cakeNew);
+    };
+    getCakeDetail();
+  }, [id, selectedSize, selectedFlavor]); // Add id,selectedSize, selectedFlavor as a dependency to useEffect
+
+
 
   const userInfo = sessionStorage.getItem('userInfo');
-  const sessionStorageData = userInfo ? JSON.parse(userInfo) : null;
 
   const handleAddToCart = () => {
-    if (!userInfo)
-    {
+    if (!userInfo) {
       navigate("/login");
     }
 
-    if (cake) {
+    if (cakeDetail) {
       addToCart({
-        id: cake.cakeID,
-        name: cake.cakeName,
-        price: Number(cake.price),
+        id: cakeDetail.cakeID,
+        name: cakeDetail.cakeName,
+        price: Number(cakeDetail.price),
         size: selectedSize,
         flavor: selectedFlavor,
         quantity: selectedQuantity,
-        image: cake.img_url,
+        image: cakeDetail.img_url,
       });
-      setNotification(`${cake.cakeID} đã được thêm vào giỏ hàng.`);
+      setNotification(`${cakeDetail.cakeID} đã được thêm vào giỏ hàng.`);
     }
   };
 
@@ -74,7 +105,8 @@ const CakeInfo = () => {
     setSelectedQuantity(quantity);
   };
 
-  if (!cake) {
+
+  if (!cakeDetail) {
     return <div>Cake not found</div>;
   }
 
@@ -83,14 +115,14 @@ const CakeInfo = () => {
       <div className="flex flex-col px-16 lg:flex-row">
         <div className="mb-8 lg:mb-0 lg:w-2/3 lg:pr-8">
           <div className="h-[80vh]">
-            <img src={cake.img_url} alt={cake.cakeName} className="h-full w-full rounded-xl object-cover" />
+            <img src={cakeDetail.img_url} alt={cakeDetail.cakeName} className="h-full w-full rounded-xl object-cover" />
           </div>
         </div>
         <div className="lg:w-1/3">
-          <div className="font-sans text-3xl font-bold">{cake.cakeName}</div>
-          <p className="mt-2 text-2xl font-semibold text-red-500">{Number(cake.price).toLocaleString()} VNĐ</p>
-          <p className="mt-4">{cake.description}</p>
-          <p className="mt-4 text-sm text-gray-600">Mã bánh: {cake.cakeID}</p>
+          <div className="font-sans text-3xl font-bold">{cakeDetail.cakeName}</div>
+          <p className="mt-2 text-2xl font-semibold text-red-500">{Number(cakeDetail.price).toLocaleString()} VNĐ</p>
+          <p className="mt-4">{cakeDetail.description}</p>
+          <p className="mt-4 text-sm text-gray-600">Mã bánh: {cakeDetail.cakeID}</p>
 
           <div className="mt-6">
             <p className="text-sm font-semibold">Nhân bánh:</p>

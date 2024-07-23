@@ -5,8 +5,10 @@ const CakeCard = ({ cake }: { cake: any }) => {
   const { cakeID, img_url, cakeName, price } = cake;
   const navigate = useNavigate();
 
+  const rootCakeID = cakeID.split("-")[0];
+
   const handleClick = () => {
-    navigate(`/cake/${cakeID}`);
+    navigate(`/cake/${rootCakeID}`);
   };
 
   return (
@@ -24,7 +26,7 @@ const CakeCard = ({ cake }: { cake: any }) => {
 
       <div className="flex-grow p-4">
         <h3 className="mb-2 truncate text-base font-medium hover:underline">{cakeName}</h3>
-        <h4 className="mb-2 text-sm font-normal text-gray-600">{cakeID}</h4>
+        <h4 className="mb-2 text-sm font-normal text-gray-600">{rootCakeID}</h4>
         <p className="text-base font-bold text-red-500">{Number(price).toLocaleString()} VNĐ</p>
       </div>
     </div>
