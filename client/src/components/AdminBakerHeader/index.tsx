@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import {
-  FaSearch,
-  FaShoppingCart,
+  //FaSearch,
+  //FaShoppingCart,
   FaUser,
   FaSignInAlt,
   FaUserPlus,
@@ -16,17 +15,14 @@ import { useCart } from '../../contexts/CartContext';
 const Header: React.FC = () => {
   const { cartItems } = useCart();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [userLoggedIn, setUserLoggedIn] = useState(false);
-  const navigate = useNavigate()
+  const [userLoggedIn, setUserLoggedIn] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
   const handleLogout = () => {
-    sessionStorage.clear();
     setUserLoggedIn(false);
     setDropdownOpen(false);
-    navigate('/');
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -36,8 +32,6 @@ const Header: React.FC = () => {
   };
 
   useEffect(() => {
-    const userInfo = sessionStorage.getItem('userInfo');
-    setUserLoggedIn(userInfo ? JSON.parse(userInfo) : null);
     if (dropdownOpen) {
       document.addEventListener('click', handleClickOutside);
     } else {
@@ -55,7 +49,7 @@ const Header: React.FC = () => {
           <img src={'../../assets/logo/black-hub-logo.png'} alt="Logo" className="h-16 w-16" />
         </Link>
       </div>
-      <div className="flex flex-auto items-center justify-center">
+      {/* <div className="flex flex-auto items-center justify-center">
         <div className="flex h-10 w-full items-center rounded-xl bg-white px-4 py-1">
           <input
             type="text"
@@ -64,17 +58,16 @@ const Header: React.FC = () => {
           />
           <FaSearch className="mr-2 h-8 w-8 transform bg-white p-1 text-black transition-transform duration-300 ease-in-out hover:scale-110" />
         </div>
-      </div>
+      </div> */}
       <div className="flex flex-auto items-center justify-end space-x-4">
-        <Link to={userLoggedIn ? "/cart" : "/login"} className="relative">
+        {/* <Link to="/cart" className="relative">
           <FaShoppingCart className="h-6 w-6 transform cursor-pointer text-white transition-transform duration-300 ease-in-out hover:scale-110" />
-          {userLoggedIn ? (cartItems.length > 0 && (
+          {cartItems.length > 0 && (
             <span className="absolute right-0 top-0 -mr-2 -mt-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs font-bold leading-none text-red-100">
               {cartItems.length}
             </span>
-          )) :
-            null}
-        </Link>
+          )}
+        </Link> */}
         <div className="relative" ref={dropdownRef}>
           <FaUser
             className="h-6 w-6 transform cursor-pointer text-white transition-transform duration-300 ease-in-out hover:scale-110"
