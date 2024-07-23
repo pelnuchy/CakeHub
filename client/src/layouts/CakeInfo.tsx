@@ -4,10 +4,11 @@ import axios from 'axios';
 import { useCart } from '../contexts/CartContext';
 import Related from './CakeList/Related';
 import Button from '../components/Button';
-
+import { useNavigate } from 'react-router-dom';
 const CakeInfo = () => {
   const { id } = useParams();
   const [cake, setCake] = useState(Object);
+  const navigate = useNavigate();
   //const cake = cakeData.find((cake) => cake.id === id);
 
   useEffect(() => {
@@ -34,7 +35,15 @@ const CakeInfo = () => {
   const [selectedFlavor, setSelectedFlavor] = useState('Socola');
   const [selectedQuantity, setSelectedQuantity] = useState(1);
 
+  const userInfo = sessionStorage.getItem('userInfo');
+  const sessionStorageData = userInfo ? JSON.parse(userInfo) : null;
+
   const handleAddToCart = () => {
+    if (!userInfo)
+    {
+      navigate("/login");
+    }
+
     if (cake) {
       addToCart({
         id: cake.cakeID,
