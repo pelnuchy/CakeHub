@@ -1,0 +1,42 @@
+.monthPicker.monthPicker {
+  width: 240px;
+}
+.date {
+  color: #000;
+  font-size: 16px;
+  line-height: 150%;
+  font-weight: 600;
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+  width: min-content;
+  height: min-content;
+  text-align: center;
+  align-items: center;
+  white-space: nowrap;
+  flex-direction: column;
+}
+.selection.selection.selection.selection {
+  background-color: #ffe72f;
+}
+.date2 {
+  color: #000;
+  font-size: 16px;
+  line-height: 150%;
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min-content;
+  height: min-content;
+  text-align: center;
+  align-items: center;
+  white-space: nowrap;
+  flex-direction: column;
+  transform: translate(-50%, -50%);
+}
+.root {
+  width: 100vw;
+  height: 100vh;
+  flex-direction: column;
+}
