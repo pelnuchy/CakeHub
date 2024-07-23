@@ -37,7 +37,8 @@ cakeController.getAllCakesOccasion = async (req, res) => {
                 message: "Please provide occasion"
             });
         }
-        const response = await Cake.find({ occasion: occasion }).lean().exec();
+        const pattern = /.*-CD-S$/; // Điều này giả định rằng bạn muốn tìm kiếm các ID kết thúc bằng "-CD-S"
+        const response = await Cake.find({ cakeID: { $regex: pattern }, occasion: occasion }).lean().exec();
         return res.status(200).json({
             status: 'SUCCESS',
             data: response
