@@ -71,7 +71,7 @@ const CakeInfo = () => {
 
   return (
     <div className="container mx-auto p-8">
-      <div className="flex flex-col lg:flex-row">
+      <div className="flex flex-col px-16 lg:flex-row">
         <div className="mb-8 lg:mb-0 lg:w-2/3 lg:pr-8">
           <div className="h-[80vh]">
             <img src={cake.img_url} alt={cake.cakeName} className="h-full w-full rounded-xl object-cover" />
