@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const Nav = () => {
   return (
     <nav className="w-full bg-gray-500">
-      <div className="flex justify-between px-8 py-2">
+      <div className="flex justify-between px-96 py-2">
         <Link to="/custom" className="text-black hover:underline">
           Bánh trang trí
         </Link>
