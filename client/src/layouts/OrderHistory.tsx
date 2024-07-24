@@ -44,6 +44,7 @@ const orderHistory = [
 
 const OrderHistory = () => {
   const [currentTab, setCurrentTab] = useState('orders');
+  const [orderHistories, setOrderHistories] = useState([{}]); // This line is replaced with the context state
   useEffect(() => {
     const getOrderHistory = async () => {
       const userInfoString = sessionStorage.getItem('userInfo');
@@ -51,7 +52,8 @@ const OrderHistory = () => {
         const userInfo = JSON.parse(userInfoString);
         const orderHistories = await fetchOrderHistory(userInfo.userID);
         // Assuming setOrderHistories should actually update the context's orderHistory
-        // setOrderHistories(orderHistories); // This line is replaced with the context method
+        setOrderHistories(orderHistories); // This line is replaced with the context method
+        console.log('Order history:', orderHistories);
       } else {
         console.log('No user info found');
       }
