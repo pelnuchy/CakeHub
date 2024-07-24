@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-
+import { useEffect } from 'react';
+import axios from 'axios';
 const orderHistory = [
   {
     date: '10/02/2024',
@@ -43,28 +44,49 @@ const orderHistory = [
 
 const OrderHistory = () => {
   const [currentTab, setCurrentTab] = useState('orders');
+  useEffect(() => {
+    const getOrderHistory = async () => {
+      const userInfoString = sessionStorage.getItem('userInfo');
+      if (userInfoString) {
+        const userInfo = JSON.parse(userInfoString);
+        const orderHistories = await fetchOrderHistory(userInfo.userID);
+        // Assuming setOrderHistories should actually update the context's orderHistory
+        // setOrderHistories(orderHistories); // This line is replaced with the context method
+      } else {
+        console.log('No user info found');
+      }
+    };
+    getOrderHistory();
+  }, []);
 
+  const fetchOrderHistory = async (userID: string) => {
+    try {
+      const response = await axios.get(`http://localhost:8000/get-order-history/${userID}`);
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  };
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="mb-8 text-3xl font-bold text-gray-800">Đơn hàng của tôi</h1>
       <nav className="mb-8">
         <ul className="flex space-x-6 border-b-2 border-gray-200 pb-2">
           <li
-            className={`cursor-pointer font-semibold ${
-              currentTab === 'orders'
-                ? 'border-b-2 border-primary-500 text-primary-500'
-                : 'text-gray-500 hover:text-primary-500'
-            }`}
+            className={`cursor-pointer font-semibold ${currentTab === 'orders'
+              ? 'border-b-2 border-primary-500 text-primary-500'
+              : 'text-gray-500 hover:text-primary-500'
+              }`}
             onClick={() => setCurrentTab('orders')}
           >
             Đơn mua
           </li>
           <li
-            className={`cursor-pointer font-semibold ${
-              currentTab === 'history'
-                ? 'border-b-2 border-primary-500 text-primary-500'
-                : 'text-gray-500 hover:text-primary-500'
-            }`}
+            className={`cursor-pointer font-semibold ${currentTab === 'history'
+              ? 'border-b-2 border-primary-500 text-primary-500'
+              : 'text-gray-500 hover:text-primary-500'
+              }`}
             onClick={() => setCurrentTab('history')}
           >
             Lịch sử mua hàng
