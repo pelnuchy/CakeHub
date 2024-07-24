@@ -1057,7 +1057,48 @@ db.recipes.insertMany([
         sum_cream: 608
     }
 ])
-
+db.orders.insertMany([
+    {
+        orderID: "O001",
+        shippingDate: "2021-08-17",
+        shippingAddress: "123 Nguyen Van Linh, Da Nang",
+        orderTime: "2021-08-17 10:00:00",
+        paymentTime: "2021-08-17 10:30:00",
+        completeTime: "2021-08-17 11:00:00",
+        total_price: 320000,
+        status: "completed",
+        user_id: "tra1",
+        s_cakeQuantity: 1,
+        cakes: [
+            {
+                cakeID: "C01-DT-S",
+                quantity: 1
+            }
+        ]
+    },
+    {
+        orderID: "O002",
+        shippingDate: "2022-08-17",
+        shippingAddress: "12 Hai Ba Trung, Da Nang",
+        orderTime: "2022-08-17 10:00:00",
+        paymentTime: "2022-08-17 10:30:00",
+        completeTime: "2022-08-17 11:00:00",
+        total_price: 640000,
+        status: "completed",
+        user_id: "tra1",
+        s_cakeQuantity: 2,
+        cakes: [
+            {
+                cakeID: "C01-DT-S",
+                quantity: 1
+            },
+            {
+                cakeID: "C02-DT-M",
+                quantity: 1
+            }
+        ]
+    }
+]);
 db.cakes.insertMany([
     {
         cakeID: 'C01-DT-S',

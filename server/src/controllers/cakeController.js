@@ -1,5 +1,5 @@
 import Cake from "../models/Cake.js";
-
+import Order from "../models/Order.js";
 const cakeController = {};
 
 cakeController.getAllCakes = async (req, res) => {
@@ -77,4 +77,28 @@ cakeController.getDetailCake = async (req, res) => {
         });
     }
 };
+
+cakeController.getOrderHistory = async (req, res) => {
+    try {
+        const userID = req.params.userid;
+        //const encodedUserID = Buffer.from(userID, 'base64').toString('ascii');
+        if (!userID) {
+            return res.status(200).json({
+                status: 'ERROR',
+                message: "Please provide user ID"
+            });
+        }
+        const response = await Order.find({ user_id: userID }).lean().exec();
+        return res.status(200).json({
+            status: 'SUCCESS',
+            data: response
+        });
+    } catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+}
+
 export default cakeController;
