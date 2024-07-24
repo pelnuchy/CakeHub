@@ -3,7 +3,6 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import Preloader from './components/Preloader';
 import usePageLoading from './hooks/usePageLoading';
-import DashBoard from './pages/DashBoard';
 
 const Homepage = lazy(() => import('./pages/Home'));
 const Checkout = lazy(() => import('./pages/Checkout'));
@@ -19,6 +18,7 @@ const NotFoundPage = lazy(() => import('./pages/404'));
 const ShoppingCart = lazy(() => import('./pages/Cart'));
 const Purchase = lazy(() => import('./pages/Purchase'));
 const HistoryPurchase = lazy(() => import('./pages/HistoryPurchase'));
+const AdminDashBoard = lazy(() => import('./pages/Admin/Dasboard'));
 
 export default function App() {
   const loading = usePageLoading();
@@ -42,7 +42,7 @@ export default function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/FAQ" element={<FAQPage />} />
           <Route path="/*" element={<NotFoundPage />} />
-          <Route path="/admin/dashboard" element={<DashBoard />} />
+          <Route path="/admin/dashboard" element={<AdminDashBoard />} />
         </Routes>
       </Suspense>
     </div>
