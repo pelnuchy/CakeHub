@@ -34,10 +34,10 @@ const OrderHistory = () => {
           total: `${Number(order.total_price).toLocaleString()} VND`,
           items: order.cakes.map((cake: any) => ({
             name: cake.cakeName,
-            price: `${Number(cake.price).toLocaleString()} VND`,
+            price: `${Number(cake.total_price).toLocaleString()} VND`,
             size: cake.size,
             flavor: cake.flavor,
-            quantity: cake.quantity,
+            quantity: cake.cakeQuantity,
             imgSrc: cake.img_url,
           })),
         };

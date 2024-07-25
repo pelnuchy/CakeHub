@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 const cakeSchema = new mongoose.Schema(
     {
         cake_id: { type: String, required: true },
+        cakeName: { type: String, required: true },
+        size: { type: String, required: true },
+        flavor: { type: String, required: true },
         img_url: { type: String, required: true },
         cakeMessage: { type: String, required: false },
         cakeQuantity: { type: Number, required: true },

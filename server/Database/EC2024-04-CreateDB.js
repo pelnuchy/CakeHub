@@ -94,6 +94,9 @@ db.createCollection("orders", {
                             "cake_id": {
                                 "bsonType": "string"
                             },
+                            "cakeName": {
+                                "bsonType": "string"
+                            },
                             "img_url": {
                                 "bsonType": "string"
                             },
