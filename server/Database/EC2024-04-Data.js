@@ -3093,8 +3093,5 @@ db.cakes.insertMany([
         temp_grill: 150,
         time_grill: 60,
     }
-
-
-
-
+    
 ])
