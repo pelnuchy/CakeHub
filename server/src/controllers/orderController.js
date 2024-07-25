@@ -1,4 +1,3 @@
-import session from 'express-session';
 import Order from '../models/Order.js';
 import Cake from '../models/Cake.js';
 

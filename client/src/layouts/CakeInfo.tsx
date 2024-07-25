@@ -5,8 +5,6 @@ import { useCart } from '../contexts/CartContext';
 import Related from './CakeList/Related';
 import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
-import { set } from 'react-datepicker/dist/date_utils';
-import CakeDetail from '../pages/CakeDetail';
 const CakeInfo = () => {
   const { id } = useParams();
 
@@ -34,13 +32,13 @@ const CakeInfo = () => {
   // Add this function to abbreviate the flavor
   const abbreviateFlavor = (flavor: string): string => {
     const flavorAbbreviations: { [key: string]: string } = {
-      "Chanh dây": "CD",
-      "Dâu tây": "DT",
-      "Socola": "Soco"
+      'Chanh dây': 'CD',
+      'Dâu tây': 'DT',
+      Socola: 'Soco',
     };
 
     return flavorAbbreviations[flavor] || flavor;
-  }
+  };
 
   // Add this function to calculate
   const calculateCakeID = () => {
@@ -72,8 +70,6 @@ const CakeInfo = () => {
     getCakeDetail();
     // setSelectedTotalPrice(Number(cakeDetail.price));
   }, [id, selectedSize, selectedFlavor, cakeDetail]); // Add id,selectedSize, selectedFlavor as a dependency to useEffect
-
-
 
   const userInfo = sessionStorage.getItem('userInfo');
   
@@ -115,7 +111,6 @@ const CakeInfo = () => {
 
   const handleSizeChange = (size: string) => {
     setSelectedSize(size);
-
   };
 
   const handleFlavorChange = (flavor: string) => {
@@ -129,7 +124,6 @@ const CakeInfo = () => {
     setSelectedQuantity(quantity);
     setSelectedTotalPrice(Number(quantity*price))
   };
-
 
   if (!cakeDetail) {
     return <div>Cake not found</div>;
