@@ -5,7 +5,6 @@ import { useCart } from '../contexts/CartContext';
 import Related from './CakeList/Related';
 import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
-import { set } from 'react-datepicker/dist/date_utils';
 const CakeInfo = () => {
   const { id } = useParams();
 
@@ -13,10 +12,11 @@ const CakeInfo = () => {
 
   const { addToCart } = useCart();
   const [notification, setNotification] = useState('');
+  const [selectedNewCakeID, setSelectedNewCakeID] = useState('');
   const [selectedSize, setSelectedSize] = useState('S');
   const [selectedFlavor, setSelectedFlavor] = useState('Chanh dây');
   const [selectedQuantity, setSelectedQuantity] = useState(1);
-
+  const [selectedTotalPrice, setSelectedTotalPrice] = useState(0);
   const navigate = useNavigate();
 
   // fetch API
@@ -32,13 +32,13 @@ const CakeInfo = () => {
   // Add this function to abbreviate the flavor
   const abbreviateFlavor = (flavor: string): string => {
     const flavorAbbreviations: { [key: string]: string } = {
-      "Chanh dây": "CD",
-      "Dâu tây": "DT",
-      "Socola": "Soco"
+      'Chanh dây': 'CD',
+      'Dâu tây': 'DT',
+      Socola: 'Soco',
     };
 
     return flavorAbbreviations[flavor] || flavor;
-  }
+  };
 
   // Add this function to calculate
   const calculateCakeID = () => {
@@ -61,18 +61,25 @@ const CakeInfo = () => {
       const newCakeID = await calculateCakeID();
 
       const cakeNew = await findCakeWithNewCakeID(cakes, newCakeID);
+      setSelectedNewCakeID(newCakeID);
       setCakeDetail(cakeNew);
     };
+    if (cakeDetail && cakeDetail.price) {
+      setSelectedTotalPrice(Number(cakeDetail.price*selectedQuantity));
+    }
     getCakeDetail();
-  }, [id, selectedSize, selectedFlavor]); // Add id,selectedSize, selectedFlavor as a dependency to useEffect
-
-
+    // setSelectedTotalPrice(Number(cakeDetail.price));
+  }, [id, selectedSize, selectedFlavor, cakeDetail]); // Add id,selectedSize, selectedFlavor as a dependency to useEffect
 
   const userInfo = sessionStorage.getItem('userInfo');
+  
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     if (!userInfo) {
       navigate("/login");
+      return;
     }
 
     if (cakeDetail) {
@@ -86,25 +93,37 @@ const CakeInfo = () => {
         image: cakeDetail.img_url,
       });
       setNotification(`${cakeDetail.cakeID} đã được thêm vào giỏ hàng.`);
+      const userInfo1 = sessionStorage.getItem('userInfo');
+      const user_tmp = userInfo1 ? JSON.parse(userInfo1) : null;
+      const auth = { 
+        userID: user_tmp ? user_tmp.userID : null,
+        selectedNewCakeID, 
+        selectedQuantity, 
+        selectedTotalPrice 
+      };
+      try {
+        await axios.post(`http://localhost:8000/add-cake-to-cart`, auth);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
   const handleSizeChange = (size: string) => {
     setSelectedSize(size);
-
   };
 
   const handleFlavorChange = (flavor: string) => {
     setSelectedFlavor(flavor);
   };
 
-  const handleQuantityChange = (quantity: number) => {
+  const handleQuantityChange = (quantity: number, price: number) => {
     if (quantity < 1) {
       quantity = 1;
     }
     setSelectedQuantity(quantity);
+    setSelectedTotalPrice(Number(quantity*price))
   };
-
 
   if (!cakeDetail) {
     return <div>Cake not found</div>;
@@ -124,78 +143,90 @@ const CakeInfo = () => {
           <p className="mt-4">{cakeDetail.description}</p>
           <p className="mt-4 text-sm text-gray-600">Mã bánh: {cakeDetail.cakeID}</p>
 
-          <div className="mt-6">
-            <p className="text-sm font-semibold">Nhân bánh:</p>
-            <div className="mt-2 flex">
+          <form className='space-y-4' onSubmit={handleAddToCart}>
+
+            <div className="mt-6">
+              <p className="text-sm font-semibold">Nhân bánh:</p>
+              <div className="mt-2 flex">
+                <button
+                  type='button'
+                  className={`mr-2 rounded border px-4 py-2 ${selectedFlavor === 'Chanh dây' ? 'bg-primary-500 text-white' : ''}`}
+                  onClick={() => handleFlavorChange('Chanh dây')}
+                >
+                  Chanh dây
+                </button>
+                <button
+                  type='button'
+                  className={`mr-2 rounded border px-4 py-2 ${selectedFlavor === 'Dâu tây' ? 'bg-primary-500 text-white' : ''}`}
+                  onClick={() => handleFlavorChange('Dâu tây')}
+                >
+                  Dâu tây
+                </button>
+                <button
+                  type='button'
+                  className={`rounded border px-4 py-2 ${selectedFlavor === 'Socola' ? 'bg-primary-500 text-white' : ''}`}
+                  onClick={() => handleFlavorChange('Socola')}
+                >
+                  Socola
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <p className="text-sm font-semibold">Kích thước:</p>
+              <div className="mt-2 flex">
+                <button
+                  type='button'
+                  className={`mr-2 rounded border px-4 py-2 ${selectedSize === 'S' ? 'bg-primary-500 text-white' : ''}`}
+                  onClick={() => handleSizeChange('S')}
+                >
+                  S
+                </button>
+                <button
+                  type='button'
+                  className={`mr-2 rounded border px-4 py-2 ${selectedSize === 'M' ? 'bg-primary-500 text-white' : ''}`}
+                  onClick={() => handleSizeChange('M')}
+                >
+                  M
+                </button>
+                <button
+                  type='button'
+                  className={`rounded border px-4 py-2 ${selectedSize === 'L' ? 'bg-primary-500 text-white' : ''}`}
+                  onClick={() => handleSizeChange('L')}
+                >
+                  L
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <p className="text-sm font-semibold">Thông điệp:</p>
+              <input type="text" placeholder="Nhập thông điệp cho bánh" className="mt-2 w-full rounded border p-2" />
+            </div>
+
+            <div className="mt-6 flex items-center">
               <button
-                className={`mr-2 rounded border px-4 py-2 ${selectedFlavor === 'Chanh dây' ? 'bg-primary-500 text-white' : ''}`}
-                onClick={() => handleFlavorChange('Chanh dây')}
+                type='button'
+                className="rounded border px-4 py-2 hover:bg-primary-500"
+                onClick={() => handleQuantityChange(selectedQuantity - 1, Number(cakeDetail.price))}
               >
-                Chanh dây
+                -
               </button>
+              <span className="mx-4">{selectedQuantity}</span>
               <button
-                className={`mr-2 rounded border px-4 py-2 ${selectedFlavor === 'Dâu tây' ? 'bg-primary-500 text-white' : ''}`}
-                onClick={() => handleFlavorChange('Dâu tây')}
+                type='button'
+                className="rounded border px-4 py-2 hover:bg-primary-500"
+                onClick={() => handleQuantityChange(selectedQuantity + 1, Number(cakeDetail.price))}
               >
-                Dâu tây
-              </button>
-              <button
-                className={`rounded border px-4 py-2 ${selectedFlavor === 'Socola' ? 'bg-primary-500 text-white' : ''}`}
-                onClick={() => handleFlavorChange('Socola')}
-              >
-                Socola
+                +
               </button>
             </div>
-          </div>
 
-          <div className="mt-6">
-            <p className="text-sm font-semibold">Kích thước:</p>
-            <div className="mt-2 flex">
-              <button
-                className={`mr-2 rounded border px-4 py-2 ${selectedSize === 'S' ? 'bg-primary-500 text-white' : ''}`}
-                onClick={() => handleSizeChange('S')}
-              >
-                S
-              </button>
-              <button
-                className={`mr-2 rounded border px-4 py-2 ${selectedSize === 'M' ? 'bg-primary-500 text-white' : ''}`}
-                onClick={() => handleSizeChange('M')}
-              >
-                M
-              </button>
-              <button
-                className={`rounded border px-4 py-2 ${selectedSize === 'L' ? 'bg-primary-500 text-white' : ''}`}
-                onClick={() => handleSizeChange('L')}
-              >
-                L
-              </button>
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <p className="text-sm font-semibold">Thông điệp:</p>
-            <input type="text" placeholder="Nhập thông điệp cho bánh" className="mt-2 w-full rounded border p-2" />
-          </div>
-
-          <div className="mt-6 flex items-center">
-            <button
-              className="rounded border px-4 py-2 hover:bg-primary-500"
-              onClick={() => handleQuantityChange(selectedQuantity - 1)}
-            >
-              -
-            </button>
-            <span className="mx-4">{selectedQuantity}</span>
-            <button
-              className="rounded border px-4 py-2 hover:bg-primary-500"
-              onClick={() => handleQuantityChange(selectedQuantity + 1)}
-            >
-              +
-            </button>
-          </div>
-
-          <Button onClick={handleAddToCart} className="mt-6 w-full">
-            Thêm vào giỏ hàng
-          </Button>
+            <Button type="submit" className="mt-6 w-full">
+              Thêm vào giỏ hàng
+            </Button>
+          
+          </form>
 
           {notification && <div className="mt-4 text-green-500">{notification}</div>}
         </div>

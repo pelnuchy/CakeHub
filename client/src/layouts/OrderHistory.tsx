@@ -53,7 +53,7 @@ const OrderHistory = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="mb-8 text-3xl font-bold text-gray-800">Đơn hàng của tôi</h1>
+      <h1 className="mb-8 text-3xl font-bold text-primary-600">Lịch sử mua hàng</h1>
       {/* <nav className="mb-8">
         <ul className="flex space-x-6 border-b-2 border-gray-200 pb-2">
           <li

@@ -1,7 +1,7 @@
 import Header from '../../components/Header';
 import Nav from '../../components/Nav';
 import Footer from '../../components/Footer';
-import Purchased from '../../layouts/Purchase';
+import Purchases from '../../layouts/Purchase';
 
 const Purchase = () => {
   return (
@@ -9,7 +9,7 @@ const Purchase = () => {
       <Header />
       <Nav />
       <main>
-        <Purchased />
+        <Purchases />
       </main>
       <Footer />
     </>
