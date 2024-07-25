@@ -3,9 +3,41 @@ import Cart from '../models/Cart.js';
 
 const cartController = {};
 
+
+cartController.loadCakeIntoCart = async (req, res) => {
+    try {
+        const user_id = req.params.userid;
+        const cart =  await Cart.findOne({ user_id: user_id});
+
+        // Kiểm tra xem giỏ hàng có tồn tại không
+        if (!cart) {
+            console.error('Cart not found');
+            return [];
+        }
+
+        // Lấy danh sách các bánh trong giỏ hàng
+        const CartItem = cart.cakes;
+
+        if (CartItem.length === 0) {
+            return res.status(404).json({ message: 'No cakes found in cart' });
+        }
+
+        res.status(200).json(CartItem);
+
+    } catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+}
+
+
+
+
 cartController.removeCakeFromCart = async (req, res) => {
     try {
-        const { userID, selectedNewCakeID} = req.body;
+        const { userID, selectedNewCakeID } = req.body;
         const cart =  await Cart.findOne({ user_id: userID});
         
         const cakeIndex = cart.cakes.findIndex(cake => cake.cake_id === selectedNewCakeID);
