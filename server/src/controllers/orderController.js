@@ -47,4 +47,26 @@ orderController.getOrderHistory = async (req, res) => {
     }
 }
 
+orderController.getOwnOrder = async (req, res) => {
+    try {
+        const userID = req.params.userid;
+        if (!userID) {
+            return res.status(200).json({
+                status: 'ERROR',
+                message: "Please provide user ID"
+            });
+        }
+        const orderUser = await Order.find({ user_id: userID }).lean().exec();
+        return res.status(200).json({
+            status: 'SUCCESS',
+            data: orderUser
+        });
+    } catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+}
+
 export default orderController;
