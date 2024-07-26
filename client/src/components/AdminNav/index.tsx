@@ -8,7 +8,7 @@ const AdminNav = () => {
         <Link to="/admin/dashboard" className="text-black hover:underline">
           Dashboard
         </Link>
-        <Link to="/admin/stuffsmanaging" className="text-black hover:underline">
+        <Link to="/admin/devicemanagement" className="text-black hover:underline">
           Quản lý thiết bị
         </Link>
       </div>

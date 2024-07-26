@@ -1,7 +1,19 @@
-import React from 'react';
+import Header from '../../../components/AdminBakerHeader';
+import AdminNav from '../../../components/AdminNav';
+import Footer from '../../../components/Footer';
+import ManageDevice from '../../../layouts/Admin/ManageDevice';
 
-function index() {
-  return <div>index</div>;
-}
+const AdminDashBoard = () => {
+  return (
+    <>
+      <Header />
+      <AdminNav />
+      <main>
+        <ManageDevice />
+      </main>
+      <Footer />
+    </>
+  );
+};
 
-export default index;
+export default AdminDashBoard;
