@@ -1,9 +1,27 @@
 import CakeCard from '../../components/Cake/CakeCard';
-import { useShuffledCakes } from '../../hooks/useShuffledCakes';
-
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 const Related = () => {
-  const randomCakes = useShuffledCakes(4);
+  const [relatedCakes, setRelatedCakes] = useState<object[]>([]);
+  const { id } = useParams();
+  useEffect(() => {
+    const getrelatedCakes = async () => {
+      const cakeDB = await fetchRelatedCakes();
+      setRelatedCakes(cakeDB);
+    };
 
+    getrelatedCakes();
+  }, [id]);
+
+  const fetchRelatedCakes = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/get-cake-related/${id}`);
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <div className="bg-white py-16">
       <div className="container ml-9">
@@ -13,7 +31,7 @@ const Related = () => {
         </div>
 
         <div className="grid grid-cols-1 gap-16 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {randomCakes.map((cake, index) => (
+          {relatedCakes.map((cake, index) => (
             <CakeCard key={index} cake={cake} />
           ))}
         </div>
