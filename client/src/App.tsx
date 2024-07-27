@@ -20,6 +20,8 @@ const Purchase = lazy(() => import('./pages/Purchase'));
 const HistoryPurchase = lazy(() => import('./pages/HistoryPurchase'));
 const AdminDashBoard = lazy(() => import('./pages/Admin/Dashboard'));
 const AdminDeviceManagement = lazy(() => import('./pages/Admin/DeviceManagement'));
+const BakerDashboard = lazy(() => import('./pages/Baker/Dashboard'));
+const BakingSession = lazy(() => import('./pages/Baker/BakingSession'));
 
 export default function App() {
   const loading = usePageLoading();
@@ -45,7 +47,8 @@ export default function App() {
           <Route path="/*" element={<NotFoundPage />} />
           <Route path="/admin/dashboard" element={<AdminDashBoard />} />
           <Route path="/admin/devicemanagement" element={<AdminDeviceManagement />} />
-
+          <Route path="/baker/dashboard" element={<BakerDashboard />} />
+          <Route path="/baker/bakingsession" element={<BakingSession />} />
         </Routes>
       </Suspense>
     </div>
