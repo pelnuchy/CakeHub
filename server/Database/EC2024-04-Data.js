@@ -1169,6 +1169,24 @@ db.orders.insertMany([
         total_price: 320000,
       }
     ],
+  },
+  {
+    orderID: "O005",
+    total_price: 320000,
+    user_id: "tra1",
+    s_cakeQuantity: 1,
+    cakes: [
+      {
+        cake_id: "C01-DT-S",
+        cakeName: 'Bánh kem giáng sinh màu hồng',
+        size: 10,
+        flavor: 'Dâu tây',
+        img_url: '../../assets/cake/cake1.jpg',
+        cakeMessage: 'Happy Birthday',
+        cakeQuantity: 1,
+        total_price: 320000,
+      }
+    ],
   }
 ]);
 db.cakes.insertMany([

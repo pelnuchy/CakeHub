@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Button from '../components/Button';
 import { useCart } from '../contexts/CartContext';
-
+import axios from 'axios';
 const Checkout: React.FC = () => {
   const [startDate, setStartDate] = useState<Date | null>(new Date());
-  const [address, setAddress] = useState('146 Võ Thị Sáu, Phường 8, Quận 3, TP.HCM');
+  const [address, setAddress] = useState('');
   const [time, setTime] = useState('13:00');
+  const [orders, setOrders] = useState<any[]>([]);
 
   const { cartItems } = useCart();
 
@@ -15,10 +16,69 @@ const Checkout: React.FC = () => {
   const shippingFee = 50000;
   const totalPrice = totalCakePrice + shippingFee;
 
+  const userInfoString = sessionStorage.getItem('userInfo');
+  const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
+
+  const handleEdit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formattedDate = getFormattedDate(startDate);
+    const checkoutInfo = { formattedDate, address, time };
+    try {
+      console.log('Checkout info:', checkoutInfo);
+      const response = await axios.put(`http://localhost:8000/update-order-checkout/${userInfo.userID}`, checkoutInfo);
+      console.log(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const getFormattedDate = (date: Date | null) => {
+    if (!date) return '';
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const year = date.getFullYear();
+    return `${month}/${day}/${year}`;
+  };
+  const fetchOrderCheckout = async (userID: string): Promise<any[]> => {
+    try {
+      const response = await axios.get(`http://localhost:8000/get-info-ordering/${userID}`);
+      const orders = response.data.data; // Access the 'data' field
+      //console.log('Fetched orders:', orders);
+
+      // Map through orders and use the already detailed cake information
+      const orderDetails = orders.map((order: any) => {
+        return {
+          orderId: order.orderID,
+          total: `${Number(order.total_price).toLocaleString()} VND`,
+          items: order.cakes.map((cake: any) => ({
+            name: cake.cakeName,
+            price: `${Number(cake.total_price).toLocaleString()} VND`,
+            size: cake.size,
+            flavor: cake.flavor,
+            quantity: cake.cakeQuantity,
+            imgSrc: cake.img_url,
+          })),
+        };
+      });
+
+      //console.log('Order details with cake info:', orderDetails);
+      return orderDetails;
+    } catch (error) {
+      console.log('Error fetching order history:', error);
+      return [];
+    }
+  };
+  useEffect(() => {
+    const getOwnOrder = async () => {
+        const ownOrderServer = await fetchOrderCheckout(userInfo.userID);
+        setOrders(ownOrderServer);
+    };
+    getOwnOrder();
+  }, []);
+
   return (
     <div className="container mx-auto p-8">
       <h1 className="mb-8 text-3xl font-bold">THÔNG TIN GIAO HÀNG</h1>
-      <div className="rounded-lg bg-white p-8 shadow-lg">
+      <form className="rounded-lg bg-white p-8 shadow-lg" onSubmit={handleEdit}>
         <h2 className="mb-6 text-2xl font-semibold">Thông tin đơn hàng</h2>
         <div className="mb-6 bg-gray-500">
           {cartItems.map((item) => (
@@ -93,9 +153,9 @@ const Checkout: React.FC = () => {
           </div>
         </div>
         <div className="flex justify-center">
-          <Button className="w-[50vh]">Thanh Toán</Button>
+          <Button type = "submit" className="w-[50vh]">Thanh Toán</Button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

@@ -1,9 +1,7 @@
 import Order from '../models/Order.js';
 //import Cake from '../models/Cake.js';
-
+import moment from 'moment';
 const orderController = {};
-
-
 
 orderController.getOrderHistory = async (req, res) => {
     try {
@@ -15,7 +13,7 @@ orderController.getOrderHistory = async (req, res) => {
                 message: "Please provide user ID"
             });
         }
-        const orderUser = await Order.find({ user_id: userID }).lean().exec();
+        const orderUser = await Order.find({ user_id: userID, status: "completed" }).lean().exec();
         
         // Duyệt qua từng order để lấy thông tin chi tiết về cakes
         // for (let order of orderUser) {
@@ -48,7 +46,7 @@ orderController.getOrderHistory = async (req, res) => {
     }
 }
 
-orderController.getOwnOrder = async (req, res) => {
+orderController.getOwnOrdered = async (req, res) => {
     try {
         const userID = req.params.userid;
         if (!userID) {
@@ -57,7 +55,7 @@ orderController.getOwnOrder = async (req, res) => {
                 message: "Please provide user ID"
             });
         }
-        const orderUser = await Order.find({ user_id: userID }).lean().exec();
+        const orderUser = await Order.find({ user_id: userID, status : { $in: ["ordered", "handling","handled","delivered"] }   }).lean().exec();
         return res.status(200).json({
             status: 'SUCCESS',
             data: orderUser
@@ -70,4 +68,59 @@ orderController.getOwnOrder = async (req, res) => {
     }
 }
 
+orderController.getInfoOrdering = async (req, res) => {
+    try {
+        const userID = req.params.userid;
+        if (!userID) {
+            return res.status(200).json({
+                status: 'ERROR',
+                message: "Please provide user ID"
+            });
+        }
+        const orderUser = await Order.find({ user_id: userID, status: { $exists: false } }).lean().exec();
+        return res.status(200).json({
+            status: 'SUCCESS',
+            data: orderUser
+        });
+    } catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+}
+orderController.orderCheckout = async (req, res) => {
+    try{
+        const userID = req.params.userid;
+        const{formattedDate, address, time} = req.body;
+        if (!formattedDate || !address || !time) {
+            return res.status(401).json({
+                status: 'ERROR',
+                message: "Please fill in checkout information"
+            });
+        }
+        const formattedShipDateTime = `${formattedDate} ${time}`;
+        const shippingDates = moment.utc(formattedShipDateTime, 
+            'MM/DD/YYYY HH:mm'
+            // 'MM/DD/YY HH:mm',
+            // 'YY/MM/DD HH:mm',
+            // 'YYYY-MM-DD HH:mm',
+            // 'YYYY-MM-DDTHH:mm:ss.SSSZ', // ISO 8601 format
+        ).toDate(); //Convert back to Date object in UTC
+        const orderCheckout = await Order.updateOne(
+            { user_id: userID, status: { $exists: false } }, // Điều kiện cập nhật
+            { shippingDate: new Date(shippingDates), shippingAddress: address } // Thông tin cập nhật
+        ).lean().exec();
+        return res.status(200).json({
+            status: 'SUCCESS',
+            data: orderCheckout,
+        });
+    }
+    catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+}
 export default orderController;

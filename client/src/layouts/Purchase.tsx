@@ -63,7 +63,7 @@ const Purchase = () => {
   }, []);
   const fetchOwnOrder = async (userID: string): Promise<any[]> => {
     try {
-      const response = await axios.get(`http://localhost:8000/get-own-order/${userID}`);
+      const response = await axios.get(`http://localhost:8000/get-own-ordered/${userID}`);
       const orders = response.data.data; // Access the 'data' field
 
       // Map through orders and use the already detailed cake information

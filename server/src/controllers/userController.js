@@ -1,4 +1,3 @@
-import session from 'express-session';
 import User from '../models/User.js';
 import Cart from '../models/Cart.js';
 
