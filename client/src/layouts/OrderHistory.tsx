@@ -4,7 +4,11 @@ import axios from 'axios';
 const OrderHistory = () => {
   const [currentTab, setCurrentTab] = useState('orders');
   const [orderHistories, setOrderHistories] = useState<any[]>([]);
-
+  const transSize = (size: number) => {
+    if (size === 10) return 'S';
+    if (size === 16) return 'M';
+    if (size === 24) return 'L';
+  }
   useEffect(() => {
     const getOrderHistory = async () => {
       const userInfoString = sessionStorage.getItem('userInfo');
@@ -12,7 +16,7 @@ const OrderHistory = () => {
         const userInfo = JSON.parse(userInfoString);
         const orderHistories = await fetchOrderHistory(userInfo.userID);
         setOrderHistories(orderHistories);
-        console.log('Order history:', orderHistories);
+        //console.log('Order history:', orderHistories);
       } else {
         console.log('No user info found');
       }
@@ -24,7 +28,7 @@ const OrderHistory = () => {
     try {
       const response = await axios.get(`http://localhost:8000/get-order-history/${userID}`);
       const orders = response.data.data; // Access the 'data' field
-      console.log('Fetched orders:', orders);
+      //console.log('Fetched orders:', orders);
 
       // Map through orders and use the already detailed cake information
       const orderDetails = orders.map((order: any) => {
@@ -35,7 +39,7 @@ const OrderHistory = () => {
           items: order.cakes.map((cake: any) => ({
             name: cake.cakeName,
             price: `${Number(cake.total_price).toLocaleString()} VND`,
-            size: cake.size,
+            size: transSize(cake.size),
             flavor: cake.flavor,
             quantity: cake.cakeQuantity,
             imgSrc: cake.img_url,
@@ -43,7 +47,7 @@ const OrderHistory = () => {
         };
       });
 
-      console.log('Order details with cake info:', orderDetails);
+      //console.log('Order details with cake info:', orderDetails);
       return orderDetails;
     } catch (error) {
       console.log('Error fetching order history:', error);

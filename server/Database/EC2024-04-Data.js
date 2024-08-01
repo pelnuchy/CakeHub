@@ -1068,10 +1068,6 @@ db.orders.insertMany([
     cakes: [
       {
         cake_id: "C01-DT-S",
-        cakeName: 'Bánh kem giáng sinh màu hồng',
-        size: 10,
-        flavor: 'Dâu tây',
-        img_url: 'https://i.ibb.co/c1qJJR8/cake1.jpg',
         cakeMessage: 'Happy Birthday',
         cakeQuantity: 1,
         total_price: 320000,
@@ -1092,20 +1088,12 @@ db.orders.insertMany([
     cakes: [
       {
         cake_id: "C01-DT-S",
-        cakeName: 'Bánh kem giáng sinh màu hồng',
-        size: 'S',
-        flavor: 'Dâu tây',
-        img_url: 'https://i.ibb.co/c1qJJR8/cake1.jpg',
         cakeMessage: 'Happy Birthday',
         cakeQuantity: 1,
         total_price: 320000,
       },
       {
         cake_id: "C02-Soco-L",
-        cakeName: 'Bánh kem giáng sinh đỏ tươi',
-        size: 'L',
-        flavor: 'Socola',
-        img_url: 'https://i.ibb.co/FqWd5z4/cake2.jpg',
         cakeMessage: 'Happy Christmas',
         cakeQuantity: 1,
         total_price: 320000,
@@ -1126,10 +1114,6 @@ db.orders.insertMany([
     cakes: [
       {
         cake_id: "C01-DT-S",
-        cakeName: 'Bánh kem giáng sinh màu hồng',
-        size: 10,
-        flavor: 'Dâu tây',
-        img_url: 'https://i.ibb.co/c1qJJR8/cake1.jpg',
         cakeMessage: 'Happy Birthday',
         cakeQuantity: 1,
         total_price: 320000,
@@ -1150,20 +1134,12 @@ db.orders.insertMany([
     cakes: [
       {
         cake_id: "C01-DT-S",
-        cakeName: 'Bánh kem giáng sinh màu hồng',
-        size: 'S',
-        flavor: 'Dâu tây',
-        img_url: 'https://i.ibb.co/c1qJJR8/cake1.jpg',
         cakeMessage: 'Happy Birthday',
         cakeQuantity: 1,
         total_price: 320000,
       },
       {
         cake_id: "C02-Soco-L",
-        cakeName: 'Bánh kem giáng sinh đỏ tươi',
-        size: 'L',
-        flavor: 'Socola',
-        img_url: 'https://i.ibb.co/FqWd5z4/cake2.jpg',
         cakeMessage: 'Happy Christmas',
         cakeQuantity: 1,
         total_price: 320000,
@@ -1178,10 +1154,6 @@ db.orders.insertMany([
     cakes: [
       {
         cake_id: "C01-DT-S",
-        cakeName: 'Bánh kem giáng sinh màu hồng',
-        size: 10,
-        flavor: 'Dâu tây',
-        img_url: 'https://i.ibb.co/c1qJJR8/cake1.jpg',
         cakeMessage: 'Happy Birthday',
         cakeQuantity: 1,
         total_price: 320000,

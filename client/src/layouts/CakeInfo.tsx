@@ -64,12 +64,11 @@ const CakeInfo = () => {
       setSelectedNewCakeID(newCakeID);
       setCakeDetail(cakeNew);
     };
-    if (cakeDetail && cakeDetail.price) {
+    getCakeDetail();
+    if (cakeDetail&&cakeDetail.price) {
       setSelectedTotalPrice(Number(cakeDetail.price*selectedQuantity));
     }
-    getCakeDetail();
-    // setSelectedTotalPrice(Number(cakeDetail.price));
-  }, [id, selectedSize, selectedFlavor, cakeDetail]); // Add id,selectedSize, selectedFlavor as a dependency to useEffect
+  }, [id, selectedSize, selectedFlavor,selectedTotalPrice,selectedNewCakeID]); // Add id,selectedSize, selectedFlavor as a dependency to useEffect
 
   const userInfo = sessionStorage.getItem('userInfo');
   
@@ -95,14 +94,13 @@ const CakeInfo = () => {
       setNotification(`${cakeDetail.cakeID} đã được thêm vào giỏ hàng.`);
       const userInfo1 = sessionStorage.getItem('userInfo');
       const user_tmp = userInfo1 ? JSON.parse(userInfo1) : null;
-      const auth = { 
-        userID: user_tmp ? user_tmp.userID : null,
+      const cakeInfo = { 
         selectedNewCakeID, 
         selectedQuantity, 
         selectedTotalPrice 
       };
       try {
-        await axios.post(`http://localhost:8000/add-cake-to-cart`, auth);
+        await axios.put(`http://localhost:8000/add-cake-to-cart/${user_tmp.userID}`, cakeInfo);
       } catch (error) {
         console.log(error);
       }
