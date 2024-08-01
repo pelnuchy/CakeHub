@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Nav = () => {
+const Nav: React.FC = () => {
   return (
-    <nav className="w-full bg-gray-500">
+    <nav className="mt-[100px] w-full bg-gray-500">
+      {' '}
       <div className="flex justify-between px-96 py-2">
         <Link to="/custom" className="text-black hover:underline">
           Bánh trang trí

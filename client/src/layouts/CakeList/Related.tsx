@@ -6,6 +6,15 @@ const Related = () => {
   const [relatedCakes, setRelatedCakes] = useState<object[]>([]);
   const { id } = useParams();
   useEffect(() => {
+    const fetchRelatedCakes = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/get-cake-related/${id}`);
+        return response.data.data;
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     const getrelatedCakes = async () => {
       const cakeDB = await fetchRelatedCakes();
       setRelatedCakes(cakeDB);
@@ -13,15 +22,6 @@ const Related = () => {
 
     getrelatedCakes();
   }, [id]);
-
-  const fetchRelatedCakes = async () => {
-    try {
-      const response = await axios.get(`http://localhost:8000/get-cake-related/${id}`);
-      return response.data.data;
-    } catch (error) {
-      console.log(error);
-    }
-  }
   return (
     <div className="bg-white py-16">
       <div className="container ml-9">

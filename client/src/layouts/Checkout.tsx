@@ -69,8 +69,8 @@ const Checkout: React.FC = () => {
   };
   useEffect(() => {
     const getOwnOrder = async () => {
-        const ownOrderServer = await fetchOrderCheckout(userInfo.userID);
-        setOrders(ownOrderServer);
+      const ownOrderServer = await fetchOrderCheckout(userInfo.userID);
+      setOrders(ownOrderServer);
     };
     getOwnOrder();
   }, []);
@@ -153,7 +153,9 @@ const Checkout: React.FC = () => {
           </div>
         </div>
         <div className="flex justify-center">
-          <Button type = "submit" className="w-[50vh]">Thanh Toán</Button>
+          <Button type="submit" className="w-[50vh]">
+            Thanh Toán
+          </Button>
         </div>
       </form>
     </div>
