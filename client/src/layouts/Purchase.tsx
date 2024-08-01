@@ -127,16 +127,18 @@ const Purchase = () => {
                   <img src={item.imgSrc} alt={item.name} className="h-32 w-32 rounded-lg object-cover" />
                   <div className="ml-4 flex-1">
                     <h3 className="text-lg font-semibold text-gray-800">{item.name}</h3>
-                    <p className="text-gray-600">{item.price}</p>
-                    <p className="text-gray-600">Số lượng: {item.quantity}</p>
+                    <p className="text-gray-800">{item.price}</p>
+                    <p className="text-gray-800">Kích thước: {item.size}</p>
+                    <p className="text-gray-800">Vị: {item.flavor}</p>
+                    <p className="text-gray-800">Số lượng: {item.quantity}</p>
                   </div>
                 </div>
               ))}
             </div>
             <div className="rounded-lg bg-gray-50 p-4 shadow-sm">
               <h4 className="font-semibold text-gray-800">Địa chỉ giao hàng</h4>
-              {/* <p className="text-gray-600">{order.delivery.method}</p> */}
-              <p className="text-gray-600">{order.address}</p>
+              {/* <p className="text-gray-800">{order.delivery.method}</p> */}
+              <p className="text-gray-800">{order.address}</p>
               <div className="mt-4">
                 <p className="flex justify-between text-gray-800">
                   <span className="font-medium">Tổng tiền:</span>
@@ -160,11 +162,11 @@ const Purchase = () => {
                 style={{ width: getStatusProgress(order.status) }}
               ></div>
             </div>
-            <div className="mt-2 flex justify-between text-sm text-gray-600">
+            <div className="mt-2 flex justify-between text-sm text-gray-800">
               {orderStatuses.map((status, index) => (
                 <span
                   key={index}
-                  className={`relative ${order.status === status ? 'font-bold text-primary-500' : 'text-gray-600'}`}
+                  className={`relative ${order.status === status ? 'font-bold text-primary-500' : 'text-gray-800'}`}
                 >
                   {status}
                   {order.status === status && (
