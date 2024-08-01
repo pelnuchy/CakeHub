@@ -123,4 +123,55 @@ cakeController.getRelatedCakes = async (req, res) => {
         });
     }
 }
+
+cakeController.searchCakesByKeyword = async (req, res) => {
+  const { keyword } = req.query;
+
+  if (!keyword) {
+    return res.status(400).json({ error: "Keyword is required" });
+  }
+
+  const searchCakesByKeyword = async (keyword) => {
+    try {
+      const regex = new RegExp(keyword, "i");
+
+      // Tìm tất cả các bánh có liên quan đến từ khóa
+      const cakes = await Cake.find({
+        $or: [
+          { cakeName: regex },
+          { jamFilling: regex },
+          { cakeType: regex },
+          { occasion: regex },
+          { description: regex },
+        ],
+      });
+
+      // Sử dụng Set để lọc các bánh trùng tên
+      const seenCakeNames = new Set();
+      const uniqueCakes = [];
+
+      cakes.forEach((cake) => {
+        if (!seenCakeNames.has(cake.cakeName)) {
+          seenCakeNames.add(cake.cakeName);
+          uniqueCakes.push(cake);
+        }
+      });
+
+      return uniqueCakes;
+    } catch (error) {
+      console.error("Error searching cakes:", error);
+      throw error;
+    }
+  };
+
+  try {
+    const cakes = await searchCakesByKeyword(keyword);
+    res.json({ data: cakes });
+  } catch (error) {
+    console.error("Error searching cakes:", error);
+    res.status(500).json({ error: "Failed to search cakes" });
+  }
+};
+
+
 export default cakeController;

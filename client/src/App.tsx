@@ -22,6 +22,7 @@ const AdminDashBoard = lazy(() => import('./pages/Admin/Dashboard'));
 const AdminDeviceManagement = lazy(() => import('./pages/Admin/DeviceManagement'));
 const BakerDashboard = lazy(() => import('./pages/Baker/Dashboard'));
 const BakingSession = lazy(() => import('./pages/Baker/BakingSession'));
+const SearchResult = lazy(() => import('./pages/SearchResult'));
 
 export default function App() {
   const loading = usePageLoading();
@@ -49,6 +50,7 @@ export default function App() {
           <Route path="/admin/devicemanagement" element={<AdminDeviceManagement />} />
           <Route path="/baker/dashboard" element={<BakerDashboard />} />
           <Route path="/baker/bakingsession" element={<BakingSession />} />
+          <Route path="/search/:keyword" element={<SearchResult />} />
         </Routes>
       </Suspense>
     </div>
