@@ -53,6 +53,14 @@ userController.loginUser = async (req, res) => {
     if (password === user.password) {
         const userInfo = { userID: user.userID, role: user.role, username: user.username };
         Object.assign(req.session, { userInfo });
+
+        // Check if cart exists
+        let cart = await Cart.findOne({ user_id: user.userID }).lean().exec();
+        if (!cart) {
+            // Create new cart if it doesn't exist
+            await Cart.create({ cartID: 'cus' + user.userID, user_id: user.userID });
+        }
+
         return res.status(200).json({ message: 'Login successful', session: req.session.userInfo });
     }
     else {

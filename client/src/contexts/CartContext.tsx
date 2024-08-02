@@ -21,21 +21,63 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType>({
   cartItems: [],
-  addToCart: () => {},
-  updateCartItem: () => {},
-  removeFromCart: () => {},
+  addToCart: () => { },
+  updateCartItem: () => { },
+  removeFromCart: () => { },
 });
+
+const transSize = (size: number) => {
+  if (size === 10) return 'S';
+  if (size === 16) return 'M';
+  if (size === 24) return 'L';
+}
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     const savedCart = localStorage.getItem('cartItems');
     return savedCart ? JSON.parse(savedCart) : [];
   });
-
+  const [refresh, setRefresh] = useState(false); // State to trigger useEffect
+  const userInfoString = sessionStorage.getItem('userInfo');
   useEffect(() => {
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-  }, [cartItems]);
+    const getCartUser = async () => {
+      if (userInfoString) {
+        const userInfo = JSON.parse(userInfoString);
+        const cartUser = await fetchCartUser(userInfo.userID);
+        setCartItems(cartUser);
+      } else {
+        console.log('No user info found');
+      }
+    };
+    getCartUser();
+  }, [refresh]);
+  const fetchCartUser = async (userID: string): Promise<any[]> => {
+    try {
 
+      const response = await axios.get(`http://localhost:8000/load-cake-into-cart/${userID}`);
+      const cart = response.data.data; // Access the 'data' field
+      //console.log('Fetched orders:', cart);
+
+      // Map through orders and use the already detailed cake information
+      const cartDetails = cart.flatMap((cart: any) =>
+        cart.cakes.map((cake: any) => ({
+          id: cake.cake_id,
+          name: cake.cakeName,
+          price: `${Number(cake.price)}`,
+          size: transSize(cake.size),
+          flavor: cake.flavor,
+          quantity: cake.cakeQuantity,
+          image: cake.img_url,
+        }))
+      );
+
+      //console.log('Order details with cake info:', cartDetails);
+      return cartDetails;
+    } catch (error) {
+      console.log('Error fetching order history:', error);
+      return [];
+    }
+  };
   const addToCart = (item: CartItem) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find(
@@ -53,12 +95,53 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   };
 
-  const updateCartItem = (itemId: string, updatedFields: Partial<CartItem>) => {
-    setCartItems((prevItems) => prevItems.map((item) => (item.id === itemId ? { ...item, ...updatedFields } : item)));
+  const updateCartItem = async (itemId: string, updatedFields: Partial<CartItem>) => {
+    //updateField : những đối tượng nào được cập nhật sẽ đc ghi vào, vd: cập nhật quantity => {quantity: 2}
+    try {
+      //console.log('Remove item from cart:', userInfoString);
+      if (userInfoString) {
+        const userInfo = JSON.parse(userInfoString);
+        //updateField : những đối tượng nào được cập nhật sẽ đc ghi vào, vd: cập nhật quantity => {quantity: 2}
+        setCartItems((prevItems) => prevItems.map((item) => (item.id === itemId ? { ...item, ...updatedFields } : item)));
+        if (updatedFields.size) {
+          const newSize = updatedFields.size
+          await axios.put(`http://localhost:8000/update-cake-size-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newSize=${newSize}`);
+          setRefresh((prev) => !prev); // Trigger useEffect to refresh cart
+        }
+        else if (updatedFields.flavor) {
+          const newFlavor = updatedFields.flavor === "chanh dây" ? "CD" : updatedFields.flavor === "dâu tây" ? "DT" : updatedFields.flavor === "socola" ? "Soco" : null;
+          await axios.put(`http://localhost:8000/update-cake-flavor-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newFlavor=${newFlavor}`);
+          setRefresh((prev) => !prev); // Trigger useEffect to refresh cart
+        }
+        else if (updatedFields.quantity) {
+          const newQuantity = updatedFields.quantity;
+          await axios.put(`http://localhost:8000/update-cake-quantity-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newQuantity=${newQuantity}`);
+          setRefresh((prev) => !prev); // Trigger useEffect to refresh cart
+        }
+      }
+      else {
+        console.log('No user info found');
+      }
+    } catch (error) {
+      console.error('Failed to remove item from cart:', error);
+    }
   };
 
-  const removeFromCart = (itemId: string) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
+  const removeFromCart = async (itemId: string) => {
+    try {
+      //console.log('Remove item from cart:', userInfoString);
+      if (userInfoString) {
+        const userInfo = JSON.parse(userInfoString);
+        await axios.put(`http://localhost:8000/remove-cake-from-cart/cart?userID=${userInfo.userID}&itemID=${itemId}`);
+        // Cập nhật trạng thái giỏ hàng sau khi xóa thành công
+        setCartItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
+      }
+      else {
+        console.log('No user info found');
+      }
+    } catch (error) {
+      console.error('Failed to remove item from cart:', error);
+    }
   };
 
   return (
@@ -69,84 +152,3 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 };
 
 export const useCart = () => useContext(CartContext);
-
-
-// interface CartItem {
-//   id: string;
-//   name: string;
-//   price: number;
-//   size: string;
-//   flavor: string;
-//   quantity: number;
-//   image: string;
-// }
-
-// interface CartContextType {
-//   cartItems: CartItem[];
-//   addToCart: (item: CartItem) => void;
-//   updateCartItem: (itemId: string, updatedFields: Partial<CartItem>) => void;
-//   removeFromCart: (itemId: string) => void;
-// }
-
-// const CartContext = createContext<CartContextType>({
-//   cartItems: [],
-//   addToCart: () => {},
-//   updateCartItem: () => {},
-//   removeFromCart: () => {},
-// });
-
-// export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-//   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  
-//   const userInfo = sessionStorage.getItem('userInfo');
-//   const user_tmp = userInfo ? JSON.parse(userInfo) : null;
-  
-//   useEffect(() => {
-//     const fetchCartItems = async (id: any) => {
-//       try {
-//         const response = await axios.get<CartItem[]>(`http://localhost:8000/load-cake-into-cart/${id}`);
-//         setCartItems(response.data);
-//         console.log(response); 
-//       } catch (error) {
-//         console.error('Failed to fetch cart items:', error);
-//       }
-//     };
-
-//     fetchCartItems(user_tmp.userID);
-    
-
-//   }, []);
-
-//   const addToCart = (item: CartItem) => {
-//     setCartItems((prevItems) => {
-//       const existingItem = prevItems.find(
-//         (cartItem) => cartItem.id === item.id && cartItem.size === item.size && cartItem.flavor === item.flavor,
-//       );
-//       if (existingItem) {
-//         return prevItems.map((cartItem) =>
-//           cartItem.id === item.id && cartItem.size === item.size && cartItem.flavor === item.flavor
-//             ? { ...cartItem, quantity: cartItem.quantity + item.quantity }
-//             : cartItem,
-//         );
-//       } else {
-//         return [...prevItems, item];
-//       }
-//     });
-//   };
-
-//   const updateCartItem = (itemId: string, updatedFields: Partial<CartItem>) => {
-//     setCartItems((prevItems) => prevItems.map((item) => (item.id === itemId ? { ...item, ...updatedFields } : item)));
-//   };
-
-//   const removeFromCart = (itemId: string) => {
-//     setCartItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
-//   };
-
-//   return (
-//     <CartContext.Provider value={{ cartItems, addToCart, updateCartItem, removeFromCart }}>
-//       {children}
-//     </CartContext.Provider>
-//   );
-// };
-
-// export const useCart = () => useContext(CartContext);

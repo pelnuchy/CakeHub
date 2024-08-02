@@ -34,6 +34,7 @@ const ShoppingCart: React.FC = () => {
   const shippingFee = 50000;
   const totalPrice = totalCakePrice + shippingFee;
 
+  console.log(cartItems);
   return (
     <div className="container mx-auto p-4">
       <h1 className="mb-6 text-2xl font-bold">Giỏ hàng</h1>
@@ -52,8 +53,8 @@ const ShoppingCart: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {cartItems.map((item) => (
-              <tr key={item.id} className="border-b">
+            {cartItems.map((item:any,itemIndex:any) => (
+              <tr key={itemIndex} className="border-b">
                 <td className="flex items-center p-4">
                   <img src={item.image} alt={item.name} className="mr-4 h-16 w-16 object-cover" />
                   <span>{item.name}</span>
@@ -76,9 +77,9 @@ const ShoppingCart: React.FC = () => {
                     onChange={(e) => handleFlavorChange(item.id, e.target.value)}
                     className="rounded border px-2 py-1"
                   >
-                    <option value="Chanh dây">Chanh dây</option>
-                    <option value="Dâu tây">Dâu tây</option>
-                    <option value="Socola">Socola</option>
+                    <option value="chanh dây">Chanh dây</option>
+                    <option value="dâu tây">Dâu tây</option>
+                    <option value="socola">Socola</option>
                   </select>
                 </td>
                 <td className="p-4">
