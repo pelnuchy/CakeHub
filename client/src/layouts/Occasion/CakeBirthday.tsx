@@ -1,26 +1,51 @@
-import CakeCard from '../../components/Cake/CakeCard';
-import { Link, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import SortControl from './SortControl'; // Adjust the path as needed
+import CakeCard from '../../components/Cake/CakeCard';
+
 const CakeBirthday = () => {
-  const occasion  = useLocation();
+  const occasion = useLocation();
   const [birthdayCakes, setCakeBirthday] = useState<object[]>([]);
+  const [sortOption, setSortOption] = useState<string>('');
+
   useEffect(() => {
     const getAllCakeBirthday = async () => {
-      const cakes = await fetchAllCakeBirthday(occasion);// Pass the id to your fetch function
-      setCakeBirthday(cakes);
+      const cakes = await fetchAllCakeBirthday(occasion);
+      setCakeBirthday(sortCakes(cakes, sortOption));
     };
     getAllCakeBirthday();
-  }, [occasion]);// Add id as a dependency to useEffect
+  }, [occasion, sortOption]);
 
   const fetchAllCakeBirthday = async (occasion: any) => {
     try {
-      const response = await axios.get(`http://localhost:8000/get-all-cakes-occasion${occasion.pathname}`); // path name đã bao gồm dấu /
+      const response = await axios.get(`http://localhost:8000/get-all-cakes-occasion${occasion.pathname}`);
       return response.data.data;
     } catch (error) {
       console.log(error);
+      return [];
     }
-  }
+  };
+
+  const handleSortChange = (option: string) => {
+    setSortOption(option);
+  };
+
+  const sortCakes = (cakes: any[], option: string) => {
+    switch (option) {
+      case 'nameAsc':
+        return cakes.sort((a, b) => a.cakeName.localeCompare(b.cakeName));
+      case 'nameDesc':
+        return cakes.sort((a, b) => b.cakeName.localeCompare(a.cakeName));
+      case 'priceAsc':
+        return cakes.sort((a, b) => a.price - b.price);
+      case 'priceDesc':
+        return cakes.sort((a, b) => b.price - a.price);
+      default:
+        return cakes;
+    }
+  };
+
   return (
     <div className="bg-white px-8 py-1">
       <div className="container mx-auto px-4 py-8">
@@ -31,12 +56,10 @@ const CakeBirthday = () => {
           </div>
           <span className="text-blue-500 underline">View All</span>
         </div>
-
+        <SortControl sortOption={sortOption} onSortChange={handleSortChange} />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {birthdayCakes.map((cake, index) => (
-            <CakeCard
-              key={index}
-              cake={cake} />
+          {birthdayCakes.map((cake, index) => (
+            <CakeCard key={index} cake={cake} />
           ))}
         </div>
       </div>
