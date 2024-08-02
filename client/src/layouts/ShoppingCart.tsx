@@ -34,6 +34,11 @@ const ShoppingCart: React.FC = () => {
   const shippingFee = 50000;
   const totalPrice = totalCakePrice + shippingFee;
 
+  const handleTitleOrImageClick = (itemId: string) => {
+    const rootCakeID = itemId.split('-')[0];
+    navigate(`/cake/${rootCakeID}`);
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="mb-6 text-2xl font-bold">Giỏ hàng</h1>
@@ -53,10 +58,17 @@ const ShoppingCart: React.FC = () => {
           </thead>
           <tbody>
             {cartItems.map((item) => (
-              <tr key={item.id} className="border-b">
+              <tr key={item.id} className="border-b hover:bg-gray-100">
                 <td className="flex items-center p-4">
-                  <img src={item.image} alt={item.name} className="mr-4 h-16 w-16 object-cover" />
-                  <span>{item.name}</span>
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="mr-4 h-16 w-16 cursor-pointer object-cover"
+                    onClick={() => handleTitleOrImageClick(item.id)}
+                  />
+                  <span className="cursor-pointer hover:underline" onClick={() => handleTitleOrImageClick(item.id)}>
+                    {item.name}
+                  </span>
                 </td>
                 <td className="p-4">{item.price.toLocaleString()} VND</td>
                 <td className="p-4">
@@ -84,14 +96,20 @@ const ShoppingCart: React.FC = () => {
                 <td className="p-4">
                   <div className="flex items-center">
                     <button
-                      onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleQuantityChange(item.id, item.quantity - 1);
+                      }}
                       className="mr-2 rounded bg-gray-300 px-2 py-1"
                     >
                       -
                     </button>
                     <span className="mx-2">{item.quantity}</span>
                     <button
-                      onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleQuantityChange(item.id, item.quantity + 1);
+                      }}
                       className="ml-2 rounded bg-gray-300 px-2 py-1"
                     >
                       +
@@ -101,7 +119,10 @@ const ShoppingCart: React.FC = () => {
                 <td className="p-4">{(item.price * item.quantity).toLocaleString()} VND</td>
                 <td className="p-4">
                   <button
-                    onClick={() => removeFromCart(item.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeFromCart(item.id);
+                    }}
                     className="rounded bg-red-500 px-2 py-1 text-white hover:bg-red-600"
                   >
                     Xóa
