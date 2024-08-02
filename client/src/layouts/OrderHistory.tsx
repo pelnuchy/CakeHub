@@ -29,7 +29,7 @@ const OrderHistory = () => {
             flavor: cake.flavor,
             quantity: cake.cakeQuantity,
             imgSrc: cake.img_url,
-            id: cake.id, // Add cake ID for navigation
+            id: cake.cake_id,
           })),
         }));
 
@@ -55,8 +55,8 @@ const OrderHistory = () => {
   }, []);
 
   const handleCakeClick = (cakeId: string) => {
-    console.log('cakeId:', cakeId);
-    // navigate(`/cake/${cakeId}`);
+    const rootCakeId = cakeId.split('-')[0];
+    navigate(`/cake/${rootCakeId}`);
   };
 
   return (
