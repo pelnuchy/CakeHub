@@ -5,11 +5,11 @@ import { useCart } from '../contexts/CartContext';
 import Related from './CakeList/Related';
 import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
+
 const CakeInfo = () => {
   const { id } = useParams();
 
-  const [cakeDetail, setCakeDetail] = useState(Object);
-
+  const [cakeDetail, setCakeDetail] = useState<any>(null);
   const { addToCart } = useCart();
   const [notification, setNotification] = useState('');
   const [selectedNewCakeID, setSelectedNewCakeID] = useState('');
@@ -19,65 +19,54 @@ const CakeInfo = () => {
   const [selectedTotalPrice, setSelectedTotalPrice] = useState(0);
   const navigate = useNavigate();
 
-  // fetch API
-  const fetchCakeDetail = async (id: any) => {
+  const fetchCakeDetail = async (id: string) => {
     try {
       const response = await axios.get(`http://localhost:8000/get-details-cake/${id}`);
       return response.data.data;
     } catch (error) {
       console.log(error);
+      return null;
     }
   };
 
-  // Add this function to abbreviate the flavor
   const abbreviateFlavor = (flavor: string): string => {
     const flavorAbbreviations: { [key: string]: string } = {
       'Chanh dây': 'CD',
       'Dâu tây': 'DT',
-      'Socola': 'Soco',
+      Socola: 'Soco',
     };
-
     return flavorAbbreviations[flavor] || flavor;
   };
 
-  // Add this function to calculate
-  const calculateCakeID = () => {
-    const abbreviated = abbreviateFlavor(selectedFlavor);
-    return `${id}-${abbreviated}-${selectedSize}`;
-  };
-
-  const findCakeWithNewCakeID = (cakes: {}[], cakeID: string) => {
-    if (!Array.isArray(cakes)) {
-      console.error('cakes is not an array', cakes);
-      return undefined; // or return a default value or throw an error based on your use case
-    }
-    return cakes.find((cake: any) => cake.cakeID === cakeID);
+  const findCakeWithNewCakeID = (cakes: any[], cakeID: string) => {
+    return cakes.find((cake) => cake.cakeID === cakeID);
   };
 
   useEffect(() => {
+    const calculateCakeID = () => {
+      const abbreviated = abbreviateFlavor(selectedFlavor);
+      return `${id}-${abbreviated}-${selectedSize}`;
+    };
     const getCakeDetail = async () => {
-      const cakes = await fetchCakeDetail(id); // Pass the id to your fetch function
-
-      const newCakeID = await calculateCakeID();
-
-      const cakeNew = await findCakeWithNewCakeID(cakes, newCakeID);
-      setSelectedNewCakeID(newCakeID);
-      setCakeDetail(cakeNew);
+      const cakes = await fetchCakeDetail(id!);
+      if (cakes) {
+        const newCakeID = calculateCakeID();
+        const cakeNew = findCakeWithNewCakeID(cakes, newCakeID);
+        setSelectedNewCakeID(newCakeID);
+        setCakeDetail(cakeNew);
+        setSelectedTotalPrice(cakeNew.price * selectedQuantity);
+      }
     };
     getCakeDetail();
-    if (cakeDetail&&cakeDetail.price) {
-      setSelectedTotalPrice(Number(cakeDetail.price*selectedQuantity));
-    }
-  }, [id, selectedSize, selectedFlavor,selectedTotalPrice,selectedNewCakeID]); // Add id,selectedSize, selectedFlavor as a dependency to useEffect
+  }, [id, selectedSize, selectedFlavor, selectedQuantity]);
 
   const userInfo = sessionStorage.getItem('userInfo');
-  
 
   const handleAddToCart = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!userInfo) {
-      navigate("/login");
+      navigate('/login');
       return;
     }
 
@@ -90,17 +79,17 @@ const CakeInfo = () => {
         flavor: selectedFlavor,
         quantity: selectedQuantity,
         image: cakeDetail.img_url,
+        total_price: selectedTotalPrice,
       });
       setNotification(`${cakeDetail.cakeID} đã được thêm vào giỏ hàng.`);
-      const userInfo1 = sessionStorage.getItem('userInfo');
-      const user_tmp = userInfo1 ? JSON.parse(userInfo1) : null;
-      const cakeInfo = { 
-        selectedNewCakeID, 
-        selectedQuantity, 
-        selectedTotalPrice 
+      const userInfoParsed = userInfo ? JSON.parse(userInfo) : null;
+      const cakeInfo = {
+        selectedNewCakeID,
+        selectedQuantity,
+        selectedTotalPrice,
       };
       try {
-        await axios.put(`http://localhost:8000/add-cake-to-cart/${user_tmp.userID}`, cakeInfo);
+        await axios.put(`http://localhost:8000/add-cake-to-cart/${userInfoParsed.userID}`, cakeInfo);
       } catch (error) {
         console.log(error);
       }
@@ -115,12 +104,12 @@ const CakeInfo = () => {
     setSelectedFlavor(flavor);
   };
 
-  const handleQuantityChange = (quantity: number, price: number) => {
+  const handleQuantityChange = (quantity: number) => {
     if (quantity < 1) {
       quantity = 1;
     }
     setSelectedQuantity(quantity);
-    setSelectedTotalPrice(Number(quantity*price))
+    setSelectedTotalPrice(quantity * Number(cakeDetail.price));
   };
 
   if (!cakeDetail) {
@@ -141,27 +130,26 @@ const CakeInfo = () => {
           <p className="mt-4">{cakeDetail.description}</p>
           <p className="mt-4 text-sm text-gray-600">Mã bánh: {cakeDetail.cakeID}</p>
 
-          <form className='space-y-4' onSubmit={handleAddToCart}>
-
+          <form className="space-y-4" onSubmit={handleAddToCart}>
             <div className="mt-6">
               <p className="text-sm font-semibold">Nhân bánh:</p>
               <div className="mt-2 flex">
                 <button
-                  type='button'
+                  type="button"
                   className={`mr-2 rounded border px-4 py-2 ${selectedFlavor === 'Chanh dây' ? 'bg-primary-500 text-white' : ''}`}
                   onClick={() => handleFlavorChange('Chanh dây')}
                 >
                   Chanh dây
                 </button>
                 <button
-                  type='button'
+                  type="button"
                   className={`mr-2 rounded border px-4 py-2 ${selectedFlavor === 'Dâu tây' ? 'bg-primary-500 text-white' : ''}`}
                   onClick={() => handleFlavorChange('Dâu tây')}
                 >
                   Dâu tây
                 </button>
                 <button
-                  type='button'
+                  type="button"
                   className={`rounded border px-4 py-2 ${selectedFlavor === 'Socola' ? 'bg-primary-500 text-white' : ''}`}
                   onClick={() => handleFlavorChange('Socola')}
                 >
@@ -174,21 +162,21 @@ const CakeInfo = () => {
               <p className="text-sm font-semibold">Kích thước:</p>
               <div className="mt-2 flex">
                 <button
-                  type='button'
+                  type="button"
                   className={`mr-2 rounded border px-4 py-2 ${selectedSize === 'S' ? 'bg-primary-500 text-white' : ''}`}
                   onClick={() => handleSizeChange('S')}
                 >
                   S
                 </button>
                 <button
-                  type='button'
+                  type="button"
                   className={`mr-2 rounded border px-4 py-2 ${selectedSize === 'M' ? 'bg-primary-500 text-white' : ''}`}
                   onClick={() => handleSizeChange('M')}
                 >
                   M
                 </button>
                 <button
-                  type='button'
+                  type="button"
                   className={`rounded border px-4 py-2 ${selectedSize === 'L' ? 'bg-primary-500 text-white' : ''}`}
                   onClick={() => handleSizeChange('L')}
                 >
@@ -204,17 +192,17 @@ const CakeInfo = () => {
 
             <div className="mt-6 flex items-center">
               <button
-                type='button'
+                type="button"
                 className="rounded border px-4 py-2 hover:bg-primary-500"
-                onClick={() => handleQuantityChange(selectedQuantity - 1, Number(cakeDetail.price))}
+                onClick={() => handleQuantityChange(selectedQuantity - 1)}
               >
                 -
               </button>
               <span className="mx-4">{selectedQuantity}</span>
               <button
-                type='button'
+                type="button"
                 className="rounded border px-4 py-2 hover:bg-primary-500"
-                onClick={() => handleQuantityChange(selectedQuantity + 1, Number(cakeDetail.price))}
+                onClick={() => handleQuantityChange(selectedQuantity + 1)}
               >
                 +
               </button>
@@ -223,7 +211,6 @@ const CakeInfo = () => {
             <Button type="submit" className="mt-6 w-full">
               Thêm vào giỏ hàng
             </Button>
-          
           </form>
 
           {notification && <div className="mt-4 text-green-500">{notification}</div>}
