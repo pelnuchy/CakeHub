@@ -89,9 +89,9 @@ const ShoppingCart: React.FC = () => {
                     onChange={(e) => handleFlavorChange(item.id, e.target.value)}
                     className="rounded border px-2 py-1"
                   >
-                    <option value="chanh dây">Chanh dây</option>
-                    <option value="dâu tây">Dâu tây</option>
-                    <option value="socola">Socola</option>
+                    <option value="Chanh dây">Chanh dây</option>
+                    <option value="Dâu tây">Dâu tây</option>
+                    <option value="Socola">Socola</option>
                   </select>
                 </td>
                 <td className="p-4">
@@ -117,7 +117,7 @@ const ShoppingCart: React.FC = () => {
                     </button>
                   </div>
                 </td>
-                <td className="p-4">{(item.price * item.quantity).toLocaleString()} VND</td>
+                <td className="p-4">{(item.total_price).toLocaleString()} VND</td>
                 <td className="p-4">
                   <button
                     onClick={(e) => {

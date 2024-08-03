@@ -153,47 +153,103 @@ cartController.updateCakeFlavorFromCart = async (req, res) => {
 
         const newItemID = itemID.substring(0, itemID.indexOf("-") + 1) + newFlavor + itemID.substring(itemID.lastIndexOf("-"));
 
-        // get price of new cake
-        const cakePrice = await Cake.findOne({ cakeID: newItemID }, 'price');
-        if (!cakePrice) {
-            return res.status(404).json({
-                status: 'ERROR',
-                message: 'Cake detail price not found'
-            });
-        }
-        const price = cakePrice.price;
-
-        // get cake quantity in cart with itemID
-        const cartCakeQuantity = await Cart.findOne(
-            { user_id: userID, "cakes.cake_id": itemID },
+        // check newItemID exist in cart ?
+        const existedCake = await Cart.findOne(
+            { user_id: userID, "cakes.cake_id": newItemID },
             { "cakes.$": 1 }
         );
+        if (existedCake) {
+            // get unit price of new cake
+            const cakePrice = await Cake.findOne({ cakeID: newItemID }, 'price');
+            if (!cakePrice) {
+                return res.status(404).json({
+                    status: 'ERROR',
+                    message: 'Cake detail price not found'
+                });
+            }
+            const price = cakePrice.price;
 
-        if (!cartCakeQuantity || !cartCakeQuantity.cakes.length) {
-            return res.status(404).json({
-                status: 'ERROR',
-                message: 'Cake not found in cart'
+            // get cake quantity in cart with oldCake(itemID) - will be reomved
+            const cartOldCakeQuantity = await Cart.findOne(
+                { user_id: userID, "cakes.cake_id": itemID },
+                { "cakes.$": 1 }
+            );
+            if (!cartOldCakeQuantity || !cartOldCakeQuantity.cakes.length) {
+                return res.status(404).json({
+                    status: 'ERROR',
+                    message: 'Cake not found in cart'
+                });
+            }
+
+            const quantity = cartOldCakeQuantity.cakes[0].cakeQuantity + existedCake.cakes[0].cakeQuantity;
+            const total_price = price * quantity;
+
+            // update cake size and total price in cart
+            const cart = await Cart.updateOne(
+                { user_id: userID, "cakes.cake_id": newItemID },
+                {
+                    $set: {
+                        "cakes.$.cakeQuantity": quantity,
+                        "cakes.$.total_price": total_price
+                    }
+                }
+            );
+
+            // remove old cake from cart
+            await Cart.updateOne(
+                { user_id: userID },
+                { $pull: { cakes: { cake_id: itemID } } }
+            );
+
+            return res.status(200).json({
+                status: 'SUCCESS',
+                message: 'Cake size updated',
+                cart: cart
             });
         }
-
-        const quantity = cartCakeQuantity.cakes[0].cakeQuantity;
-        const total_price = price * quantity;
-
-        // update cake size and total price in cart
-        const cart = await Cart.updateOne(
-            { user_id: userID, "cakes.cake_id": itemID },
-            {
-                $set: {
-                    "cakes.$.cake_id": newItemID,
-                    "cakes.$.total_price": total_price
-                }
+        else {
+            // get price of new cake
+            const cakePrice = await Cake.findOne({ cakeID: newItemID }, 'price');
+            if (!cakePrice) {
+                return res.status(404).json({
+                    status: 'ERROR',
+                    message: 'Cake detail price not found'
+                });
             }
-        );
-        return res.status(200).json({
-            status: 'SUCCESS',
-            message: 'Cake size updated',
-            cart: cart
-        });
+            const price = cakePrice.price;
+
+            // get cake quantity in cart with itemID
+            const cartCakeQuantity = await Cart.findOne(
+                { user_id: userID, "cakes.cake_id": itemID },
+                { "cakes.$": 1 }
+            );
+
+            if (!cartCakeQuantity || !cartCakeQuantity.cakes.length) {
+                return res.status(404).json({
+                    status: 'ERROR',
+                    message: 'Cake not found in cart'
+                });
+            }
+
+            const quantity = cartCakeQuantity.cakes[0].cakeQuantity;
+            const total_price = price * quantity;
+
+            // update cake size and total price in cart
+            const cart = await Cart.updateOne(
+                { user_id: userID, "cakes.cake_id": itemID },
+                {
+                    $set: {
+                        "cakes.$.cake_id": newItemID,
+                        "cakes.$.total_price": total_price
+                    }
+                }
+            );
+            return res.status(200).json({
+                status: 'SUCCESS',
+                message: 'Cake size updated',
+                cart: cart
+            });
+        }
 
     } catch (error) {
         return res.status(404).json({
@@ -219,48 +275,104 @@ cartController.updateCakeSizeFromCart = async (req, res) => {
         // create new itemID with new size
         const newItemID = itemID.substring(0, itemID.lastIndexOf("-") + 1) + newSize;
 
-        // get price of new cake
-        const cakePrice = await Cake.findOne({ cakeID: newItemID }, 'price');
-        if (!cakePrice) {
-            return res.status(404).json({
-                status: 'ERROR',
-                message: 'Cake detail price not found'
-            });
-        }
-        const price = cakePrice.price;
-
-        // get cake quantity in cart with itemID
-        const cartCakeQuantity = await Cart.findOne(
-            { user_id: userID, "cakes.cake_id": itemID },
+        // check newItemID exist in cart ?
+        const existedCake = await Cart.findOne(
+            { user_id: userID, "cakes.cake_id": newItemID },
             { "cakes.$": 1 }
         );
+        if (existedCake) {
+            // get unit price of new cake
+            const cakePrice = await Cake.findOne({ cakeID: newItemID }, 'price');
+            if (!cakePrice) {
+                return res.status(404).json({
+                    status: 'ERROR',
+                    message: 'Cake detail price not found'
+                });
+            }
+            const price = cakePrice.price;
 
-        if (!cartCakeQuantity || !cartCakeQuantity.cakes.length) {
-            return res.status(404).json({
-                status: 'ERROR',
-                message: 'Cake not found in cart'
+            // get cake quantity in cart with oldCake(itemID) - will be reomved
+            const cartOldCakeQuantity = await Cart.findOne(
+                { user_id: userID, "cakes.cake_id": itemID },
+                { "cakes.$": 1 }
+            );
+            if (!cartOldCakeQuantity || !cartOldCakeQuantity.cakes.length) {
+                return res.status(404).json({
+                    status: 'ERROR',
+                    message: 'Cake not found in cart'
+                });
+            }
+
+            const quantity = cartOldCakeQuantity.cakes[0].cakeQuantity + existedCake.cakes[0].cakeQuantity;
+            const total_price = price * quantity;
+
+            // update cake size and total price in cart
+            const cart = await Cart.updateOne(
+                { user_id: userID, "cakes.cake_id": newItemID },
+                {
+                    $set: {
+                        "cakes.$.cakeQuantity": quantity,
+                        "cakes.$.total_price": total_price
+                    }
+                }
+            );
+
+            // remove old cake from cart
+            await Cart.updateOne(
+                { user_id: userID },
+                { $pull: { cakes: { cake_id: itemID } } }
+            );
+
+            return res.status(200).json({
+                status: 'SUCCESS',
+                message: 'Cake size updated',
+                cart: cart
             });
         }
-
-        const quantity = cartCakeQuantity.cakes[0].cakeQuantity;
-        const total_price = price * quantity;
-
-        // update cake size and total price in cart
-        const cart = await Cart.updateOne(
-            { user_id: userID, "cakes.cake_id": itemID },
-            {
-                $set: {
-                    "cakes.$.cake_id": newItemID,
-                    "cakes.$.total_price": total_price
-                }
+        else {
+            // get price of new cake
+            const cakePrice = await Cake.findOne({ cakeID: newItemID }, 'price');
+            if (!cakePrice) {
+                return res.status(404).json({
+                    status: 'ERROR',
+                    message: 'Cake detail price not found'
+                });
             }
-        );
+            const price = cakePrice.price;
 
-        return res.status(200).json({
-            status: 'SUCCESS',
-            message: 'Cake size updated',
-            cart: cart
-        });
+            // get cake quantity in cart with itemID
+            const cartCakeQuantity = await Cart.findOne(
+                { user_id: userID, "cakes.cake_id": itemID },
+                { "cakes.$": 1 }
+            );
+
+            if (!cartCakeQuantity || !cartCakeQuantity.cakes.length) {
+                return res.status(404).json({
+                    status: 'ERROR',
+                    message: 'Cake not found in cart'
+                });
+            }
+
+            const quantity = cartCakeQuantity.cakes[0].cakeQuantity;
+            const total_price = price * quantity;
+
+            // update cake size and total price in cart
+            const cart = await Cart.updateOne(
+                { user_id: userID, "cakes.cake_id": itemID },
+                {
+                    $set: {
+                        "cakes.$.cake_id": newItemID,
+                        "cakes.$.total_price": total_price
+                    }
+                }
+            );
+
+            return res.status(200).json({
+                status: 'SUCCESS',
+                message: 'Cake size updated',
+                cart: cart
+            });
+        }
 
     } catch (error) {
         return res.status(500).json({
@@ -285,13 +397,9 @@ cartController.addCakeToCart = async (req, res) => {
             total_price: selectedTotalPrice
         };
 
-        //kiểm tra cakeID có ton tai trong giỏ hàng chưa
-        if (newCake.cake_id === null) {
-            return res.status(404).json({ message: 'Cake not found' });
-        }
-
         const cakeIndex = cart.cakes.findIndex(cake => cake.cake_id === selectedNewCakeID);
-        if (cakeIndex == -1) {
+
+        if (cakeIndex == -1) { // Not found cake in cart
             cart.cakes.push(newCake);
         }
         else {

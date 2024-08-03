@@ -21,9 +21,9 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType>({
   cartItems: [],
-  addToCart: () => {},
-  updateCartItem: () => {},
-  removeFromCart: () => {},
+  addToCart: () => { },
+  updateCartItem: () => { },
+  removeFromCart: () => { },
 });
 
 const transSize = (size: number) => {
@@ -67,7 +67,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
           flavor: cake.flavor,
           quantity: cake.cakeQuantity,
           image: cake.img_url,
-          total_price: Number(cake.price) * cake.cakeQuantity,
+          total_price: cake.total_price,
         })),
       );
 
@@ -80,21 +80,23 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const addToCart = (item: CartItem) => {
     setCartItems((prevItems) => {
+      console.log(item);
       const existingItem = prevItems.find(
-        (cartItem) => cartItem.id === item.id && cartItem.size === item.size && cartItem.flavor === item.flavor,
+        (cartItem) => cartItem.id === item.id
       );
+      //console.log(existingItem);
       if (existingItem) {
         return prevItems.map((cartItem) =>
           cartItem.id === item.id && cartItem.size === item.size && cartItem.flavor === item.flavor
             ? {
-                ...cartItem,
-                quantity: cartItem.quantity + item.quantity,
-                total_price: cartItem.price * (cartItem.quantity + item.quantity),
-              }
+              ...cartItem,
+              quantity: cartItem.quantity + item.quantity,
+              total_price: cartItem.total_price + item.total_price,
+            }
             : cartItem,
         );
       } else {
-        return [...prevItems, { ...item, total_price: item.price * item.quantity }];
+        return [...prevItems, item];
       }
     });
   };
@@ -107,36 +109,24 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
           prevItems.map((item) => {
             if (item.id === itemId) {
               const newItem = { ...item, ...updatedFields };
-              return { ...newItem, total_price: newItem.price * newItem.quantity };
+              return { ...newItem };
             }
             return item;
           }),
         );
 
         if (updatedFields.size) {
-          const newSize = updatedFields.size;
-          await axios.put(
-            `http://localhost:8000/update-cake-size-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newSize=${newSize}`,
-          );
-        } else if (updatedFields.flavor) {
-          const newFlavor =
-            updatedFields.flavor === 'chanh dây'
-              ? 'CD'
-              : updatedFields.flavor === 'dâu tây'
-                ? 'DT'
-                : updatedFields.flavor === 'socola'
-                  ? 'Soco'
-                  : null;
-          await axios.put(
-            `http://localhost:8000/update-cake-flavor-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newFlavor=${newFlavor}`,
-          );
-        } else if (updatedFields.quantity) {
-          const newQuantity = updatedFields.quantity;
-          await axios.put(
-            `http://localhost:8000/update-cake-quantity-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newQuantity=${newQuantity}`,
-          );
+          const newSize = updatedFields.size
+          await axios.put(`http://localhost:8000/update-cake-size-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newSize=${newSize}`);
         }
-
+        else if (updatedFields.flavor) {
+          const newFlavor = updatedFields.flavor === "Chanh dây" ? "CD" : updatedFields.flavor === "Dâu tây" ? "DT" : updatedFields.flavor === "Socola" ? "Soco" : null;
+          await axios.put(`http://localhost:8000/update-cake-flavor-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newFlavor=${newFlavor}`);
+        }
+        else if (updatedFields.quantity) {
+          const newQuantity = updatedFields.quantity;
+          await axios.put(`http://localhost:8000/update-cake-quantity-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newQuantity=${newQuantity}`);
+        }
         setRefresh((prev) => !prev); // Trigger useEffect to refresh cart
       } else {
         console.log('No user info found');

@@ -33,7 +33,7 @@ const CakeInfo = () => {
     const flavorAbbreviations: { [key: string]: string } = {
       'Chanh dây': 'CD',
       'Dâu tây': 'DT',
-      Socola: 'Soco',
+      'Socola': 'Soco',
     };
     return flavorAbbreviations[flavor] || flavor;
   };
