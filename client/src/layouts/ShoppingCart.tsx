@@ -37,7 +37,9 @@ const ShoppingCart: React.FC = () => {
   console.log(cartItems);
   const handleTitleOrImageClick = (itemId: string) => {
     const rootCakeID = itemId.split('-')[0];
-    navigate(`/cake/${rootCakeID}`);
+    setTimeout(() => {
+      navigate(`/cake/${rootCakeID}`);
+    }, 500);
   };
 
   return (
@@ -117,7 +119,7 @@ const ShoppingCart: React.FC = () => {
                     </button>
                   </div>
                 </td>
-                <td className="p-4">{(item.total_price).toLocaleString()} VND</td>
+                <td className="p-4">{item.total_price.toLocaleString()} VND</td>
                 <td className="p-4">
                   <button
                     onClick={(e) => {

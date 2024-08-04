@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Nav: React.FC = () => {
   return (
-    <nav className="mt-[100px] w-full bg-gray-500">
+    <nav className="fixed left-0 right-0 top-0 z-50 mt-[100px] w-full bg-gray-500">
       {' '}
       <div className="flex justify-between px-96 py-2">
         <Link to="/custom" className="text-black hover:underline">

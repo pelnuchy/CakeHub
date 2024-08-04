@@ -54,7 +54,6 @@ const CakeCustom = () => {
             <div className="mr-2 h-8 w-4 bg-bgr-gradient"></div>
             <h2 className="text-4xl font-bold">Bánh trang trí</h2>
           </div>
-          <span className="text-blue-500 underline">View All</span>
         </div>
         <SortControl sortOption={sortOption} onSortChange={handleSortChange} />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
