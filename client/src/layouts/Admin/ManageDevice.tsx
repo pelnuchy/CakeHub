@@ -1,225 +1,166 @@
 import React, { useState } from 'react';
-import DatePicker from 'react-datepicker';
+import { BsTrash, BsPencil} from 'react-icons/bs';
 import 'react-datepicker/dist/react-datepicker.css';
 
-interface Product {
+
+//real one
+interface Device {
+  id: string;
+  brand: string;
   name: string;
+  volume: string;
   quantity: number;
-  revenue: string;
-  date: Date;
+  category: string;
+  idmanager: string;
 }
 
-interface Ingredient {
-  name: string;
-  quantity: string;
-  price: string;
-  total: string;
-  date: Date;
-}
+const ManageDevice: React.FC = () => {
 
-const Dashboard: React.FC = () => {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-  const [viewByYear, setViewByYear] = useState<boolean>(false);
-
-  const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
-  };
-
-  const handleYearToggle = () => {
-    setViewByYear(!viewByYear);
-  };
-
-  const products: Product[] = [
-    { name: 'Bánh kem rừng nhiệt đới', quantity: 30, revenue: '8,500,000 VND', date: new Date('2022-02-10') },
-    { name: 'Bánh kem thiên thần', quantity: 28, revenue: '7,850,000 VND', date: new Date('2023-02-11') },
-    { name: 'Bánh kem socola đắng', quantity: 25, revenue: '7,500,000 VND', date: new Date('2023-02-12') },
-    { name: 'Bánh kem dâu tây', quantity: 22, revenue: '6,500,000 VND', date: new Date('2024-02-13') },
-    { name: 'Bánh kem bắp', quantity: 20, revenue: '6,000,000 VND', date: new Date('2024-02-14') },
-  ];
-
-  const ingredients: Ingredient[] = [
+  const initialDevices: Device[] = [
     {
-      name: 'Trứng gà',
-      quantity: '1500 quả',
-      price: '5,250 VND',
-      total: '8,000,000 VND',
-      date: new Date('2022-02-10'),
+      id: '#B15GF',
+      brand: 'BIGSTAR',
+      name: 'Máy đánh trứng, đánh kem B15GF',
+      volume: '15L',
+      quantity: 2,
+      category: 'Máy đánh trứng, đánh kem',
+      idmanager: 'admin01',
     },
     {
-      name: 'Bột mì số 8',
-      quantity: '1000 gram',
-      price: '1,000,000 VND',
-      total: '1,000,000 VND',
-      date: new Date('2023-02-11'),
+      id: '#B30',
+      brand: 'BIGSTAR',
+      name: 'Máy trộn bột, nhào bột B30L',
+      volume: '30L',
+      quantity: 2,
+      category: 'Máy trộn bột',
+      idmanager: 'admin01',
     },
     {
-      name: 'Sữa tươi',
-      quantity: '2000 ml',
-      price: '1,200,000 VND',
-      total: '1,200,000 VND',
-      date: new Date('2023-02-12'),
+      id: '#BJY-E13KW-2BD',
+      brand: 'Berjaya',
+      name: 'Lò nướng Berjaya 2 tầng 4 khay',
+      volume: '1295L',
+      quantity: 2,
+      category: 'Lò nướng',
+      idmanager: 'admin01',
     },
     {
-      name: 'Đường cát trắng',
-      quantity: '1000 gram',
-      price: '750,000 VND',
-      total: '750,000 VND',
-      date: new Date('2024-02-13'),
+      id: '#SL-24C4',
+      brand: 'Alaska',
+      name: 'Tủ mát Alaska SL-24C4, 4 cánh',
+      volume: '2400L',
+      quantity: 1,
+      category: 'Tủ lạnh',
+      idmanager: 'admin01',
     },
-    { name: 'Bơ', quantity: '500 gram', price: '1,250,000 VND', total: '1,250,000 VND', date: new Date('2024-02-14') },
     {
-      name: 'Kem whipping',
-      quantity: '2000 ml',
-      price: '2,000,000 VND',
-      total: '2,000,000 VND',
-      date: new Date('2024-02-15'),
+      id: '#TBP1500-2',
+      brand: 'Turbo Air',
+      name: 'Tủ trữ lạnh bánh 3 tầng 1m5 Turbo Air',
+      volume: '615L',
+      quantity: 1,
+      category: 'Tủ giữ mát',
+      idmanager: 'admin01',
     },
   ];
 
-  // Ensure selectedDate is not null
-  const selectedYear = selectedDate ? selectedDate.getFullYear() : new Date().getFullYear();
-  const selectedMonth = selectedDate ? selectedDate.getMonth() : new Date().getMonth();
 
-  const filteredProducts = products.filter((product) => {
-    const productYear = product.date.getFullYear();
-    const productMonth = product.date.getMonth();
-    return productYear === selectedYear && (viewByYear || productMonth === selectedMonth);
-  });
+  const [devices, setDevices] = useState<Device[]>(initialDevices);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [newQuantity, setNewQuantity] = useState<number | null>(null);
 
-  const filteredIngredients = ingredients.filter((ingredient) => {
-    const ingredientYear = ingredient.date.getFullYear();
-    const ingredientMonth = ingredient.date.getMonth();
-    return ingredientYear === selectedYear && (viewByYear || ingredientMonth === selectedMonth);
-  });
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('vi-VN', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
+  const handleDelete = (id: string) => {
+    // Filter out the device with the given id
+    const updatedDevices = devices.filter(device => device.id !== id);
+    // Update the state with the new list of devices
+    setDevices(updatedDevices);
   };
 
-  const totalRevenue = filteredProducts.reduce(
-    (total, product) => total + parseInt(product.revenue.replace(/[^0-9]/g, '')),
-    0,
-  );
-  const totalCost = filteredIngredients.reduce(
-    (total, ingredient) => total + parseInt(ingredient.price.replace(/[^0-9]/g, '')),
-    0,
-  );
-  const totalProfit = totalRevenue - totalCost;
+  const handleEdit = (id: string, currentQuantity: number) => {
+    setEditingId(id);
+    setNewQuantity(currentQuantity);
+  };
+
+  const handleSave = (id: string) => {
+    const updatedDevices = devices.map(device => 
+      device.id === id ? { ...device, quantity: newQuantity! } : device
+    );
+    setDevices(updatedDevices);
+    setEditingId(null);
+    setNewQuantity(null);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewQuantity(Number(e.target.value));
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-3">
-        <div className="rounded-lg bg-white p-4 text-center shadow">
-          <h2 className="mb-2 text-xl font-bold">Tổng doanh thu</h2>
-          <p className="text-3xl font-semibold text-green-500">{totalRevenue.toLocaleString()} VND</p>
-          <div className="h-24">{/* Insert chart here */}</div>
-        </div>
-        <div className="rounded-lg bg-white p-4 text-center shadow">
-          <h2 className="mb-2 text-xl font-bold">Tổng chi tiêu</h2>
-          <p className="text-3xl font-semibold text-red-500">{totalCost.toLocaleString()} VND</p>
-          <div className="h-24">{/* Insert chart here */}</div>
-        </div>
-        <div className="rounded-lg bg-white p-4 text-center shadow">
-          <h2 className="mb-2 text-xl font-bold">Tổng lợi nhuận</h2>
-          <p className="text-3xl font-semibold text-yellow-500">{totalProfit.toLocaleString()} VND</p>
-          <div className="h-24">{/* Insert chart here */}</div>
-        </div>
-      </div>
-      {/* <div className="mb-8 flex items-center justify-between">
-        <button onClick={handleYearToggle} className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
-          {viewByYear ? 'View by Month' : 'View by Year'}
-        </button>
-        <div className="w-1/3">
-          <DatePicker
-            selected={selectedDate}
-            onChange={handleDateChange}
-            dateFormat={viewByYear ? 'yyyy' : 'MMMM yyyy'}
-            showMonthYearPicker={!viewByYear}
-            showYearPicker={viewByYear}
-            className="border-1 w-full rounded border border-primary-500 p-2"
-          />
-        </div>
-      </div> */}
-      <div className="mb-8 flex items-center justify-between">
-        <button
-          onClick={handleYearToggle}
-          className="rounded-lg bg-blue-500 px-4 py-2 text-white shadow-md transition-transform duration-200 hover:bg-blue-600 hover:shadow-lg"
-        >
-          {viewByYear ? 'View by Month' : 'View by Year'}
-        </button>
-        <div className="flex w-1/3 items-center">
-          <span className="mr-2 text-gray-500 hover:text-blue-600">📅</span>
-          <DatePicker
-            selected={selectedDate}
-            onChange={handleDateChange}
-            dateFormat={viewByYear ? 'yyyy' : 'MMMM yyyy'}
-            showMonthYearPicker={!viewByYear}
-            showYearPicker={viewByYear}
-            className="w-full rounded-lg border border-blue-300 p-3 shadow-md focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-        <div className="rounded-lg bg-white p-4 shadow">
-          <h2 className="mb-4 text-xl font-bold">Danh sách sản phẩm đã bán</h2>
-          <table className="w-full text-left">
-            <thead>
-              <tr>
-                <th className="border px-4 py-2">STT</th>
-                <th className="border px-4 py-2">Mẫu bánh</th>
-                <th className="border px-4 py-2">Số lượng</th>
-                <th className="border px-4 py-2">Thành tiền</th>
-                <th className="border px-4 py-2">Ngày</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProducts.map((product, index) => (
-                <tr key={index}>
-                  <td className="border px-4 py-2">{index + 1}</td>
-                  <td className="border px-4 py-2">{product.name}</td>
-                  <td className="border px-4 py-2">{product.quantity}</td>
-                  <td className="border px-4 py-2">{product.revenue}</td>
-                  <td className="border px-4 py-2">{formatDate(product.date)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="rounded-lg bg-white p-4 shadow">
-          <h2 className="mb-4 text-xl font-bold">Danh sách nguyên liệu đã chi tiêu</h2>
-          <table className="w-full text-left">
-            <thead>
-              <tr>
-                <th className="border px-4 py-2">STT</th>
-                <th className="border px-4 py-2">Tên nguyên liệu</th>
-                <th className="border px-4 py-2">Số lượng</th>
-                <th className="border px-4 py-2">Đơn giá</th>
-                <th className="border px-4 py-2">Thành tiền</th>
-                <th className="border px-4 py-2">Ngày</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredIngredients.map((ingredient, index) => (
-                <tr key={index}>
-                  <td className="border px-4 py-2">{index + 1}</td>
-                  <td className="border px-4 py-2">{ingredient.name}</td>
-                  <td className="border px-4 py-2">{ingredient.quantity}</td>
-                  <td className="border px-4 py-2">{ingredient.price}</td>
-                  <td className="border px-4 py-2">{ingredient.total}</td>
-                  <td className="border px-4 py-2">{formatDate(ingredient.date)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <h2 className="mb-4 text-4xl font-bold">Quản lý thiết bị làm bánh</h2>
+      <div className="flex justify-center w-full">
+        <div className="grid w-full max-w-4xl grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="col-span-1 md:col-span-2">
+            <div className="rounded-lg bg-white p-4 shadow w-full border overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr>
+                    <th className="border px-4 py-2 text-center">Mã thiết bị</th>
+                    <th className="border px-4 py-2 text-center">Hãng</th>
+                    <th className="border px-4 py-2 text-center">Tên thiết bị</th>
+                    <th className="border px-4 py-2 text-center">Thể tích</th>
+                    <th className="border px-4 py-2 text-center">Số lượng</th>
+                    <th className="border px-4 py-2 text-center">Loại</th>
+                    <th className="border px-4 py-2 text-center">Mã người quản lý</th>
+                    <th className="border px-4 py-2 text-center">Xóa</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {devices.map((Device, index) => (
+                    <tr key={index}>
+                      <td className="border px-4 py-2">{Device.id}</td>
+                      <td className="border px-4 py-2">{Device.brand}</td>
+                      <td className="border px-4 py-2">{Device.name}</td>
+                      <td className="border px-4 py-2">{Device.volume}</td>
+                      <td className="border px-4 py-2">
+                        {editingId === Device.id ? (
+                          <input
+                            type="number"
+                            value={newQuantity ?? ''}
+                            onChange={handleInputChange}
+                            onBlur={() => handleSave(Device.id)} // Save on blur (optional)
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                handleSave(Device.id); // Call your save function
+                              }
+                            }} // Handle enter key
+                            className="border border-gray-300 rounded px-0.1 py-0.5"
+                          />
+                        ) : (
+                          <>
+                            <span>{Device.quantity}</span>
+                            <button onClick={() => handleEdit(Device.id, Device.quantity)}>
+                              <BsPencil className="text-right-black-500 cursor-pointer ml-5" /> {/* Edit icon */}
+                            </button>
+                          </>
+                        )}
+                      </td>
+                      <td className="border px-4 py-2">{Device.category}</td>
+                      <td className="border px-4 py-2">{Device.idmanager}</td>
+                      <td className="border px-4 py-2 text-center">
+                        <button onClick={() => handleDelete(Device.id)}>
+                          <BsTrash className="text-black-500 cursor-pointer" /> {/* Delete icon */}
+                        </button>
+                    </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default ManageDevice;
