@@ -1,26 +1,32 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Button from '../components/Button';
 
 const LoginForm = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const auth = { username, password };
 
     try {
       const response = await axios.post('http://localhost:8000/login', auth);
-      //console.log(response.data);
       sessionStorage.setItem('userInfo', JSON.stringify(response.data.session));
-      alert('Đăng nhập thành công');
-      navigate('/');
+      toast.success('Đăng nhập thành công');
+      setTimeout(() => {
+        navigate('/');
+      }, 1500);
     } catch (err) {
+      toast.error('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
       console.log(err);
     }
   };
+
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100">
       <div className="flex w-3/5 overflow-hidden rounded-lg bg-white shadow-lg">
@@ -66,6 +72,7 @@ const LoginForm = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
