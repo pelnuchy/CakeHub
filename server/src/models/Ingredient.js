@@ -23,10 +23,10 @@ const ingredientSchema = new mongoose.Schema({
         required: true
     },
     expired: {
-        type: String,
+        type: Date,
         required: true
     }
-    },
+},
     {
         timestamps: true
     });
