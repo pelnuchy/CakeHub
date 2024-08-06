@@ -1,22 +1,33 @@
-
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Button from '../components/Button';
+import ToastComponent from '../components/ToastComponent';
+
 const SignupForm = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [rePassword, setRePassword] = useState<string>('');
   const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const auth = { username, password, rePassword };
+
+    // Check if passwords match
+    if (password !== rePassword) {
+      toast.error('Mật khẩu không khớp. Vui lòng kiểm tra lại.');
+      return;
+    }
+
+    const auth = { username, password };
 
     try {
       await axios.post('http://localhost:8000/signup', auth);
-      alert('Đăng ký thành công');
+      toast.success('Đăng ký thành công');
       navigate('/login');
     } catch (err) {
+      toast.error('Đăng ký thất bại. Vui lòng thử lại.');
       console.log(err);
     }
   };
@@ -77,6 +88,7 @@ const SignupForm = () => {
           </div>
         </div>
       </div>
+      <ToastComponent />
     </div>
   );
 };
