@@ -5,6 +5,7 @@ import userRoutes from './src/routes/userRoutes.js';
 import cakeRoutes from './src/routes/cakeRoutes.js';
 import cartRoutes from './src/routes/cartRoutes.js';
 import orderRoutes from './src/routes/orderRoutes.js';
+import ingredientRoutes from './src/routes/ingredientRoutes.js';
 import bodyParser from 'body-parser';
 import session from 'express-session';
 import cors from 'cors';
@@ -35,7 +36,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 
-app.use('/',cakeRoutes, userRoutes, cartRoutes, orderRoutes);
+app.use('/',cakeRoutes, userRoutes, cartRoutes, orderRoutes, ingredientRoutes);
 
 mongoose.connect(process.env.DATABASE_URI_LOCAL)
 .then(async () => { // Sử dụng async để có thể sử dụng await bên trong

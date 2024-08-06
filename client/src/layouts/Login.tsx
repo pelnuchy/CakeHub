@@ -13,11 +13,25 @@ const LoginForm = () => {
 
     try {
       const response = await axios.post('http://localhost:8000/login', auth);
-      //console.log(response.data);
-      sessionStorage.setItem('userInfo', JSON.stringify(response.data.session));
-      alert('Đăng nhập thành công');
-      navigate('/');
-    } catch (err) {
+      const userInfo = JSON.stringify(response.data.session);
+      sessionStorage.setItem('userInfo', userInfo);
+
+      const role = JSON.parse(userInfo).role;
+
+      if (role == 'admin') {
+        alert('Đăng nhập thành công');
+        navigate('/admin/dashboard');
+      }
+      else if (role == 'baker') {
+        alert('Đăng nhập thành công');
+        navigate('/baker/dashboard');
+      }
+      else {
+        alert('Đăng nhập thành công');
+        navigate('/');
+      }
+    }
+    catch (err) {
       console.log(err);
     }
   };
