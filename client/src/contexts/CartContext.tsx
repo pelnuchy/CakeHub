@@ -33,10 +33,7 @@ const transSize = (size: number) => {
 };
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
-    const savedCart = localStorage.getItem('cartItems');
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [refresh, setRefresh] = useState(false); // State to trigger useEffect
   const userInfoString = sessionStorage.getItem('userInfo');
 
@@ -73,7 +70,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       return cartDetails;
     } catch (error) {
-      console.log('Error fetching order history:', error);
+      console.log('Error fetching order history`:', error);
       return [];
     }
   };
