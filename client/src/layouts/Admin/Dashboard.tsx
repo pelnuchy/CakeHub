@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
+import axios from 'axios';
 import 'react-datepicker/dist/react-datepicker.css';
 
 interface Product {
@@ -20,7 +21,7 @@ interface Ingredient {
 const Dashboard: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [viewByYear, setViewByYear] = useState<boolean>(false);
-  const [cakeItems, setCakeItems] = useState<Product[]>([]);
+  const [cakesSold, setCakesSold] = useState<Product[]>([]);
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
@@ -30,14 +31,47 @@ const Dashboard: React.FC = () => {
     setViewByYear(!viewByYear);
   };
 
-  const products: Product[] = [
-    { name: 'Bánh kem rừng nhiệt đới', quantity: 30, revenue: '8,500,000 VND', date: new Date('2022-02-10') },
-    { name: 'Bánh kem thiên thần', quantity: 28, revenue: '7,850,000 VND', date: new Date('2023-02-11') },
-    { name: 'Bánh kem socola đắng', quantity: 25, revenue: '7,500,000 VND', date: new Date('2023-02-12') },
-    { name: 'Bánh kem dâu tây', quantity: 22, revenue: '6,500,000 VND', date: new Date('2024-02-13') },
-    { name: 'Bánh kem bắp', quantity: 20, revenue: '6,000,000 VND', date: new Date('2024-02-14') },
-    { name: 'Bánh halloween', quantity: 22, revenue: '7,000,000 VND', date: new Date('2024-02-14') }
-  ];
+  // const products: Product[] = [
+  //   { name: 'Bánh kem rừng nhiệt đới', quantity: 30, revenue: '8,500,000 VND', date: new Date('2022-02-10') },
+  //   { name: 'Bánh kem thiên thần', quantity: 28, revenue: '7,850,000 VND', date: new Date('2023-02-11') },
+  //   { name: 'Bánh kem socola đắng', quantity: 25, revenue: '7,500,000 VND', date: new Date('2023-02-12') },
+  //   { name: 'Bánh kem dâu tây', quantity: 22, revenue: '6,500,000 VND', date: new Date('2024-02-13') },
+  //   { name: 'Bánh kem bắp', quantity: 20, revenue: '6,000,000 VND', date: new Date('2024-02-14') },
+  //   { name: 'Bánh halloween', quantity: 22, revenue: '7,000,000 VND', date: new Date('2024-02-14') }
+  // ];
+
+  useEffect(() => {
+    const getListCakesSold = async () => {
+      const listCakesSold = await fetchListCakesSold();
+      console.log(listCakesSold);
+      setCakesSold(listCakesSold);
+    };
+    getListCakesSold();
+  }, [selectedDate]);
+
+
+  const fetchListCakesSold = async (): Promise<any[]> => {
+    try {
+      const response = await axios.get(`http://localhost:8000/get-list-cakes-sold`);
+      const listCakesSold = response.data.data;
+
+      const cakeSoldDetail = listCakesSold.flatMap((listCakesSold: any) =>
+        listCakesSold.cakes.map((cake: any) => ({
+          name: cake.cakeName,
+          quantity: cake.cakeQuantity,
+          revenue: cake.total_price,
+          date: new Date(cake.completeTime),
+          image: cake.img_url
+        })),
+      );
+
+      return cakeSoldDetail;
+    } catch (error) {
+      console.log('Error fetching l`:', error);
+      return [];
+    }
+  };
+
 
   const ingredients: Ingredient[] = [
     {
@@ -82,7 +116,7 @@ const Dashboard: React.FC = () => {
   const selectedYear = selectedDate ? selectedDate.getFullYear() : new Date().getFullYear();
   const selectedMonth = selectedDate ? selectedDate.getMonth() : new Date().getMonth();
 
-  const filteredProducts = products.filter((product) => {
+  const filteredProducts = cakesSold.filter((product) => {
     const productYear = product.date.getFullYear();
     const productMonth = product.date.getMonth();
     return productYear === selectedYear && (viewByYear || productMonth === selectedMonth);
@@ -103,7 +137,7 @@ const Dashboard: React.FC = () => {
   };
 
   const totalRevenue = filteredProducts.reduce(
-    (total, product) => total + parseInt(product.revenue.replace(/[^0-9]/g, '')),
+    (total, product) => total + Number(product.revenue),
     0,
   );
   const totalCost = filteredIngredients.reduce(

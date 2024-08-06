@@ -142,6 +142,7 @@ orderController.getInfoOrdering = async (req, res) => {
         });
     }
 }
+
 orderController.orderCheckout = async (req, res) => {
     try {
         const userID = req.params.userid;
@@ -177,6 +178,79 @@ orderController.orderCheckout = async (req, res) => {
     }
 }
 
+orderController.getListCakesSold = async (req, res) => {
+    try {
+        const cakeSold = await Order.aggregate([
+            { $unwind: "$cakes" },
+            {
+                $group: {
+                    _id: "$cakes.cake_id",
+                    cakeQuantity: { $sum: "$cakes.cakeQuantity" },
+                    total_price: { $sum: "$cakes.total_price" },
+                    completeTime: { $first: "$completeTime" } // giữ lại thời gian hoàn thành
+                }
+            },
+            {
+                $lookup: {
+                    from: "cakes",
+                    localField: "_id",
+                    foreignField: "cakeID",
+                    as: "cakeDetail"
+                }
+            },
+            { $unwind: "$cakeDetail" },
+            {
+                $addFields: {
+                    cake_id: "$_id",
+                    cakeName: "$cakeDetail.cakeName",
+                    img_url: "$cakeDetail.img_url",
+                    cakeQuantity: "$cakeQuantity",
+                    total_price: "$total_price",
+                    completeTime: "$completeTime"
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    cakes: {
+                        $push: {
+                            cake_id: "$cake_id",
+                            cakeName: "$cakeName",
+                            img_url: "$img_url",
+                            cakeQuantity: "$cakeQuantity",
+                            total_price: "$total_price",
+                            completeTime: "$completeTime"
+                        }
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    cakes: 1
+                }
+            }
+        ]
 
+        );
+
+        // Kiểm tra xem giỏ hàng có tồn tại không
+        if (!cakeSold) {
+            return res.status(404).json({ message: 'No cake sold!' });
+        }
+
+
+        return res.status(200).json({
+            status: 'SUCCESS',
+            data: cakeSold
+        });
+    }
+    catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+}
 
 export default orderController;

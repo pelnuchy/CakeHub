@@ -15,12 +15,12 @@ const SignupForm = () => {
     e.preventDefault();
 
     // Check if passwords match
-    if (password !== rePassword) {
-      toast.error('Mật khẩu không khớp. Vui lòng kiểm tra lại.');
-      return;
-    }
+    // if (password !== rePassword) {
+    //   toast.error('Mật khẩu không khớp. Vui lòng kiểm tra lại.');
+    //   return;
+    // }
 
-    const auth = { username, password };
+    const auth = { username, password, rePassword };
 
     try {
       await axios.post('http://localhost:8000/signup', auth);
