@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BsTrash, BsPencil} from 'react-icons/bs';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -68,6 +68,8 @@ const ManageDevice: React.FC = () => {
   const [devices, setDevices] = useState<Device[]>(initialDevices);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [newQuantity, setNewQuantity] = useState<number | null>(null);
+  const [isEditButtonClicked, setIsEditButtonClicked] = useState<boolean>(false);
+  const [originalQuantity, setOriginalQuantity] = useState<number | null>(null); // To store the original quantity
 
   const handleDelete = (id: string) => {
     // Filter out the device with the given id
@@ -79,20 +81,45 @@ const ManageDevice: React.FC = () => {
   const handleEdit = (id: string, currentQuantity: number) => {
     setEditingId(id);
     setNewQuantity(currentQuantity);
+    setIsEditButtonClicked(true); // Set flag when edit button is clicked
+    setOriginalQuantity(currentQuantity); // Store the original quantity when editing
   };
 
   const handleSave = (id: string) => {
-    const updatedDevices = devices.map(device => 
-      device.id === id ? { ...device, quantity: newQuantity! } : device
-    );
-    setDevices(updatedDevices);
+    // Only save if the quantity has changed
+    if (newQuantity !== originalQuantity) {
+      const updatedDevices = devices.map(device => 
+        device.id === id ? { ...device, quantity: newQuantity! } : device
+      );
+      setDevices(updatedDevices);
+    }
     setEditingId(null);
+    setIsEditButtonClicked(false); // Reset flag
     setNewQuantity(null);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewQuantity(Number(e.target.value));
   };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as Element; // Cast to Element
+
+    // If the user is in editing mode and clicks outside 
+    // the input and it's not an edit button click
+    if (editingId && !target.closest('.editable-input') && !isEditButtonClicked)
+      handleSave(editingId); // Optional: save changes on click outside
+
+    // Reset the flag after the click event
+    setIsEditButtonClicked(false);
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [editingId]);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -138,8 +165,8 @@ const ManageDevice: React.FC = () => {
                         ) : (
                           <>
                             <span>{Device.quantity}</span>
-                            <button onClick={() => handleEdit(Device.id, Device.quantity)}>
-                              <BsPencil className="text-right-black-500 cursor-pointer ml-5" /> {/* Edit icon */}
+                            <button onClick={() => handleEdit(Device.id, Device.quantity)} className="text-black-500 cursor-pointer ml-5">
+                              <BsPencil className="text-black-500" /> {/* Edit icon */}
                             </button>
                           </>
                         )}
