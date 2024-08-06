@@ -18,10 +18,29 @@ const LoginForm = () => {
     try {
       const response = await axios.post('http://localhost:8000/login', auth);
       sessionStorage.setItem('userInfo', JSON.stringify(response.data.session));
-      toast.success('Đăng nhập thành công');
-      setTimeout(() => {
-        navigate('/');
-      }, 1500);
+      const userInfo = JSON.stringify(response.data.session);
+      sessionStorage.setItem('userInfo', userInfo);
+
+      const role = JSON.parse(userInfo).role;
+
+      if (role == 'admin') {
+        toast.success('Đăng nhập thành công');
+        setTimeout(() => {
+          navigate('/admin/dashboard');
+        }, 1500);
+      }
+      else if (role == 'baker') {
+        toast.success('Đăng nhập thành công');
+        setTimeout(() => {
+          navigate('/baker/dashboard');
+        }, 1500);
+      }
+      else {
+        toast.success('Đăng nhập thành công');
+        setTimeout(() => {
+          navigate('/');
+        }, 1500);
+      }
     } catch (err) {
       toast.error('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
       console.log(err);
