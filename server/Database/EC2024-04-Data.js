@@ -63,7 +63,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 1500,
     ingredientUnit: "quả",
     ingredientPrice: 3000,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
   {
     ingredientID: "botmiso8",
@@ -71,7 +71,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 5000,
     ingredientUnit: "gam",
     ingredientPrice: 26000,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
   {
     ingredientID: "botbap",
@@ -79,7 +79,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 5000,
     ingredientUnit: "gam",
     ingredientPrice: 34000,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
   {
     ingredientID: "suatuoikhongduong",
@@ -87,7 +87,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 5000,
     ingredientUnit: "ml",
     ingredientPrice: 33000,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
   {
     ingredientID: "dauthucvat",
@@ -95,7 +95,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 5000,
     ingredientUnit: "ml",
     ingredientPrice: 500000,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
   {
     ingredientID: "duongcat",
@@ -103,7 +103,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 10000,
     ingredientUnit: "g",
     ingredientPrice: 30500,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
   {
     ingredientID: "bottartar",
@@ -111,7 +111,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 1000,
     ingredientUnit: "g",
     ingredientPrice: 200000,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
   {
     ingredientID: "muoi",
@@ -119,7 +119,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 1000,
     ingredientUnit: "g",
     ingredientPrice: 13000,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
   {
     ingredientID: "mutdau",
@@ -127,7 +127,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 10000,
     ingredientUnit: "g",
     ingredientPrice: 127000,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
   {
     ingredientID: "mutchanhday",
@@ -135,7 +135,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 10000,
     ingredientUnit: "g",
     ingredientPrice: 127000,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
   {
     ingredientID: "mutsocola",
@@ -143,7 +143,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 10000,
     ingredientUnit: "g",
     ingredientPrice: 670000,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
   {
     ingredientID: "gelatin",
@@ -151,7 +151,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 5000,
     ingredientUnit: "g",
     ingredientPrice: 287000,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
   {
     ingredientID: "suatuoiitduong",
@@ -159,7 +159,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 5000,
     ingredientUnit: "ml",
     ingredientPrice: 33000,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
   {
     ingredientID: "vanila",
@@ -167,7 +167,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 5000,
     ingredientUnit: "g",
     ingredientPrice: 235000,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
   {
     ingredientID: "bolat",
@@ -175,7 +175,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 5000,
     ingredientUnit: "g",
     ingredientPrice: 115000,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
   {
     ingredientID: "dauan",
@@ -183,7 +183,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 5000,
     ingredientUnit: "g",
     ingredientPrice: 50000,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
   {
     ingredientID: "bapmy",
@@ -191,7 +191,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 5000,
     ingredientUnit: "g",
     ingredientPrice: 50000,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
   {
     ingredientID: "mascarpone",
@@ -199,7 +199,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 10000,
     ingredientUnit: "g",
     ingredientPrice: 270000,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
   {
     ingredientID: "whippingcream",
@@ -207,7 +207,7 @@ db.ingredients.insertMany([
     ingredientQuantity: 10000,
     ingredientUnit: "ml",
     ingredientPrice: 159000,
-    expired: "2024-08-17",
+    expired: new Date("2024-08-17"),
   },
 ]);
 

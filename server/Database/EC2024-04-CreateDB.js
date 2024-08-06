@@ -332,7 +332,7 @@ db.createCollection("ingredients", {
                     "bsonType": "number"
                 },
                 "expired": {
-                    "bsonType": "string"
+                    "bsonType": "date"
                 }
             },
             "additionalProperties": false
