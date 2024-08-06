@@ -23,22 +23,21 @@ const LoginForm = () => {
 
       const role = JSON.parse(userInfo).role;
 
-      if (role == 'admin') {
+      if (role === 'admin') {
         toast.success('Đăng nhập thành công');
         setTimeout(() => {
           navigate('/admin/dashboard');
         }, 1500);
-      }
-      else if (role == 'baker') {
+      } else if (role === 'baker') {
         toast.success('Đăng nhập thành công');
         setTimeout(() => {
           navigate('/baker/dashboard');
         }, 1500);
-      }
-      else {
+      } else {
         toast.success('Đăng nhập thành công');
         setTimeout(() => {
           navigate('/');
+          window.location.reload();
         }, 1500);
       }
     } catch (err) {
