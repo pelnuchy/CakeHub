@@ -14,18 +14,18 @@ const SignupForm = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Check if passwords match
-    if (password !== rePassword) {
-      toast.error('Mật khẩu không khớp. Vui lòng kiểm tra lại.');
-      return;
-    }
-
-    const auth = { username, password };
-
+    const auth = { username, password, rePassword };
+    console.log(auth);
     try {
-      await axios.post('http://localhost:8000/signup', auth);
+      if (auth.password !== auth.rePassword) {
+        toast.error('Mật khẩu không khớp. Vui lòng kiểm tra lại.');
+        return;
+      }
+      axios.post('http://localhost:8000/signup', auth);
       toast.success('Đăng ký thành công');
-      navigate('/login');
+      setTimeout(() => {
+        navigate('/login');
+      }, 1500);
     } catch (err) {
       toast.error('Đăng ký thất bại. Vui lòng thử lại.');
       console.log(err);
