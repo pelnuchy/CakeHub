@@ -20,6 +20,7 @@ interface Ingredient {
 const Dashboard: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [viewByYear, setViewByYear] = useState<boolean>(false);
+  const [cakeItems, setCakeItems] = useState<Product[]>([]);
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
@@ -35,6 +36,7 @@ const Dashboard: React.FC = () => {
     { name: 'Bánh kem socola đắng', quantity: 25, revenue: '7,500,000 VND', date: new Date('2023-02-12') },
     { name: 'Bánh kem dâu tây', quantity: 22, revenue: '6,500,000 VND', date: new Date('2024-02-13') },
     { name: 'Bánh kem bắp', quantity: 20, revenue: '6,000,000 VND', date: new Date('2024-02-14') },
+    { name: 'Bánh halloween', quantity: 22, revenue: '7,000,000 VND', date: new Date('2024-02-14') }
   ];
 
   const ingredients: Ingredient[] = [
@@ -196,7 +198,7 @@ const Dashboard: React.FC = () => {
             <thead>
               <tr>
                 <th className="border px-4 py-2">STT</th>
-                <th className="border px-4 py-2">Tên nguyên liệu</th>
+                <th className="border px-4 py-2">Nguyên liệu</th>
                 <th className="border px-4 py-2">Số lượng</th>
                 <th className="border px-4 py-2">Đơn giá</th>
                 <th className="border px-4 py-2">Thành tiền</th>
