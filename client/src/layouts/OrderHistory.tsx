@@ -17,7 +17,6 @@ const OrderHistory = () => {
       try {
         const response = await axios.get(`http://localhost:8000/get-order-history/${userID}`);
         const orders = response.data.data; // Access the 'data' field
-
         const orderDetails = orders.map((order: any) => ({
           date: order.shippingDate,
           orderId: order.orderID,

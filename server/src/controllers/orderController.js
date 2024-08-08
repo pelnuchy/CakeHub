@@ -63,6 +63,31 @@ orderController.getOrderHistory = async (req, res) => {
     }
 }
 
+orderController.updateComletedOrder = async (req, res) => {
+    try {
+        const orderID = req.params.orderid;
+        if (!orderID) {
+            return res.status(404).json({
+                status: 'ERROR',
+                message: "Please provide order ID"
+            });
+        }
+        const updateOrder = await Order.updateOne(
+            { orderID: orderID, status: "delivering" },
+            { status: "completed" }
+        ).lean().exec();
+        return res.status(200).json({
+            status: 'SUCCESS',
+            data: updateOrder
+        });
+    } catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+};
+
 orderController.getOwnOrdered = async (req, res) => {
     try {
         const userID = req.params.userid;
@@ -73,7 +98,7 @@ orderController.getOwnOrdered = async (req, res) => {
             });
         }
         const orderUser = await Order.aggregate([
-            { $match: { user_id: userID, status: { $in: ["ordered", "handling", "handled", "delivered"] } } },
+            { $match: { user_id: userID, status: { $in: ["ordered", "handling", "delivering"] } } },
             { $unwind: "$cakes" },
             {
                 $lookup: {
@@ -261,5 +286,53 @@ orderController.getListCakesSold = async (req, res) => {
         });
     }
 }
+
+orderController.getOrderedCake = async (req, res) => {
+    try {
+        const cakeOrdered = await Order.aggregate([
+            { $match: { user_id: "tra1", status: "ordered" } },
+            { $unwind: "$cakes" },
+            {
+                $lookup: {
+                    from: "cakes",
+                    localField: "cakes.cake_id",
+                    foreignField: "cakeID",
+                    as: "cakeDetail"
+                }
+            },
+            { $unwind: "$cakeDetail" },
+            {
+                $addFields: {
+                    "cakes.cakeName": "$cakeDetail.cakeName",
+                    "cakes.size": "$cakeDetail.size",
+                    "cakes.img_url": "$cakeDetail.img_url",
+                    "cakes.flavor": "$cakeDetail.jamFilling"
+                }
+            },
+            {
+                $group: {
+                    _id: "$_id",
+                    orderID: { $first: "$orderID" },
+                    cakes: { $push: "$cakes" }
+                }
+            }
+        ]
+
+        );
+
+        return res.status(200).json({
+            status: 'SUCCESS',
+            data: cakeOrdered
+        }
+        );
+    }
+
+    catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+};
 
 export default orderController;
