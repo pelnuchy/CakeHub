@@ -237,9 +237,8 @@ orderController.getListCakesSold = async (req, res) => {
                         completeTime: "$cakes.completeTime" // Group theo cake_id và completeTime
                     },
                     cakeName: { $first: "$cakes.cakeName" },
-                    cakeQuantity: {
-                        $sum: "$cakes.cakeQuantity"
-                    },
+                    img_url: { $first: "$cakes.img_url" },
+                    cakeQuantity: { $sum: "$cakes.cakeQuantity" },
                     total_price: { $sum: "$cakes.total_price" },
                     completeTime: { $first: "$completeTime" }
                 }
