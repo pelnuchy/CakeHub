@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import axios from 'axios';
 import 'react-datepicker/dist/react-datepicker.css';
+import revenueImg from '../../assets/admin_dashboard_item/green.png';
+import spendingImg from '../../assets/admin_dashboard_item/red.png';
+import profitImg from '../../assets/admin_dashboard_item/yellow.png';
+
 
 interface Product {
   name: string;
@@ -148,21 +152,27 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-3">
-        <div className="rounded-lg bg-white p-4 text-center shadow">
-          <h2 className="mb-2 text-xl font-bold">Tổng doanh thu</h2>
-          <p className="text-3xl font-semibold text-green-500">{totalRevenue.toLocaleString()} VND</p>
-          <div className="h-24">{/* Insert chart here */}</div>
+      <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-3 ">
+        <div className="rounded-lg bg-white p-4 text-left shadow">
+          <h2 className="mb-2 text-xl font-bold ml-4">Tổng doanh thu</h2>
+          <p className="text-3xl font-semibold text-green-500 ml-4">{totalRevenue.toLocaleString()} VNĐ</p>
+          <div className="h-26 overflow-hidden">
+            <img src={revenueImg} alt="revenue_img" className="object-cover w-full h-21" />
+          </div>
         </div>
-        <div className="rounded-lg bg-white p-4 text-center shadow">
-          <h2 className="mb-2 text-xl font-bold">Tổng chi tiêu</h2>
-          <p className="text-3xl font-semibold text-red-500">{totalCost.toLocaleString()} VND</p>
-          <div className="h-24">{/* Insert chart here */}</div>
+        <div className="rounded-lg bg-white p-4 text-left shadow">
+          <h2 className="mb-2 text-xl font-bold ml-4">Tổng chi tiêu</h2>
+          <p className="text-3xl font-semibold text-red-500 ml-4">{totalCost.toLocaleString()} VNĐ</p>
+          <div className="h-24">
+            <img src={spendingImg} alt="spending_img" className="object-cover w-full h-h1 mt-4" />
+          </div>
         </div>
-        <div className="rounded-lg bg-white p-4 text-center shadow">
-          <h2 className="mb-2 text-xl font-bold">Tổng lợi nhuận</h2>
-          <p className="text-3xl font-semibold text-yellow-500">{totalProfit.toLocaleString()} VND</p>
-          <div className="h-24">{/* Insert chart here */}</div>
+        <div className="rounded-lg bg-white p-4 text-left shadow">
+          <h2 className="mb-2 text-xl font-bold ml-4">Tổng lợi nhuận</h2>
+          <p className="text-3xl font-semibold text-yellow-500 ml-4">{totalProfit.toLocaleString()} VNĐ</p>
+          <div className="h-26 overflow-hidden">
+            <img src={profitImg} alt="profit_img" className="object-cover w-full h-21" />
+          </div>
         </div>
       </div>
       {/* <div className="mb-8 flex items-center justify-between">

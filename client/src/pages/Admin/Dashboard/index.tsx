@@ -8,7 +8,7 @@ const AdminDashBoard = () => {
     <>
       <Header />
       <AdminNav />
-      <main>
+      <main className='mt-10'>
         <Dasboard />
       </main>
       <Footer />
