@@ -14,6 +14,8 @@ const OrderCard: React.FC<{ order: any; onAdd?: () => void; onRemove?: () => voi
     <p className="text-black">{order.name}</p>
     <p className="text-gray-800">Vị: {order.flavor}</p>
     <p className="text-gray-800">Kích thước: {order.size}</p>
+    <p className="text-gray-800">Số lượng: {order.quantity}</p>
+    <p className="text-gray-800">Lời chúc: {order.message}</p>
     {onAdd && (
       <button
         onClick={onAdd}
@@ -79,6 +81,8 @@ const Dashboard: React.FC = () => {
             name: cake.cakeName,
             size: cake.size,
             flavor: cake.flavor,
+            quantity: cake.cakeQuantity,
+            message: cake.cakeMessage,
             imgSrc: cake.img_url,
           })),
         };
@@ -104,6 +108,7 @@ const Dashboard: React.FC = () => {
             name: cake.cakeName,
             size: cake.size,
             flavor: cake.flavor,
+            quantity: cake.cakeQuantity,
             imgSrc: cake.img_url,
           })),
         };

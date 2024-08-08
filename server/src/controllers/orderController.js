@@ -311,7 +311,6 @@ orderController.getOrderedCake = async (req, res) => {
             },
             {
                 $project: {
-                    "cakes.cakeQuantity": 0,
                     "cakes.total_price": 0
                 }
             },
