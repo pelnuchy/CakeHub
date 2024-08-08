@@ -6,7 +6,6 @@ import revenueImg from '../../assets/admin_dashboard_item/green.png';
 import spendingImg from '../../assets/admin_dashboard_item/red.png';
 import profitImg from '../../assets/admin_dashboard_item/yellow.png';
 
-
 interface Product {
   name: string;
   quantity: number;
@@ -35,15 +34,6 @@ const Dashboard: React.FC = () => {
     setViewByYear(!viewByYear);
   };
 
-  // const products: Product[] = [
-  //   { name: 'Bánh kem rừng nhiệt đới', quantity: 30, revenue: '8,500,000 VND', date: new Date('2022-02-10') },
-  //   { name: 'Bánh kem thiên thần', quantity: 28, revenue: '7,850,000 VND', date: new Date('2023-02-11') },
-  //   { name: 'Bánh kem socola đắng', quantity: 25, revenue: '7,500,000 VND', date: new Date('2023-02-12') },
-  //   { name: 'Bánh kem dâu tây', quantity: 22, revenue: '6,500,000 VND', date: new Date('2024-02-13') },
-  //   { name: 'Bánh kem bắp', quantity: 20, revenue: '6,000,000 VND', date: new Date('2024-02-14') },
-  //   { name: 'Bánh halloween', quantity: 22, revenue: '7,000,000 VND', date: new Date('2024-02-14') }
-  // ];
-
   useEffect(() => {
     const getListCakesSold = async () => {
       const listCakesSold = await fetchListCakesSold();
@@ -53,8 +43,7 @@ const Dashboard: React.FC = () => {
     getListCakesSold();
   }, [selectedDate]);
 
-
-  const fetchListCakesSold = async (): Promise<any[]> => {
+  const fetchListCakesSold = async (): Promise<Product[]> => {
     try {
       const response = await axios.get(`http://localhost:8000/get-list-cakes-sold`);
       const listCakesSold = response.data.data;
@@ -65,17 +54,16 @@ const Dashboard: React.FC = () => {
           quantity: cake.cakeQuantity,
           revenue: cake.total_price,
           date: new Date(cake.completeTime),
-          image: cake.img_url
+          image: cake.img_url,
         })),
       );
 
       return cakeSoldDetail;
     } catch (error) {
-      console.log('Error fetching l`:', error);
+      console.log('Error fetching list:', error);
       return [];
     }
   };
-
 
   const ingredients: Ingredient[] = [
     {
@@ -126,6 +114,19 @@ const Dashboard: React.FC = () => {
     return productYear === selectedYear && (viewByYear || productMonth === selectedMonth);
   });
 
+  const aggregatedProducts = viewByYear
+    ? filteredProducts.reduce((acc, product) => {
+        const existingProduct = acc.find((p) => p.name === product.name);
+        if (existingProduct) {
+          existingProduct.quantity += product.quantity;
+          existingProduct.revenue = (parseFloat(existingProduct.revenue) + parseFloat(product.revenue)).toFixed(0); // Remove decimal
+        } else {
+          acc.push({ ...product });
+        }
+        return acc;
+      }, [] as Product[])
+    : filteredProducts;
+
   const filteredIngredients = ingredients.filter((ingredient) => {
     const ingredientYear = ingredient.date.getFullYear();
     const ingredientMonth = ingredient.date.getMonth();
@@ -133,17 +134,16 @@ const Dashboard: React.FC = () => {
   });
 
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString('vi-VN', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
+    return viewByYear
+      ? date.getFullYear()
+      : date.toLocaleDateString('vi-VN', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        });
   };
 
-  const totalRevenue = filteredProducts.reduce(
-    (total, product) => total + Number(product.revenue),
-    0,
-  );
+  const totalRevenue = aggregatedProducts.reduce((total, product) => total + Number(product.revenue), 0);
   const totalCost = filteredIngredients.reduce(
     (total, ingredient) => total + parseInt(ingredient.price.replace(/[^0-9]/g, '')),
     0,
@@ -152,44 +152,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-3 ">
-        <div className="rounded-lg bg-white p-4 text-left shadow">
-          <h2 className="mb-2 text-xl font-bold ml-4">Tổng doanh thu</h2>
-          <p className="text-3xl font-semibold text-green-500 ml-4">{totalRevenue.toLocaleString()} VNĐ</p>
-          <div className="h-26 overflow-hidden">
-            <img src={revenueImg} alt="revenue_img" className="object-cover w-full h-21" />
-          </div>
-        </div>
-        <div className="rounded-lg bg-white p-4 text-left shadow">
-          <h2 className="mb-2 text-xl font-bold ml-4">Tổng chi tiêu</h2>
-          <p className="text-3xl font-semibold text-red-500 ml-4">{totalCost.toLocaleString()} VNĐ</p>
-          <div className="h-24">
-            <img src={spendingImg} alt="spending_img" className="object-cover w-full h-h1 mt-4" />
-          </div>
-        </div>
-        <div className="rounded-lg bg-white p-4 text-left shadow">
-          <h2 className="mb-2 text-xl font-bold ml-4">Tổng lợi nhuận</h2>
-          <p className="text-3xl font-semibold text-yellow-500 ml-4">{totalProfit.toLocaleString()} VNĐ</p>
-          <div className="h-26 overflow-hidden">
-            <img src={profitImg} alt="profit_img" className="object-cover w-full h-21" />
-          </div>
-        </div>
-      </div>
-      {/* <div className="mb-8 flex items-center justify-between">
-        <button onClick={handleYearToggle} className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
-          {viewByYear ? 'View by Month' : 'View by Year'}
-        </button>
-        <div className="w-1/3">
-          <DatePicker
-            selected={selectedDate}
-            onChange={handleDateChange}
-            dateFormat={viewByYear ? 'yyyy' : 'MMMM yyyy'}
-            showMonthYearPicker={!viewByYear}
-            showYearPicker={viewByYear}
-            className="border-1 w-full rounded border border-primary-500 p-2"
-          />
-        </div>
-      </div> */}
+      <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-3">{/* Revenue, Spending, and Profit cards */}</div>
       <div className="mb-8 flex items-center justify-between">
         <button
           onClick={handleYearToggle}
@@ -220,16 +183,16 @@ const Dashboard: React.FC = () => {
                 <th className="border px-4 py-2">Mẫu bánh</th>
                 <th className="border px-4 py-2">Số lượng</th>
                 <th className="border px-4 py-2">Thành tiền</th>
-                <th className="border px-4 py-2">Ngày</th>
+                <th className="border px-4 py-2">Thời điểm</th>
               </tr>
             </thead>
             <tbody>
-              {filteredProducts.map((product, index) => (
+              {aggregatedProducts.map((product, index) => (
                 <tr key={index}>
                   <td className="border px-4 py-2">{index + 1}</td>
                   <td className="border px-4 py-2">{product.name}</td>
                   <td className="border px-4 py-2">{product.quantity}</td>
-                  <td className="border px-4 py-2">{product.revenue}</td>
+                  <td className="border px-4 py-2">{Number(product.revenue).toLocaleString()} VND</td>
                   <td className="border px-4 py-2">{formatDate(product.date)}</td>
                 </tr>
               ))}
@@ -246,7 +209,7 @@ const Dashboard: React.FC = () => {
                 <th className="border px-4 py-2">Số lượng</th>
                 <th className="border px-4 py-2">Đơn giá</th>
                 <th className="border px-4 py-2">Thành tiền</th>
-                <th className="border px-4 py-2">Ngày</th>
+                <th className="border px-4 py-2">Thời điểm</th>
               </tr>
             </thead>
             <tbody>
@@ -256,7 +219,7 @@ const Dashboard: React.FC = () => {
                   <td className="border px-4 py-2">{ingredient.name}</td>
                   <td className="border px-4 py-2">{ingredient.quantity}</td>
                   <td className="border px-4 py-2">{ingredient.price}</td>
-                  <td className="border px-4 py-2">{ingredient.total}</td>
+                  <td className="border px-4 py-2">{Number(ingredient.total).toLocaleString()}</td>
                   <td className="border px-4 py-2">{formatDate(ingredient.date)}</td>
                 </tr>
               ))}
