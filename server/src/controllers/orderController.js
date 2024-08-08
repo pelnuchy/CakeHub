@@ -63,6 +63,31 @@ orderController.getOrderHistory = async (req, res) => {
     }
 }
 
+orderController.updateComletedOrder = async (req, res) => {
+    try {
+        const orderID = req.params.orderid;
+        if (!orderID) {
+            return res.status(404).json({
+                status: 'ERROR',
+                message: "Please provide order ID"
+            });
+        }
+        const updateOrder = await Order.updateOne(
+            { orderID: orderID, status: "delivering" },
+            { status: "completed" }
+        ).lean().exec();
+        return res.status(200).json({
+            status: 'SUCCESS',
+            data: updateOrder
+        });
+    } catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+};
+
 orderController.getOwnOrdered = async (req, res) => {
     try {
         const userID = req.params.userid;
