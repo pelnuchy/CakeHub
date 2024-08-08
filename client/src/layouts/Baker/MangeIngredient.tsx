@@ -1,5 +1,5 @@
-import React from 'react';
-import { FaEdit, FaTrashAlt } from 'react-icons/fa'; // Import the icons you need
+import React, { useState } from 'react';
+import { FaEdit, FaTrashAlt, FaSave } from 'react-icons/fa'; // Import the icons you need
 import Button from '../../components/Button';
 
 interface Ingredient {
@@ -9,11 +9,11 @@ interface Ingredient {
   unit: string;
   quantity: number;
   expiryDate: string;
-  status: string;
+  status: boolean; // Changed to boolean
   paymentMethod: string;
 }
 
-const ingredients: Ingredient[] = [
+const sampleIngredients: Ingredient[] = [
   {
     id: '240542',
     name: 'Dâu tây',
@@ -21,7 +21,7 @@ const ingredients: Ingredient[] = [
     unit: 'g',
     quantity: 10000,
     expiryDate: '16/8/2024',
-    status: 'Chưa hết hạn',
+    status: true,
     paymentMethod: '',
   },
   {
@@ -31,7 +31,7 @@ const ingredients: Ingredient[] = [
     unit: 'g',
     quantity: 10000,
     expiryDate: '16/8/2024',
-    status: 'Chưa hết hạn',
+    status: true,
     paymentMethod: '',
   },
   {
@@ -41,7 +41,7 @@ const ingredients: Ingredient[] = [
     unit: 'g',
     quantity: 10000,
     expiryDate: '16/8/2024',
-    status: 'Chưa hết hạn',
+    status: true,
     paymentMethod: '',
   },
   {
@@ -51,7 +51,7 @@ const ingredients: Ingredient[] = [
     unit: 'g',
     quantity: 9900,
     expiryDate: '16/8/2024',
-    status: 'Chưa hết hạn',
+    status: true,
     paymentMethod: 'Cash on Delivery',
   },
   {
@@ -61,7 +61,7 @@ const ingredients: Ingredient[] = [
     unit: 'g',
     quantity: 10000,
     expiryDate: '16/8/2024',
-    status: 'Chưa hết hạn',
+    status: true,
     paymentMethod: 'Transfer Bank',
   },
   {
@@ -71,7 +71,7 @@ const ingredients: Ingredient[] = [
     unit: 'ml',
     quantity: 10000,
     expiryDate: '16/8/2024',
-    status: 'Chưa hết hạn',
+    status: true,
     paymentMethod: 'Transfer Bank',
   },
   {
@@ -81,7 +81,7 @@ const ingredients: Ingredient[] = [
     unit: 'ml',
     quantity: 10000,
     expiryDate: '16/8/2024',
-    status: 'Chưa hết hạn',
+    status: true,
     paymentMethod: 'Transfer Bank',
   },
   {
@@ -91,7 +91,7 @@ const ingredients: Ingredient[] = [
     unit: 'g',
     quantity: 10000,
     expiryDate: '5/8/2024',
-    status: 'Hết hạn',
+    status: false,
     paymentMethod: 'Transfer Bank',
   },
   {
@@ -101,17 +101,66 @@ const ingredients: Ingredient[] = [
     unit: 'ml',
     quantity: 5000,
     expiryDate: '5/8/2024',
-    status: 'Hết hạn',
+    status: false,
     paymentMethod: 'Transfer Bank',
   },
 ];
 
 const InventoryTable: React.FC = () => {
+  const [ingredients, setIngredients] = useState<Ingredient[]>(sampleIngredients);
+  const [isEditing, setIsEditing] = useState<string | null>(null);
+
+  const handleEdit = (id: string) => {
+    setIsEditing(id);
+  };
+
+  const handleDelete = (id: string) => {
+    setIngredients(ingredients.filter((ingredient) => ingredient.id !== id));
+  };
+
+  const handleAdd = () => {
+    const newIngredient: Ingredient = {
+      id: '0',
+      name: 'New Ingredient',
+      price: '0 đồng',
+      unit: 'g',
+      quantity: 0,
+      expiryDate: '',
+      status: true, // New ingredient status
+      paymentMethod: '',
+    };
+    setIngredients([newIngredient, ...ingredients]);
+  };
+
+  const handleSave = (id: string) => {
+    setIsEditing(null);
+  };
+
+  const handleChange = (id: string, field: string, value: string | number) => {
+    if (field === 'expiryDate') {
+      const today = new Date();
+      const expiryDate = new Date(value as string);
+      const isExpired = expiryDate < today;
+
+      setIngredients(
+        ingredients.map((ingredient) =>
+          ingredient.id === id
+            ? { ...ingredient, expiryDate: value as string, status: !isExpired } // Update status based on expiryDate
+            : ingredient,
+        ),
+      );
+    } else {
+      setIngredients(
+        ingredients.map((ingredient) => (ingredient.id === id ? { ...ingredient, [field]: value } : ingredient)),
+      );
+    }
+  };
+
   return (
     <div className="rounded-lg bg-white p-6 shadow-lg">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Quản lý nguyên liệu tồn kho</h1>
-        <Button>+ Thêm nguyên liệu</Button>
+        <Button onClick={handleAdd}>+ Thêm nguyên liệu</Button>
       </div>
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center space-x-2">
@@ -151,22 +200,103 @@ const InventoryTable: React.FC = () => {
           <tbody>
             {ingredients.map((ingredient) => (
               <tr key={ingredient.id} className="odd:bg-white even:bg-gray-50">
-                <td className="border-b px-4 py-3 text-center">{ingredient.id}</td>
-                <td className="border-b px-4 py-3 text-center">{ingredient.name}</td>
-                <td className="border-b px-4 py-3 text-center">{ingredient.price}</td>
-                <td className="border-b px-4 py-3 text-center">{ingredient.unit}</td>
-                <td className="border-b px-4 py-3 text-center">{ingredient.quantity.toLocaleString()}</td>
-                <td className="border-b px-4 py-3 text-center">{ingredient.expiryDate}</td>
+                <td className="border-b px-4 py-3 text-center">
+                  {isEditing === ingredient.id ? (
+                    <input
+                      type="text"
+                      value={ingredient.id}
+                      onChange={(e) => handleChange(ingredient.id, 'id', e.target.value)}
+                      className="w-full border-b px-2"
+                    />
+                  ) : (
+                    ingredient.id
+                  )}
+                </td>
+                <td className="border-b px-4 py-3 text-center">
+                  {isEditing === ingredient.id ? (
+                    <input
+                      type="text"
+                      value={ingredient.name}
+                      onChange={(e) => handleChange(ingredient.id, 'name', e.target.value)}
+                      className="w-full border-b px-2"
+                    />
+                  ) : (
+                    ingredient.name
+                  )}
+                </td>
+                <td className="border-b px-4 py-3 text-center">
+                  {isEditing === ingredient.id ? (
+                    <input
+                      type="text"
+                      value={ingredient.price}
+                      onChange={(e) => handleChange(ingredient.id, 'price', e.target.value)}
+                      className="w-full border-b px-2"
+                    />
+                  ) : (
+                    ingredient.price
+                  )}
+                </td>
+                <td className="border-b px-4 py-3 text-center">
+                  {isEditing === ingredient.id ? (
+                    <input
+                      type="text"
+                      value={ingredient.unit}
+                      onChange={(e) => handleChange(ingredient.id, 'unit', e.target.value)}
+                      className="w-full border-b px-2"
+                    />
+                  ) : (
+                    ingredient.unit
+                  )}
+                </td>
+                <td className="border-b px-4 py-3 text-center">
+                  {isEditing === ingredient.id ? (
+                    <input
+                      type="number"
+                      value={ingredient.quantity}
+                      onChange={(e) => handleChange(ingredient.id, 'quantity', Number(e.target.value))}
+                      className="w-full border-b px-2"
+                    />
+                  ) : (
+                    ingredient.quantity.toLocaleString()
+                  )}
+                </td>
+                <td className="border-b px-4 py-3 text-center">
+                  {isEditing === ingredient.id ? (
+                    <input
+                      type="text"
+                      value={ingredient.expiryDate}
+                      onChange={(e) => handleChange(ingredient.id, 'expiryDate', e.target.value)}
+                      className="w-full border-b px-2"
+                    />
+                  ) : (
+                    ingredient.expiryDate
+                  )}
+                </td>
                 <td
-                  className={`border-b px-4 py-3 text-center ${ingredient.status === 'Chưa hết hạn' ? 'text-green-500' : 'text-red-500'}`}
+                  className={`border-b px-4 py-3 text-center ${ingredient.status ? 'text-green-500' : 'text-red-500'}`}
                 >
-                  {ingredient.status}
+                  {ingredient.status ? 'Chưa hết hạn' : 'Hết hạn'}
                 </td>
                 <td className="flex justify-center space-x-2 px-4 py-3 text-center">
-                  <button className="text-blue-500 transition duration-300 hover:text-blue-700">
-                    <FaEdit className="h-5 w-5" />
-                  </button>
-                  <button className="text-red-500 transition duration-300 hover:text-red-700">
+                  {isEditing === ingredient.id ? (
+                    <button
+                      onClick={() => handleSave(ingredient.id)}
+                      className="text-blue-500 transition duration-300 hover:text-blue-700"
+                    >
+                      <FaSave className="h-5 w-5" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleEdit(ingredient.id)}
+                      className="text-blue-500 transition duration-300 hover:text-blue-700"
+                    >
+                      <FaEdit className="h-5 w-5" />
+                    </button>
+                  )}
+                  <button
+                    onClick={() => handleDelete(ingredient.id)}
+                    className="text-red-500 transition duration-300 hover:text-red-700"
+                  >
                     <FaTrashAlt className="h-5 w-5" />
                   </button>
                 </td>
