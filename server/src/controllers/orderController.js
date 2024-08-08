@@ -208,17 +208,9 @@ orderController.getListCakesSold = async (req, res) => {
         const cakeSold = await Order.aggregate([
             { $unwind: "$cakes" },
             {
-                $group: {
-                    _id: "$cakes.cake_id",
-                    cakeQuantity: { $sum: "$cakes.cakeQuantity" },
-                    total_price: { $sum: "$cakes.total_price" },
-                    completeTime: { $first: "$completeTime" } // giữ lại thời gian hoàn thành
-                }
-            },
-            {
                 $lookup: {
                     from: "cakes",
-                    localField: "_id",
+                    localField: "cakes.cake_id",
                     foreignField: "cakeID",
                     as: "cakeDetail"
                 }
@@ -226,12 +218,29 @@ orderController.getListCakesSold = async (req, res) => {
             { $unwind: "$cakeDetail" },
             {
                 $addFields: {
-                    cake_id: "$_id",
-                    cakeName: "$cakeDetail.cakeName",
-                    img_url: "$cakeDetail.img_url",
-                    cakeQuantity: "$cakeQuantity",
-                    total_price: "$total_price",
-                    completeTime: "$completeTime"
+                    cakes: {
+                        $mergeObjects: [
+                            "$cakes",
+                            {
+                                cakeName: "$cakeDetail.cakeName",
+                                img_url: "$cakeDetail.img_url",
+                                completeTime: "$completeTime"
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        cakeName: "$cakes.cakeName",
+                        completeTime: "$cakes.completeTime" // Group theo cake_id và completeTime
+                    },
+                    cakeName: { $first: "$cakes.cakeName" },
+                    img_url: { $first: "$cakes.img_url" },
+                    cakeQuantity: { $sum: "$cakes.cakeQuantity" },
+                    total_price: { $sum: "$cakes.total_price" },
+                    completeTime: { $first: "$completeTime" }
                 }
             },
             {
@@ -239,7 +248,6 @@ orderController.getListCakesSold = async (req, res) => {
                     _id: null,
                     cakes: {
                         $push: {
-                            cake_id: "$cake_id",
                             cakeName: "$cakeName",
                             img_url: "$img_url",
                             cakeQuantity: "$cakeQuantity",
