@@ -7,5 +7,6 @@ router.get('/get-own-ordered/:userid', orderController.getOwnOrdered);
 router.get('/get-info-ordering/:userid', orderController.getInfoOrdering);
 router.put('/update-order-checkout/:userid', orderController.orderCheckout);
 router.get('/get-list-cakes-sold', orderController.getListCakesSold);
+router.get('/get-ordered-cake/baker', orderController.getOrderedCake);
 
 export default router;

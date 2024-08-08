@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 // Status steps
-const orderStatuses = ['Đã đặt hàng', 'Đang xử lý', 'Đã xử lý', 'Đã giao', 'Đã nhận hàng'];
+const orderStatuses = ['Đã đặt hàng', 'Đang xử lý', 'Đang giao hàng', 'Đã nhận hàng'];
 
 const translatOrderStatus = (status: string) => {
   switch (status) {
@@ -10,34 +10,34 @@ const translatOrderStatus = (status: string) => {
       return 'Đã đặt hàng';
     case 'handling':
       return 'Đang xử lý';
-    case 'handled':
-      return 'Đã xử lý';
-    case 'delivered':
-      return 'Đã giao';
+    case 'delivering':
+      return 'Đang giao hàng';
     case 'completed':
       return 'Đã nhận hàng';
     default:
-      return 'ordered';
+      return 'Chưa đặt bánh';
   }
 }
 // Get progress percentage based on status
 const getStatusProgress = (status: string) => {
   switch (status) {
     case 'Đã đặt hàng':
-      return '20%';
+      return '3%';
     case 'Đang xử lý':
-      return '40%';
-    case 'Đã xử lý':
-      return '60%';
-    case 'Đã giao':
-      return '80%';
+      return '33.5%';
+    case 'Đang giao hàng':
+      return '65%';
     case 'Đã nhận hàng':
       return '100%';
     default:
       return '0%';
   }
 };
-
+const transSize = (size: number) => {
+  if (size === 10) return 'S';
+  if (size === 16) return 'M';
+  if (size === 24) return 'L';
+};
 // Purchase component
 const Purchase = () => {
   // State to manage orders
@@ -47,7 +47,6 @@ const Purchase = () => {
     setOrders(orders.map((order) => (order.id === id ? { ...order, status: 'Đã nhận hàng' } : order)));
   };
 
-  console.log(orderStatuses)
   useEffect(() => {
     const getOwnOrder = async () => {
       const userInfoString = sessionStorage.getItem('userInfo');
@@ -65,6 +64,7 @@ const Purchase = () => {
     try {
       const response = await axios.get(`http://localhost:8000/get-own-ordered/${userID}`);
       const orders = response.data.data; // Access the 'data' field
+      console.log(orders);
 
       // Map through orders and use the already detailed cake information
       const orderDetails = orders.map((order: any) => {
@@ -78,7 +78,7 @@ const Purchase = () => {
           items: order.cakes.map((cake: any) => ({
             name: cake.cakeName,
             price: `${Number(cake.total_price).toLocaleString()} VND`,
-            size: cake.size,
+            size: transSize(cake.size),
             flavor: cake.flavor,
             quantity: cake.cakeQuantity,
             imgSrc: cake.img_url,
@@ -159,7 +159,7 @@ const Purchase = () => {
             <div className="h-2 w-full rounded-full bg-gray-200">
               <div
                 className="h-full rounded-full bg-primary-500 transition-all duration-500"
-                style={{ width: getStatusProgress(order.status) }}
+                style={{ width:getStatusProgress(order.status) }}
               ></div>
             </div>
             <div className="mt-2 flex justify-between text-sm text-gray-800">
