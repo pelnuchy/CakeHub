@@ -43,8 +43,9 @@ const Purchase = () => {
   // State to manage orders
   const [orders, setOrders] = useState<any[]>([]);
   // Handle button click
-  const handleReceivedClick = (id: any) => {
+  const handleReceivedClick = async (id: any) => {
     setOrders(orders.map((order) => (order.id === id ? { ...order, status: 'Đã nhận hàng' } : order)));
+    await axios.put(`http://localhost:8000/update-completed-order/${id}`);
   };
 
   useEffect(() => {
@@ -104,7 +105,7 @@ const Purchase = () => {
         <div key={order.id} className="mb-8 rounded-lg border border-gray-200 bg-white p-6 shadow-lg">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-xl font-bold text-gray-900">Đơn hàng #{order.id}</h2>
-            {order.status === 'Đã giao' ? (
+            {order.status === 'Đang giao hàng' ? (
               <button
                 onClick={() => handleReceivedClick(order.id)}
                 className="rounded-lg bg-primary-500 px-6 py-2 font-semibold text-white transition duration-300 hover:bg-primary-600"
@@ -159,7 +160,7 @@ const Purchase = () => {
             <div className="h-2 w-full rounded-full bg-gray-200">
               <div
                 className="h-full rounded-full bg-primary-500 transition-all duration-500"
-                style={{ width:getStatusProgress(order.status) }}
+                style={{ width: getStatusProgress(order.status) }}
               ></div>
             </div>
             <div className="mt-2 flex justify-between text-sm text-gray-800">

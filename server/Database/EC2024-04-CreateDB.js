@@ -77,7 +77,7 @@ db.createCollection("orders", {
                         "ordered",
                         "prepared",
                         "handling",
-                        "handled",
+                        "delivering",
                         "completed"
                     ]
                 },
