@@ -74,7 +74,6 @@ const Purchase = () => {
           status: translatOrderStatus(order.status),
           address: order.shippingAddress,
           date: order.shippingDate,
-          orderId: order.orderID,
           total: `${Number(order.total_price).toLocaleString()} VND`,
           items: order.cakes.map((cake: any) => ({
             name: cake.cakeName,

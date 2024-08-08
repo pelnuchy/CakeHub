@@ -75,7 +75,7 @@ db.createCollection("orders", {
                     "bsonType": "string",
                     "enum": [
                         "ordered",
-                        "prepared",
+                        "preparing",
                         "handling",
                         "delivering",
                         "completed"

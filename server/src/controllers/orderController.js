@@ -280,8 +280,10 @@ orderController.getListCakesSold = async (req, res) => {
 
 orderController.getOrderedCake = async (req, res) => {
     try {
+        const status = req.query.status;
+        console.log(req.body);
         const cakeOrdered = await Order.aggregate([
-            { $match: { user_id: "tra1", status: "ordered" } },
+            { $match: { status: status } },
             { $unwind: "$cakes" },
             {
                 $lookup: {
@@ -298,6 +300,12 @@ orderController.getOrderedCake = async (req, res) => {
                     "cakes.size": "$cakeDetail.size",
                     "cakes.img_url": "$cakeDetail.img_url",
                     "cakes.flavor": "$cakeDetail.jamFilling"
+                }
+            },
+            {
+                $project: {
+                    "cakes.cakeQuantity": 0,
+                    "cakes.total_price": 0
                 }
             },
             {
@@ -325,5 +333,32 @@ orderController.getOrderedCake = async (req, res) => {
         });
     }
 };
+
+
+orderController.updateStatusOrder = async (req, res) => {
+    try {
+        const orderID = req.params.orderid;
+        const status = req.query.status;
+        if (!orderID || !status) {
+            return res.status(404).json({
+                status: 'ERROR',
+                message: "Please provide order ID and status"
+            });
+        }
+        const updateOrder = await Order.updateOne(
+            { orderID: orderID },
+            { status: status }
+        ).lean().exec();
+        return res.status(200).json({
+            status: 'SUCCESS',
+            data: updateOrder
+        });
+    } catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+}
 
 export default orderController;

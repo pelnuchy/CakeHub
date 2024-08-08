@@ -1,21 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '../../components/Button';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-interface Order {
-  id: number;
-  name: string;
-  flavor: string;
-  size: string;
-  image: string;
-}
-
-const initialTodaysOrders: Order[] = [
-  { id: 355, name: 'Bánh kem trái cây', flavor: 'Trái cây', size: 'Lớn', image: '/path/to/image1.jpg' },
-  { id: 356, name: 'Bánh kem dâu', flavor: 'Dâu', size: 'Nhỏ', image: '/path/to/image2.jpg' },
-  { id: 357, name: 'Bánh kem sô cô la', flavor: 'Sô cô la', size: 'Trung bình', image: '/path/to/image3.jpg' },
-];
-
-const OrderCard: React.FC<{ order: Order; onAdd?: () => void; onRemove?: () => void }> = ({
+const OrderCard: React.FC<{ order: any; onAdd?: () => void; onRemove?: () => void }> = ({
   order,
   onAdd,
   onRemove,
@@ -46,21 +34,92 @@ const OrderCard: React.FC<{ order: Order; onAdd?: () => void; onRemove?: () => v
 );
 
 const Dashboard: React.FC = () => {
-  const [todaysOrders, setTodaysOrders] = useState<Order[]>(initialTodaysOrders);
-  const [newBakingSessionOrders, setNewBakingSessionOrders] = useState<Order[]>([]);
+  const [todaysOrders, setTodaysOrders] = useState<any[]>([]);
+  const [newBakingSessionOrders, setNewBakingSessionOrders] = useState<any[]>([]);
+  const navigate = useNavigate();
 
-  const addOrderToBakingSession = (order: Order) => {
+  const addOrderToBakingSession = async (order: any) => {
     if (newBakingSessionOrders.length >= 6) {
       alert('Phiên làm bánh mới đã đầy. Không thể thêm đơn hàng mới.');
       return;
     }
     setNewBakingSessionOrders([...newBakingSessionOrders, order]);
     setTodaysOrders(todaysOrders.filter((o) => o.id !== order.id));
+    await axios.put(`http://localhost:8000/update-order-status/baker/${order.id}?status=preparing`);
   };
 
-  const removeOrderFromBakingSession = (order: Order) => {
+  const removeOrderFromBakingSession = async (order: any) => {
     setNewBakingSessionOrders(newBakingSessionOrders.filter((o) => o.id !== order.id));
     setTodaysOrders([...todaysOrders, order]);
+    await axios.put(`http://localhost:8000/update-order-status/baker/${order.id}?status=ordered`);
+  };
+
+  useEffect(() => {
+    const getTodayOrdered = async () => {
+      const todayOrderedServer = await fetchTodayOrdered();
+      const todayPreparingServer = await fetchTodayPreparing();
+      setTodaysOrders(todayOrderedServer);
+      setNewBakingSessionOrders(todayPreparingServer);
+      console.log(todayOrderedServer);
+      console.log(todayPreparingServer);
+    };
+    getTodayOrdered();
+  }, []);
+
+  const fetchTodayOrdered = async (): Promise<any[]> => {
+    try {
+      const ordered = await axios.get(`http://localhost:8000/get-ordered-cake/baker?status=ordered`);
+      const todayOrders = ordered.data.data;
+
+      // Map through orders and use the already detailed cake information
+      const orderDetails = todayOrders.map((order: any) => {
+        return {
+          id: order.orderID,
+          items: order.cakes.map((cake: any) => ({
+            name: cake.cakeName,
+            size: cake.size,
+            flavor: cake.flavor,
+            imgSrc: cake.img_url,
+          })),
+        };
+      });
+      return orderDetails;
+    } catch (error) {
+      console.log('Error fetching order history:', error);
+      return [];
+    }
+  };
+
+
+  const fetchTodayPreparing = async (): Promise<any[]> => {
+    try {
+      const preparing = await axios.get(`http://localhost:8000/get-ordered-cake/baker?status=preparing`);
+      const todayOrders = preparing.data.data;
+
+      // Map through orders and use the already detailed cake information
+      const orderDetails = todayOrders.map((order: any) => {
+        return {
+          id: order.orderID,
+          items: order.cakes.map((cake: any) => ({
+            name: cake.cakeName,
+            size: cake.size,
+            flavor: cake.flavor,
+            imgSrc: cake.img_url,
+          })),
+        };
+      });
+      return orderDetails;
+    } catch (error) {
+      console.log('Error fetching order history:', error);
+      return [];
+    }
+  };
+
+  const handleDashBoardToBakingSession = async () => {
+    for (const order of newBakingSessionOrders) {
+      await axios.put(`http://localhost:8000/update-order-status/baker/${order.id}?status=handling`);
+    }
+    navigate('/baker/bakingsession');
   };
 
   return (
@@ -81,7 +140,7 @@ const Dashboard: React.FC = () => {
           ))}
         </div>
         <div className="mt-4 flex justify-end">
-          <Button className="px-4 py-2">Tiến hành làm bánh</Button>
+          <Button className="px-4 py-2" onClick={handleDashBoardToBakingSession}>Tiến hành làm bánh</Button>
         </div>
       </div>
     </div>
