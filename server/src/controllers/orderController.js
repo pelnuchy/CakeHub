@@ -289,7 +289,6 @@ orderController.getListCakesSold = async (req, res) => {
 orderController.getOrderedCake = async (req, res) => {
     try {
         const status = req.query.status;
-        console.log(req.body);
         const cakeOrdered = await Order.aggregate([
             { $match: { status: status } },
             { $unwind: "$cakes" },
