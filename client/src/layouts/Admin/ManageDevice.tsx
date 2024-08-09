@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { BsTrash, BsPencil} from 'react-icons/bs';
+import React, { useState, useEffect, useRef } from 'react';
+import { BsTrash, BsPencil, BsPlus, BsSave} from 'react-icons/bs';
 import 'react-datepicker/dist/react-datepicker.css';
 
 
@@ -66,10 +66,38 @@ const ManageDevice: React.FC = () => {
 
 
   const [devices, setDevices] = useState<Device[]>(initialDevices);
+  // for adding
+  const [isAdding, setIsAdding] = useState(false);
+  const [newDevice, setNewDevice] = useState<Device | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null); // Reference to the first input field
+  // for editing
   const [editingId, setEditingId] = useState<string | null>(null);
   const [newQuantity, setNewQuantity] = useState<number | null>(null);
   const [isEditButtonClicked, setIsEditButtonClicked] = useState<boolean>(false);
+  // original quantity
   const [originalQuantity, setOriginalQuantity] = useState<number | null>(null); // To store the original quantity
+
+  const handleAdd = () => {
+    // Enter "Add Mode"
+    setIsAdding(true);
+
+    // Create a new device object with default values
+    setNewDevice({
+      id: `#NEW${devices.length + 1}`,
+      brand: '',
+      name: '',
+      volume: '',
+      quantity: 0,
+      category: '',
+      idmanager: '',
+    });
+  };
+
+  useEffect(() => {
+    if (isAdding && inputRef.current) {
+      inputRef.current.focus(); // Automatically focus the first input field
+    }
+  }, [isAdding]);
 
   const handleDelete = (id: string) => {
     // Filter out the device with the given id
@@ -85,20 +113,38 @@ const ManageDevice: React.FC = () => {
     setOriginalQuantity(currentQuantity); // Store the original quantity when editing
   };
 
-  const handleSave = (id: string) => {
-    // Only save if the quantity has changed
-    if (newQuantity !== originalQuantity) {
-      const updatedDevices = devices.map(device => 
-        device.id === id ? { ...device, quantity: newQuantity! } : device
-      );
-      setDevices(updatedDevices);
-    }
-    setEditingId(null);
-    setIsEditButtonClicked(false); // Reset flag
-    setNewQuantity(null);
+  const handleSave = (id: string, mode: number) => {
+     if (mode == 0) // for editing mode
+     {
+      // Only save if the quantity has changed
+      if (newQuantity !== originalQuantity) {
+        const updatedDevices = devices.map(device => 
+          device.id === id ? { ...device, quantity: newQuantity! } : device
+        );
+        setDevices(updatedDevices);
+      }
+      setEditingId(null);
+      setIsEditButtonClicked(false); // Reset flag
+      setNewQuantity(null);
+     }
+     else if (mode == 1) // for adding mode
+     {
+      if (newDevice) {
+        setDevices([...devices, newDevice]);
+      }
+      setIsAdding(false);
+      setNewDevice(null);
+     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAddingInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    if (newDevice) {
+      setNewDevice({ ...newDevice, [name]: value });
+    }
+  };
+
+  const handleEditingInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewQuantity(Number(e.target.value));
   };
 
@@ -108,7 +154,7 @@ const ManageDevice: React.FC = () => {
     // If the user is in editing mode and clicks outside 
     // the input and it's not an edit button click
     if (editingId && !target.closest('.editable-input') && !isEditButtonClicked)
-      handleSave(editingId); // Optional: save changes on click outside
+      handleSave(editingId, 0); // Optional: save changes on click outside
 
     // Reset the flag after the click event
     setIsEditButtonClicked(false);
@@ -124,6 +170,14 @@ const ManageDevice: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h2 className="mb-4 text-4xl font-bold">Quản lý thiết bị làm bánh</h2>
+      {/* Add Button */}
+      <button
+          onClick={handleAdd}
+          className="flex items-center px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+        >
+          <BsPlus className="mr-2" />
+          Thêm thiết bị {/* "Add Device" in Vietnamese */}
+        </button>
       <div className="flex justify-center w-full">
         <div className="grid w-full max-w-4xl grid-cols-1 gap-4 md:grid-cols-2">
           <div className="col-span-1 md:col-span-2">
@@ -153,11 +207,11 @@ const ManageDevice: React.FC = () => {
                           <input
                             type="number"
                             value={newQuantity ?? ''}
-                            onChange={handleInputChange}
-                            onBlur={() => handleSave(Device.id)} // Save on blur (optional)
+                            onChange={handleEditingInputChange}
+                            onBlur={() => handleSave(Device.id, 0)} // Save on blur (optional)
                             onKeyDown={(e) => {
                               if (e.key === 'Enter') {
-                                handleSave(Device.id); // Call your save function
+                                handleSave(Device.id, 0); // Call your save function
                               }
                             }} // Handle enter key
                             className="border border-gray-300 rounded px-0.1 py-0.5"
@@ -180,6 +234,78 @@ const ManageDevice: React.FC = () => {
                     </td>
                     </tr>
                   ))}
+                  {isAdding && newDevice && (
+                    <tr>
+                      <td className="border px-4 py-2">
+                        <input
+                          type="text"
+                          name="id"
+                          value={newDevice.id}
+                          className="border border-gray-300 rounded px-2 py-1"
+                          ref={inputRef} // Focus on this input
+                        />
+                      </td>
+                      <td className="border px-4 py-2">
+                        <input
+                          type="text"
+                          name="brand"
+                          value={newDevice.brand}
+                          onChange={handleAddingInputChange}
+                          className="border border-gray-300 rounded px-2 py-1"
+                        />
+                      </td>
+                      <td className="border px-4 py-2">
+                        <input
+                          type="text"
+                          name="name"
+                          value={newDevice.name}
+                          onChange={handleAddingInputChange}
+                          className="border border-gray-300 rounded px-2 py-1"
+                        />
+                      </td>
+                      <td className="border px-4 py-2">
+                        <input
+                          type="text"
+                          name="volume"
+                          value={newDevice.volume}
+                          onChange={handleAddingInputChange}
+                          className="border border-gray-300 rounded px-2 py-1"
+                        />
+                      </td>
+                      <td className="border px-4 py-2">
+                        <input
+                          type="number"
+                          name="quantity"
+                          value={newDevice.quantity}
+                          onChange={handleAddingInputChange}
+                          className="border border-gray-300 rounded px-2 py-1"
+                        />
+                      </td>
+                      <td className="border px-4 py-2">
+                        <input
+                          type="text"
+                          name="category"
+                          value={newDevice.category}
+                          onChange={handleAddingInputChange}
+                          className="border border-gray-300 rounded px-2 py-1"
+                        />
+                      </td>
+                      <td className="border px-4 py-2">
+                        <input
+                          type="text"
+                          name="idmanager"
+                          value={newDevice.idmanager}
+                          onChange={handleAddingInputChange}
+                          className="border border-gray-300 rounded px-2 py-1"
+                        />
+                      </td>
+                      <td className="border px-4 py-2 text-center">
+                        <button onClick={() => handleSave('', 1)} className="text-green-500 cursor-pointer">
+                          <BsSave />
+                        </button>
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
