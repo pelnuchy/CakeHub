@@ -3,19 +3,21 @@ import Button from '../../components/Button';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const OrderCard: React.FC<{ order: any; onAdd?: () => void; onRemove?: () => void }> = ({
-  order,
-  onAdd,
-  onRemove,
-}) => (
+const OrderCard: React.FC<{ order: any; onAdd?: () => void; onRemove?: () => void }> = ({ order, onAdd, onRemove }) => (
   <div className="m-4 flex transform flex-col items-center justify-between rounded-lg bg-white p-4 shadow-md transition-transform hover:scale-105">
     <h3 className="mb-2 text-lg font-semibold">Đơn hàng #{order.id}</h3>
-    <img src={order.image} alt={order.name} className="mb-2 h-20 w-20 rounded object-cover" />
-    <p className="text-black">{order.name}</p>
-    <p className="text-gray-800">Vị: {order.flavor}</p>
-    <p className="text-gray-800">Kích thước: {order.size}</p>
-    <p className="text-gray-800">Số lượng: {order.quantity}</p>
-    <p className="text-gray-800">Lời chúc: {order.message}</p>
+    <div className="mb-2 max-h-40 w-full overflow-y-auto">
+      {order.items.map((item: any, index: number) => (
+        <div key={index} className="mb-2">
+          <img src={item.imgSrc} alt={item.name} className="mb-2 h-20 w-20 rounded object-cover" />
+          <p className="text-black">{item.name}</p>
+          <p className="text-gray-800">Vị: {item.flavor}</p>
+          <p className="text-gray-800">Kích thước: {item.size}</p>
+          <p className="text-gray-800">Số lượng: {item.quantity}</p>
+          {item.message && <p className="text-gray-800">Lời chúc: {item.message}</p>}
+        </div>
+      ))}
+    </div>
     {onAdd && (
       <button
         onClick={onAdd}
@@ -94,7 +96,6 @@ const Dashboard: React.FC = () => {
     }
   };
 
-
   const fetchTodayPreparing = async (): Promise<any[]> => {
     try {
       const preparing = await axios.get(`http://localhost:8000/get-ordered-cake/baker?status=preparing`);
@@ -131,21 +132,27 @@ const Dashboard: React.FC = () => {
     <div className="container mx-auto p-8">
       <h1 className="mb-8 text-3xl font-bold">Đơn hàng hôm nay</h1>
       <div className="mb-8 rounded-lg bg-pink-100 p-4 shadow-lg">
-        <div className="flex overflow-x-auto pb-4">
-          {todaysOrders.map((order) => (
-            <OrderCard key={order.id} order={order} onAdd={() => addOrderToBakingSession(order)} />
-          ))}
+        <div className="max-h-96 overflow-y-auto">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {todaysOrders.map((order) => (
+              <OrderCard key={order.id} order={order} onAdd={() => addOrderToBakingSession(order)} />
+            ))}
+          </div>
         </div>
       </div>
       <h1 className="mb-8 mt-8 text-3xl font-bold">Phiên làm bánh mới</h1>
       <div className="rounded-lg bg-yellow-100 p-4 shadow-lg">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {newBakingSessionOrders.map((order) => (
-            <OrderCard key={order.id} order={order} onRemove={() => removeOrderFromBakingSession(order)} />
-          ))}
+        <div className="max-h-96 overflow-y-auto">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {newBakingSessionOrders.map((order) => (
+              <OrderCard key={order.id} order={order} onRemove={() => removeOrderFromBakingSession(order)} />
+            ))}
+          </div>
         </div>
         <div className="mt-4 flex justify-end">
-          <Button className="px-4 py-2" onClick={handleDashBoardToBakingSession}>Tiến hành làm bánh</Button>
+          <Button className="px-4 py-2" onClick={handleDashBoardToBakingSession}>
+            Tiến hành làm bánh
+          </Button>
         </div>
       </div>
     </div>
