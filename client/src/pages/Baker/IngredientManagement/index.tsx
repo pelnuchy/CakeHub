@@ -1,5 +1,5 @@
-import Header from '../../../components/AdminBakerHeader';
-import AdminNav from '../../../components/AdminNav';
+import BakerNav from '../../../components/AdminBaker/BakerNav';
+import Header from '../../../components/AdminBaker/Header';
 import Footer from '../../../components/Footer';
 import InventoryTable from '../../../layouts/Baker/MangeIngredient';
 
@@ -7,11 +7,11 @@ const BakerIngredient = () => {
   return (
     <>
       <Header />
-      <AdminNav />
-      <main className="mt-10">
+      <BakerNav />
+      <main>
         <InventoryTable />
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

@@ -1,5 +1,5 @@
-import Header from '../../../components/AdminBakerHeader';
-import AdminNav from '../../../components/AdminNav';
+import Header from '../../../components/AdminBaker/Header';
+import AdminNav from '../../../components/AdminBaker/AdminNav';
 import Footer from '../../../components/Footer';
 import ManageDevice from '../../../layouts/Admin/ManageDevice';
 
@@ -8,10 +8,10 @@ const AdminDashBoard = () => {
     <>
       <Header />
       <AdminNav />
-      <main className='mt-10'>
+      <main>
         <ManageDevice />
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };
