@@ -139,9 +139,8 @@ const ManageDevice: React.FC = () => {
 
   const handleAddingInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    if (newDevice) {
+    if (newDevice)
       setNewDevice({ ...newDevice, [name]: value });
-    }
   };
 
   const handleEditingInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -170,17 +169,24 @@ const ManageDevice: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h2 className="mb-4 text-4xl font-bold">Quản lý thiết bị làm bánh</h2>
-      {/* Add Button */}
-      <button
-          onClick={handleAdd}
-          className="flex items-center px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-        >
-          <BsPlus className="mr-2" />
-          Thêm thiết bị {/* "Add Device" in Vietnamese */}
-        </button>
       <div className="flex justify-center w-full">
         <div className="grid w-full max-w-4xl grid-cols-1 gap-4 md:grid-cols-2">
           <div className="col-span-1 md:col-span-2">
+            {/* Add Button */}
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={handleAdd}
+                className="flex items-center px-4 py-2 text-black font-bold rounded duration-300"
+                style={{
+                  background: 'linear-gradient(to bottom, #ffe72f, #ffa31a)',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(to bottom, #ffdb00, #ff9100)'} // Lighter hover colors
+                onMouseLeave={(e) => e.currentTarget.style.background = 'linear-gradient(to bottom, #ffe72f, #ffa31a)'} // Original colors
+              >
+                <BsPlus className="mr-2" />
+                Thêm thiết bị {/* "Add Device" in Vietnamese */}
+              </button>
+            </div>
             <div className="rounded-lg bg-white p-4 shadow w-full border overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -209,8 +215,12 @@ const ManageDevice: React.FC = () => {
                             value={newQuantity ?? ''}
                             onChange={handleEditingInputChange}
                             onBlur={() => handleSave(Device.id, 0)} // Save on blur (optional)
+                            min={0} // This sets the minimum value to 0
+
                             onKeyDown={(e) => {
-                              if (e.key === 'Enter') {
+                              if (e.key === '-' || e.key === 'ArrowDown' && (newQuantity === 0 || newQuantity === null))
+                                e.preventDefault(); // Prevents typing a negative sign or decreasing below 0
+                              else if (e.key === 'Enter') {
                                 handleSave(Device.id, 0); // Call your save function
                               }
                             }} // Handle enter key
@@ -278,7 +288,14 @@ const ManageDevice: React.FC = () => {
                           name="quantity"
                           value={newDevice.quantity}
                           onChange={handleAddingInputChange}
+                          onBlur={() => handleSave(newDevice.id, 0)}
                           className="border border-gray-300 rounded px-2 py-1"
+                          min={0} // This sets the minimum value to 0
+                          onKeyDown={(e) => {
+                            if (e.key === '-' || e.key === 'ArrowDown' && (newQuantity === 0 || newQuantity === null)) {
+                              e.preventDefault(); // Prevents typing a negative sign or decreasing below 0
+                            }
+                          }}
                         />
                       </td>
                       <td className="border px-4 py-2">
