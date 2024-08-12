@@ -176,7 +176,7 @@ const Dashboard: React.FC = () => {
 
   const totalRevenue = aggregatedProducts.reduce((total, product) => total + Number(product.revenue), 0);
   const totalCost = filteredIngredients.reduce(
-    (total, ingredient) => total + parseInt(ingredient.price.replace(/[^0-9]/g, '')),
+    (total, ingredient) => total + parseInt(ingredient.total.replace(/[^0-9]/g, '')),
     0,
   );
   const totalProfit = totalRevenue - totalCost;
