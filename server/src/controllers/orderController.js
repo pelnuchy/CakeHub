@@ -267,7 +267,6 @@ orderController.getListCakesSold = async (req, res) => {
 
         );
 
-        // Kiểm tra xem giỏ hàng có tồn tại không
         if (!cakeSold) {
             return res.status(404).json({ message: 'No cake sold!' });
         }
@@ -276,6 +275,104 @@ orderController.getListCakesSold = async (req, res) => {
         return res.status(200).json({
             status: 'SUCCESS',
             data: cakeSold
+        });
+    }
+    catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+}
+
+orderController.getListIngredientsSold = async (req, res) => {
+    try {
+        const ingredientSold = await Order.aggregate([
+            { $unwind: "$cakes" },
+            {
+                $lookup: {
+                    from: "cakes",
+                    localField: "cakes.cake_id",
+                    foreignField: "cakeID",
+                    as: "cakeDetail"
+                }
+            },
+            { $unwind: "$cakeDetail" },
+            {
+                $lookup: {
+                    from: "recipes",
+                    localField: "cakeDetail.recipe_id",
+                    foreignField: "recipeID",
+                    as: "recipeDetail"
+                }
+            },
+            {
+                $lookup: {
+                    from: "ingredients",
+                    localField: "recipeDetail.ingredients.ingredID",
+                    foreignField: "ingredientID",
+                    as: "ingredientDetail"
+                }
+            },
+            { $unwind: "$recipeDetail" },
+            { $unwind: "$recipeDetail.ingredients" },
+            { $unwind: "$ingredientDetail" },
+            {
+                $match: {
+                    $expr: {
+                        $eq: [
+                            "$recipeDetail.ingredients.ingredID",
+                            "$ingredientDetail.ingredientID"
+                        ]
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        ingredID: "$recipeDetail.ingredients.ingredID",
+                        completeTime: "$completeTime"
+                    },
+                    ingredID: { $first: "$recipeDetail.ingredients.ingredID" },
+                    ingredName: { $first: "$ingredientDetail.ingredientName" },
+                    ingredQuantity: { $sum: "$recipeDetail.ingredients.ingredQuantity" },
+                    ingredUnit: { $first: "$ingredientDetail.ingredientUnit" },
+                    ingredPrice: { $first: "$ingredientDetail.ingredientPrice" },
+                    completeTime: { $first: "$completeTime" }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    ingredients_list: {
+                        $push: {
+                            name: "$ingredName",
+                            quantity: "$ingredQuantity",
+                            unit: "$ingredUnit",
+                            price: "$ingredPrice",
+                            time: "$completeTime"
+                        }
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    ingredients_list: 1
+                }
+            }
+        ]
+
+        );
+
+        if (!ingredientSold) {
+            return res.status(404).json({ message: 'No ingredients sold!' });
+        }
+
+
+        return res.status(200).json({
+            status: 'SUCCESS',
+            data: ingredientSold
         });
     }
     catch (error) {

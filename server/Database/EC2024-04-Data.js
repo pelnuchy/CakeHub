@@ -277,7 +277,7 @@ db.recipes.insertMany([
         ingredID: "vanila",
         ingredQuantity: 2.5,
         ingredUnit: "g",
-      },
+      }
     ],
     sum_dough: 263,
     sum_cream: 169.5,
@@ -347,7 +347,7 @@ db.recipes.insertMany([
         ingredID: "vanila",
         ingredQuantity: 5,
         ingredUnit: "g",
-      },
+      }
     ],
     sum_dough: 410,
     sum_cream: 282,
@@ -417,7 +417,7 @@ db.recipes.insertMany([
         ingredID: "vanila",
         ingredQuantity: 7.5,
         ingredUnit: "g",
-      },
+      }
     ],
     sum_dough: 648,
     sum_cream: 644.5,
@@ -487,7 +487,7 @@ db.recipes.insertMany([
         ingredID: "vanila",
         ingredQuantity: 2.5,
         ingredUnit: "g",
-      },
+      }
     ],
     sum_dough: 263,
     sum_cream: 169.5,
@@ -557,7 +557,7 @@ db.recipes.insertMany([
         ingredID: "vanila",
         ingredQuantity: 5,
         ingredUnit: "g",
-      },
+      }
     ],
     sum_dough: 410,
     sum_cream: 282,
@@ -627,7 +627,7 @@ db.recipes.insertMany([
         ingredID: "vanila",
         ingredQuantity: 7.5,
         ingredUnit: "g",
-      },
+      }
     ],
     sum_dough: 648,
     sum_cream: 644.5,
@@ -697,7 +697,7 @@ db.recipes.insertMany([
         ingredID: "vanila",
         ingredQuantity: 2.5,
         ingredUnit: "g",
-      },
+      }
     ],
     sum_dough: 263,
     sum_cream: 169.5,
@@ -767,7 +767,7 @@ db.recipes.insertMany([
         ingredID: "vanila",
         ingredQuantity: 5,
         ingredUnit: "g",
-      },
+      }
     ],
     sum_dough: 410,
     sum_cream: 282,
@@ -837,7 +837,7 @@ db.recipes.insertMany([
         ingredID: "vanila",
         ingredQuantity: 7.5,
         ingredUnit: "g",
-      },
+      }
     ],
     sum_dough: 648,
     sum_cream: 644.5,
@@ -907,7 +907,7 @@ db.recipes.insertMany([
         ingredID: "whippingcream",
         ingredQuantity: 150,
         ingredUnit: "ml",
-      },
+      }
     ],
     sum_dough: 256.5,
     sum_cream: 243,
@@ -977,7 +977,7 @@ db.recipes.insertMany([
         ingredID: "whippingcream",
         ingredQuantity: 250,
         ingredUnit: "ml",
-      },
+      }
     ],
     sum_dough: 285.5,
     sum_cream: 405,
@@ -1047,7 +1047,7 @@ db.recipes.insertMany([
         ingredID: "whippingcream",
         ingredQuantity: 375,
         ingredUnit: "ml",
-      },
+      }
     ],
     sum_dough: 630,
     sum_cream: 608,

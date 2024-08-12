@@ -25,6 +25,7 @@ const Dashboard: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [viewByYear, setViewByYear] = useState<boolean>(false);
   const [cakesSold, setCakesSold] = useState<Product[]>([]);
+  const [ingredientsSold, setIngredientsSold] = useState<Ingredient[]>([]);
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
@@ -37,10 +38,18 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const getListCakesSold = async () => {
       const listCakesSold = await fetchListCakesSold();
-      console.log(listCakesSold);
       setCakesSold(listCakesSold);
     };
+
+    const getListIngredientsSold = async () => {
+      const listIngredientsSold = await fetchIngredientsSold();
+      console.log(listIngredientsSold);
+      setIngredientsSold(listIngredientsSold);
+    };
+
     getListCakesSold();
+    getListIngredientsSold();
+
   }, [selectedDate]);
 
   const fetchListCakesSold = async (): Promise<Product[]> => {
@@ -54,7 +63,7 @@ const Dashboard: React.FC = () => {
           quantity: cake.cakeQuantity,
           revenue: cake.total_price,
           date: new Date(cake.completeTime),
-          image: cake.img_url,
+          image: cake.img_url
         })),
       );
 
@@ -65,44 +74,66 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const ingredients: Ingredient[] = [
-    {
-      name: 'Trứng gà',
-      quantity: '1500 quả',
-      price: '5,250 VND',
-      total: '8,000,000 VND',
-      date: new Date('2022-02-10'),
-    },
-    {
-      name: 'Bột mì số 8',
-      quantity: '1000 gram',
-      price: '1,000,000 VND',
-      total: '1,000,000 VND',
-      date: new Date('2023-02-11'),
-    },
-    {
-      name: 'Sữa tươi',
-      quantity: '2000 ml',
-      price: '1,200,000 VND',
-      total: '1,200,000 VND',
-      date: new Date('2023-02-12'),
-    },
-    {
-      name: 'Đường cát trắng',
-      quantity: '1000 gram',
-      price: '750,000 VND',
-      total: '750,000 VND',
-      date: new Date('2024-02-13'),
-    },
-    { name: 'Bơ', quantity: '500 gram', price: '1,250,000 VND', total: '1,250,000 VND', date: new Date('2024-02-14') },
-    {
-      name: 'Kem whipping',
-      quantity: '2000 ml',
-      price: '2,000,000 VND',
-      total: '2,000,000 VND',
-      date: new Date('2024-02-15'),
-    },
-  ];
+  const fetchIngredientsSold = async (): Promise<Ingredient[]> => {
+    try {
+      const response = await axios.get(`http://localhost:8000/get-list-ingredients-sold`);
+      const listIngredientsSold = response.data.data;
+
+      const ingredientSoldDetail = listIngredientsSold.flatMap((listIngredientsSold: any) =>
+        listIngredientsSold.ingredients_list.map((ingredient: any) => ({
+          name: ingredient.name,
+          quantity: ingredient.quantity.toString() + " " + ingredient.unit,
+          price: ingredient.price.toString(),
+          total: (ingredient.price * ingredient.quantity).toString(),
+          date: new Date(ingredient.time)
+        })),
+      );
+
+      return ingredientSoldDetail;
+    } catch (error) {
+      console.log('Error fetching list:', error);
+      return [];
+    }
+  };
+
+  // const ingredients: Ingredient[] = [
+  //   {
+  //     name: 'Trứng gà',
+  //     quantity: '1500 quả',
+  //     price: '5,250 VND',
+  //     total: '8,000,000 VND',
+  //     date: new Date('2022-02-10'),
+  //   },
+  //   {
+  //     name: 'Bột mì số 8',
+  //     quantity: '1000 gram',
+  //     price: '1,000,000 VND',
+  //     total: '1,000,000 VND',
+  //     date: new Date('2023-02-11'),
+  //   },
+  //   {
+  //     name: 'Sữa tươi',
+  //     quantity: '2000 ml',
+  //     price: '1,200,000 VND',
+  //     total: '1,200,000 VND',
+  //     date: new Date('2023-02-12'),
+  //   },
+  //   {
+  //     name: 'Đường cát trắng',
+  //     quantity: '1000 gram',
+  //     price: '750,000 VND',
+  //     total: '750,000 VND',
+  //     date: new Date('2024-02-13'),
+  //   },
+  //   { name: 'Bơ', quantity: '500 gram', price: '1,250,000 VND', total: '1,250,000 VND', date: new Date('2024-02-14') },
+  //   {
+  //     name: 'Kem whipping',
+  //     quantity: '2000 ml',
+  //     price: '2,000,000 VND',
+  //     total: '2,000,000 VND',
+  //     date: new Date('2024-02-15'),
+  //   },
+  // ];
 
   // Ensure selectedDate is not null
   const selectedYear = selectedDate ? selectedDate.getFullYear() : new Date().getFullYear();
@@ -116,18 +147,18 @@ const Dashboard: React.FC = () => {
 
   const aggregatedProducts = viewByYear
     ? filteredProducts.reduce((acc, product) => {
-        const existingProduct = acc.find((p) => p.name === product.name);
-        if (existingProduct) {
-          existingProduct.quantity += product.quantity;
-          existingProduct.revenue = (parseFloat(existingProduct.revenue) + parseFloat(product.revenue)).toFixed(0); // Remove decimal
-        } else {
-          acc.push({ ...product });
-        }
-        return acc;
-      }, [] as Product[])
+      const existingProduct = acc.find((p) => p.name === product.name);
+      if (existingProduct) {
+        existingProduct.quantity += product.quantity;
+        existingProduct.revenue = (parseFloat(existingProduct.revenue) + parseFloat(product.revenue)).toFixed(0); // Remove decimal
+      } else {
+        acc.push({ ...product });
+      }
+      return acc;
+    }, [] as Product[])
     : filteredProducts;
 
-  const filteredIngredients = ingredients.filter((ingredient) => {
+  const filteredIngredients = ingredientsSold.filter((ingredient) => {
     const ingredientYear = ingredient.date.getFullYear();
     const ingredientMonth = ingredient.date.getMonth();
     return ingredientYear === selectedYear && (viewByYear || ingredientMonth === selectedMonth);
@@ -137,10 +168,10 @@ const Dashboard: React.FC = () => {
     return viewByYear
       ? date.getFullYear()
       : date.toLocaleDateString('vi-VN', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-        });
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      });
   };
 
   const totalRevenue = aggregatedProducts.reduce((total, product) => total + Number(product.revenue), 0);
@@ -192,7 +223,7 @@ const Dashboard: React.FC = () => {
                   <td className="border px-4 py-2">{index + 1}</td>
                   <td className="border px-4 py-2">{product.name}</td>
                   <td className="border px-4 py-2">{product.quantity}</td>
-                  <td className="border px-4 py-2">{Number(product.revenue).toLocaleString()} VND</td>
+                  <td className="border px-4 py-2">{Number(product.revenue).toLocaleString()} VNĐ</td>
                   <td className="border px-4 py-2">{formatDate(product.date)}</td>
                 </tr>
               ))}
@@ -218,8 +249,8 @@ const Dashboard: React.FC = () => {
                   <td className="border px-4 py-2">{index + 1}</td>
                   <td className="border px-4 py-2">{ingredient.name}</td>
                   <td className="border px-4 py-2">{ingredient.quantity}</td>
-                  <td className="border px-4 py-2">{ingredient.price}</td>
-                  <td className="border px-4 py-2">{Number(ingredient.total).toLocaleString()}</td>
+                  <td className="border px-4 py-2">{Number(ingredient.price).toLocaleString()} VNĐ</td>
+                  <td className="border px-4 py-2">{Number(ingredient.total).toLocaleString()} VNĐ</td>
                   <td className="border px-4 py-2">{formatDate(ingredient.date)}</td>
                 </tr>
               ))}
