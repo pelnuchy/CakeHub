@@ -5,7 +5,9 @@ const ingredientController = {};
 ingredientController.getIngredients = async (req, res) => {
     try {
         const ingredients = await Ingredient.find().lean().exec();
-        return res.status(200).json({ ingredients });
+        return res.status(200).json({
+            status: 'SUCCESS',
+            data : ingredients});
     }
     catch (error) {
         return res.status(404).json({

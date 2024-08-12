@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaEdit, FaTrashAlt, FaSave } from 'react-icons/fa'; // Import the icons you need
 import Button from '../../components/Button';
-
-interface Ingredient {
+import axios from 'axios';
+import { format } from 'date-fns';
+import exp from 'constants'; interface Ingredient {
   id: string;
   name: string;
   price: string;
@@ -13,101 +14,8 @@ interface Ingredient {
   paymentMethod: string;
 }
 
-const sampleIngredients: Ingredient[] = [
-  {
-    id: '240542',
-    name: 'Dâu tây',
-    price: '20.000 đồng',
-    unit: 'g',
-    quantity: 10000,
-    expiryDate: '16/8/2024',
-    status: true,
-    paymentMethod: '',
-  },
-  {
-    id: '198353',
-    name: 'Chanh dây',
-    price: '20.000 đồng',
-    unit: 'g',
-    quantity: 10000,
-    expiryDate: '16/8/2024',
-    status: true,
-    paymentMethod: '',
-  },
-  {
-    id: '345289',
-    name: 'Sô cô la',
-    price: '20.000 đồng',
-    unit: 'g',
-    quantity: 10000,
-    expiryDate: '16/8/2024',
-    status: true,
-    paymentMethod: '',
-  },
-  {
-    id: '343434',
-    name: 'Trứng',
-    price: '20.000 đồng',
-    unit: 'g',
-    quantity: 9900,
-    expiryDate: '16/8/2024',
-    status: true,
-    paymentMethod: 'Cash on Delivery',
-  },
-  {
-    id: '773003',
-    name: 'Đường',
-    price: '20.000 đồng',
-    unit: 'g',
-    quantity: 10000,
-    expiryDate: '16/8/2024',
-    status: true,
-    paymentMethod: 'Transfer Bank',
-  },
-  {
-    id: '588255',
-    name: 'Sữa',
-    price: '20.000 đồng',
-    unit: 'ml',
-    quantity: 10000,
-    expiryDate: '16/8/2024',
-    status: true,
-    paymentMethod: 'Transfer Bank',
-  },
-  {
-    id: '778894',
-    name: 'Bột bắp',
-    price: '20.000 đồng',
-    unit: 'ml',
-    quantity: 10000,
-    expiryDate: '16/8/2024',
-    status: true,
-    paymentMethod: 'Transfer Bank',
-  },
-  {
-    id: '889542',
-    name: 'Bột Tartar',
-    price: '20.000 đồng',
-    unit: 'g',
-    quantity: 10000,
-    expiryDate: '5/8/2024',
-    status: false,
-    paymentMethod: 'Transfer Bank',
-  },
-  {
-    id: '885252',
-    name: 'Dầu thực vật',
-    price: '20.000 đồng',
-    unit: 'ml',
-    quantity: 5000,
-    expiryDate: '5/8/2024',
-    status: false,
-    paymentMethod: 'Transfer Bank',
-  },
-];
-
 const InventoryTable: React.FC = () => {
-  const [ingredients, setIngredients] = useState<Ingredient[]>(sampleIngredients);
+  const [ingredients, setIngredients] = useState<any[]>([]);
   const [isEditing, setIsEditing] = useState<string | null>(null);
 
   const handleEdit = (id: string) => {
@@ -156,6 +64,44 @@ const InventoryTable: React.FC = () => {
     }
   };
 
+  const checkExpired = (expiryDate: Date) => {
+    const today = new Date();
+    return expiryDate > today;
+  }
+  const formatDate = (isoDate: string): string => {
+    const date = new Date(isoDate);
+    return format(date, 'dd/MM/yyyy');
+  };
+  useEffect(() => {
+    const getIngredients = async () => {
+      const ingredientsServer = await fetchIngredients();
+      setIngredients(ingredientsServer);
+      console.log(ingredientsServer);
+    };
+    getIngredients();
+  }, []);
+
+  const fetchIngredients = async (): Promise<any[]> => {
+    try {
+      const ingredients = await axios.get(`http://localhost:8000/baker/get-ingredients`);
+      const ingredientData = ingredients.data.data;
+      const ingredientDetails = ingredientData.map((ingre: any) => {
+        return {
+          id: ingre.ingredientID,
+          name: ingre.ingredientName,
+          quantity: ingre.ingredientQuantity,
+          unit: ingre.ingredientUnit,
+          price: ingre.ingredientPrice,
+          expiryDate: formatDate(ingre.expired),
+          status: checkExpired(new Date(ingre.expired))
+        };
+      });
+      return ingredientDetails;
+    } catch (error) {
+      console.log('Error fetching ingredients:', error);
+      return [];
+    }
+  };
   return (
     <div className="rounded-lg bg-white p-6 shadow-lg">
       <div className="mb-6 flex items-center justify-between">
@@ -229,11 +175,11 @@ const InventoryTable: React.FC = () => {
                     <input
                       type="text"
                       value={ingredient.price}
-                      onChange={(e) => handleChange(ingredient.id, 'price', e.target.value)}
+                      onChange={(e) => handleChange(ingredient.id, 'price', Number(e.target.value))}
                       className="w-full border-b px-2"
                     />
                   ) : (
-                    ingredient.price
+                    ingredient.price.toLocaleString() + ' VND'
                   )}
                 </td>
                 <td className="border-b px-4 py-3 text-center">

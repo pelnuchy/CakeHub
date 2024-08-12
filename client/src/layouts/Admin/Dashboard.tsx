@@ -183,7 +183,29 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-3">{/* Revenue, Spending, and Profit cards */}</div>
+      <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div className="rounded-lg bg-white p-4 text-left shadow">
+          <h2 className="mb-2 ml-4 text-xl font-bold">Tổng doanh thu</h2>
+          <p className="ml-4 text-3xl font-semibold text-green-500">{totalRevenue.toLocaleString()} VNĐ</p>
+          <div className="h-26 overflow-hidden">
+            <img src={revenueImg} alt="revenue_img" className="h-21 w-full object-cover" />
+          </div>
+        </div>
+        <div className="rounded-lg bg-white p-4 text-left shadow">
+          <h2 className="mb-2 ml-4 text-xl font-bold">Tổng chi tiêu</h2>
+          <p className="ml-4 text-3xl font-semibold text-red-500">{totalCost.toLocaleString()} VNĐ</p>
+          <div className="h-24">
+            <img src={spendingImg} alt="spending_img" className="h-h1 mt-4 w-full object-cover" />
+          </div>
+        </div>
+        <div className="rounded-lg bg-white p-4 text-left shadow">
+          <h2 className="mb-2 ml-4 text-xl font-bold">Tổng lợi nhuận</h2>
+          <p className="ml-4 text-3xl font-semibold text-yellow-500">{totalProfit.toLocaleString()} VNĐ</p>
+          <div className="h-26 overflow-hidden">
+            <img src={profitImg} alt="profit_img" className="h-21 w-full object-cover" />
+          </div>
+        </div>
+      </div>
       <div className="mb-8 flex items-center justify-between">
         <button
           onClick={handleYearToggle}
