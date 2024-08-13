@@ -84,7 +84,7 @@ const Dashboard: React.FC = () => {
           name: ingredient.name,
           quantity: ingredient.quantity.toString() + " " + ingredient.unit,
           price: ingredient.price.toString(),
-          total: (ingredient.price * ingredient.quantity / ingredient.perQuantity).toFixed(2).toString(),
+          total: (ingredient.price * ingredient.quantity / ingredient.perQuantity).toString(),
           date: new Date(ingredient.time)
         })),
       );
@@ -138,7 +138,7 @@ const Dashboard: React.FC = () => {
 
   const totalRevenue = aggregatedProducts.reduce((total, product) => total + Number(product.revenue), 0);
   const totalCost = filteredIngredients.reduce(
-    (total, ingredient) => total + parseInt(ingredient.total.replace(/[^0-9]/g, '')),
+    (total, ingredient) => total + parseInt(ingredient.total),
     0,
   );
   const totalProfit = totalRevenue - totalCost;
@@ -191,7 +191,7 @@ const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         <div className="rounded-lg bg-white p-4 shadow">
           <h2 className="mb-4 text-xl font-bold">Danh sách sản phẩm đã bán</h2>
-          <table className="w-full text-left">
+          <table className="w-full text-center">
             <thead>
               <tr>
                 <th className="border px-4 py-2">STT</th>
@@ -216,7 +216,7 @@ const Dashboard: React.FC = () => {
         </div>
         <div className="rounded-lg bg-white p-4 shadow">
           <h2 className="mb-4 text-xl font-bold">Danh sách nguyên liệu đã chi tiêu</h2>
-          <table className="w-full text-left">
+          <table className="w-full text-center">
             <thead>
               <tr>
                 <th className="border px-4 py-2">STT</th>
