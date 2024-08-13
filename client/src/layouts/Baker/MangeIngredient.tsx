@@ -7,6 +7,7 @@ import exp from 'constants'; interface Ingredient {
   id: string;
   name: string;
   price: string;
+  perquantity: number;
   unit: string;
   quantity: number;
   expiryDate: string;
@@ -31,6 +32,7 @@ const InventoryTable: React.FC = () => {
       id: '0',
       name: 'New Ingredient',
       price: '0 đồng',
+      perquantity: 0,
       unit: 'g',
       quantity: 0,
       expiryDate: '',
@@ -70,7 +72,7 @@ const InventoryTable: React.FC = () => {
   }
   const formatDate = (isoDate: string): string => {
     const date = new Date(isoDate);
-    return format(date, 'dd/MM/yyyy');
+    return format(date, 'yyyy-MM-dd');
   };
   useEffect(() => {
     const getIngredients = async () => {
@@ -90,8 +92,9 @@ const InventoryTable: React.FC = () => {
           id: ingre.ingredientID,
           name: ingre.ingredientName,
           quantity: ingre.ingredientQuantity,
+          perquantity: ingre.ingredientPerQuantity,
           unit: ingre.ingredientUnit,
-          price: ingre.ingredientPrice,
+          price: ingre.ingredientPerPrice,
           expiryDate: formatDate(ingre.expired),
           status: checkExpired(new Date(ingre.expired))
         };
@@ -136,6 +139,7 @@ const InventoryTable: React.FC = () => {
               <th className="border-b px-4 py-3">ID nguyên liệu</th>
               <th className="border-b px-4 py-3">Tên nguyên liệu</th>
               <th className="border-b px-4 py-3">Đơn giá</th>
+              <th className="border-b px-4 py-3">Per Quantity</th>
               <th className="border-b px-4 py-3">Đơn vị</th>
               <th className="border-b px-4 py-3">Số lượng</th>
               <th className="border-b px-4 py-3">Hạn sử dụng</th>
@@ -180,6 +184,19 @@ const InventoryTable: React.FC = () => {
                     />
                   ) : (
                     ingredient.price.toLocaleString() + ' VND'
+                  )}
+
+                </td>
+                <td className="border-b px-4 py-3 text-center">
+                  {isEditing === ingredient.id ? (
+                    <input
+                      type="number"
+                      value={ingredient.perquantity}
+                      onChange={(e) => handleChange(ingredient.id, 'perquantity', Number(e.target.value))}
+                      className="w-full border-b px-2"
+                    />
+                  ) : (
+                    ingredient.perquantity.toLocaleString()
                   )}
                 </td>
                 <td className="border-b px-4 py-3 text-center">

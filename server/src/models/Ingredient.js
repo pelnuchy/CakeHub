@@ -14,11 +14,15 @@ const ingredientSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    ingredientPerQuantity: {
+        type: Number,
+        required: true
+    },
     ingredientUnit: {
         type: String,
         required: true
     },
-    ingredientPrice: {
+    ingredientPerPrice: {
         type: Number,
         required: true
     },
