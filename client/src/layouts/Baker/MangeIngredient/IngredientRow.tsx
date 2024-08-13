@@ -54,10 +54,10 @@ const IngredientRow: React.FC<IngredientRowProps> = ({
             className="w-full border-b px-2"
           />
         ) : (
-          ingredient.price.toLocaleString() + ' VND'
+          Number(ingredient.price).toLocaleString() + ' VND'
         )}
       </td>
-      <td className="border-b px-4 py-3 text-center">
+      <td className="border-b py-3 pl-4 text-left">
         {isEditing === ingredient.id ? (
           <input
             type="number"
@@ -66,10 +66,10 @@ const IngredientRow: React.FC<IngredientRowProps> = ({
             className="w-full border-b px-2"
           />
         ) : (
-          ingredient.perquantity.toLocaleString()
+          '/ ' + ingredient.perquantity.toLocaleString()
         )}
       </td>
-      <td className="border-b px-4 py-3 text-center">
+      <td className="border-b py-3 text-left">
         {isEditing === ingredient.id ? (
           <input
             type="text"

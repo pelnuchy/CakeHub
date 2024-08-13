@@ -44,6 +44,7 @@ const AddIngredientPopup: React.FC<AddIngredientPopupProps> = ({ onSave, onClose
       !!ingredient.name &&
       !!ingredient.unit &&
       !!ingredient.price &&
+      !!ingredient.perquantity &&
       Number(ingredient.quantity) >= 0
     );
   };
@@ -63,7 +64,7 @@ const AddIngredientPopup: React.FC<AddIngredientPopupProps> = ({ onSave, onClose
               name="id"
               value={ingredient.id}
               onChange={handleChange}
-              className="my-1 block w-full border border-gray-300 pl-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+              className="my-1 block w-full border border-gray-600 pl-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
               placeholder="Nhập mã nguyên liệu"
             />
           </div>
@@ -77,42 +78,13 @@ const AddIngredientPopup: React.FC<AddIngredientPopupProps> = ({ onSave, onClose
               name="name"
               value={ingredient.name}
               onChange={handleChange}
-              className="my-1 block w-full border border-gray-300 pl-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+              className="my-1 block w-full border border-gray-600 pl-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
               placeholder="Nhập tên nguyên liệu"
             />
           </div>
           <div>
-            <label htmlFor="quantity" className="block text-sm font-medium">
-              Số Lượng
-            </label>
-            <input
-              id="quantity"
-              type="number"
-              name="quantity"
-              value={ingredient.quantity}
-              onChange={handleChange}
-              className="my-1 block w-full border border-gray-300 pl-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-              placeholder="Nhập số lượng"
-              min="0"
-            />
-          </div>
-          <div>
-            <label htmlFor="unit" className="block text-sm font-medium">
-              Đơn Vị
-            </label>
-            <input
-              id="unit"
-              type="text"
-              name="unit"
-              value={ingredient.unit}
-              onChange={handleChange}
-              className="my-1 block w-full border border-gray-300 pl-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-              placeholder="Nhập đơn vị"
-            />
-          </div>
-          <div>
             <label htmlFor="price" className="block text-sm font-medium">
-              Giá
+              Giá (VND)
             </label>
             <input
               id="price"
@@ -120,8 +92,49 @@ const AddIngredientPopup: React.FC<AddIngredientPopupProps> = ({ onSave, onClose
               name="price"
               value={ingredient.price}
               onChange={handleChange}
-              className="my-1 block w-full border border-gray-300 pl-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-              placeholder="Nhập giá"
+              className="my-1 block w-full border border-gray-600 pl-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+              placeholder="Nhập đơn giá"
+            />
+          </div>
+          <div>
+            <label htmlFor="unit" className="block text-sm font-medium">
+              Đơn vị tính
+            </label>
+            <input
+              id="perquantity"
+              type="number"
+              name="perquantity"
+              value={ingredient.perquantity}
+              onChange={handleChange}
+              className="my-1 block w-full border border-gray-600 pl-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+              placeholder="Nhập số lượng"
+              min="0"
+            />
+            <select
+              id="unit"
+              name="unit"
+              value={ingredient.unit}
+              onChange={handleChange}
+              className="my-1 block w-full border border-gray-600 pl-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+            >
+              <option value="g">g</option>
+              <option value="ml">ml</option>
+              <option value="quả">quả</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="quantity" className="block text-sm font-medium">
+              Số lượng
+            </label>
+            <input
+              id="quantity"
+              type="number"
+              name="quantity"
+              value={ingredient.quantity}
+              onChange={handleChange}
+              className="my-1 block w-full border border-gray-600 pl-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+              placeholder="Nhập số lượng"
+              min="0"
             />
           </div>
           <div>
@@ -134,7 +147,7 @@ const AddIngredientPopup: React.FC<AddIngredientPopupProps> = ({ onSave, onClose
               name="expiryDate"
               value={ingredient.expiryDate}
               onChange={handleChange}
-              className="my-1 block w-full border border-gray-300 pl-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+              className="my-1 block w-full border border-gray-600 pl-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
             />
           </div>
         </div>

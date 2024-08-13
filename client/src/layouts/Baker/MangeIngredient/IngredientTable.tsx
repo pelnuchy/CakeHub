@@ -23,12 +23,12 @@ const IngredientTable: React.FC<IngredientTableProps> = ({
     <table className="min-w-full border border-gray-300 bg-white">
       <thead>
         <tr className="bg-gray-100">
-          <th className="border-b px-4 py-3">ID nguyên liệu</th>
+          <th className="border-b px-4 py-3">Mã nguyên liệu</th>
           <th className="border-b px-4 py-3">Tên nguyên liệu</th>
           <th className="border-b px-4 py-3">Đơn giá</th>
-          <th className="border-b px-4 py-3">Per Quantity</th>
-          <th className="border-b px-4 py-3">Đơn vị</th>
-          <th className="border-b px-4 py-3">Số lượng</th>
+          <th className="border-b"></th>
+          <th className="border-b py-3">Đơn vị</th>
+          <th className="border-b px-4 py-3">Số lượng tồn kho</th>
           <th className="border-b px-4 py-3">Hạn sử dụng</th>
           <th className="border-b px-4 py-3">Status</th>
           <th className="border-b px-4 py-3">Sửa / Xóa</th>
