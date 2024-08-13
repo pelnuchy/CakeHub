@@ -173,7 +173,7 @@ const ManageDevice: React.FC = () => {
         <div className="grid w-full max-w-4xl grid-cols-1 gap-4 md:grid-cols-2">
           <div className="col-span-1 md:col-span-2">
             {/* Add Button */}
-            <div className="flex justify-end mt-4">
+            <div className="flex justify-end mt-4 mb-4">
               <button
                 onClick={handleAdd}
                 className="flex items-center px-4 py-2 text-black font-bold rounded duration-300"
@@ -188,7 +188,7 @@ const ManageDevice: React.FC = () => {
               </button>
             </div>
             <div className="rounded-lg bg-white p-4 shadow w-full border overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+              <table className="w-full border-collapse text-center">
                 <thead>
                   <tr>
                     <th className="border px-4 py-2 text-center">Mã thiết bị</th>

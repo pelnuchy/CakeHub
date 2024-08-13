@@ -11,7 +11,7 @@ const AdminDashBoard = () => {
       <main>
         <Dasboard />
       </main>
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
 };
