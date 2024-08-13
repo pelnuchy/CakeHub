@@ -1,27 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BsTrash, BsPencil, BsPlus, BsSave } from 'react-icons/bs';
 import 'react-datepicker/dist/react-datepicker.css';
-<<<<<<< Updated upstream
 import axios from 'axios';
-
-=======
 import { Device } from '../Admin/DeviceType';
 import AddDevicePopup from '../../components/AddDevicePopup';
->>>>>>> Stashed changes
 
 
 const ManageDevice: React.FC = () => {
   const [devices, setDevices] = useState<Device[]>([]);
 
   // for adding
-<<<<<<< Updated upstream
-  const [isAdding, setIsAdding] = useState(false);
-  const [newDevice, setNewDevice] = useState<Device | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null); // Reference to the first input field
-
-=======
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup visibility
->>>>>>> Stashed changes
   // for editing
   const [editingId, setEditingId] = useState<string | null>(null);
   const [newQuantity, setNewQuantity] = useState<number | null>(null);
@@ -44,16 +33,6 @@ const ManageDevice: React.FC = () => {
   //     document.removeEventListener('click', handleClickOutside);
   //   };
   // }, [editingId]);
-
-  useEffect(() => {
-    const getListDevices = async () => {
-      const listDevices = await fetchListDevices();
-      setDevices(listDevices);
-    };
-
-    getListDevices();
-
-  }, [newDevice]);
 
   const fetchListDevices = async (): Promise<Device[]> => {
     try {
@@ -97,34 +76,9 @@ const ManageDevice: React.FC = () => {
     setOriginalQuantity(currentQuantity); // Store the original quantity when editing
   };
 
-<<<<<<< Updated upstream
-  const handleSave = (id: string, mode: number) => {
-    if (mode == 0) // for editing mode
-    {
-      // Only save if the quantity has changed
-      if (newQuantity !== originalQuantity) {
-        const updatedDevices = devices.map(device =>
-          device.id === id ? { ...device, quantity: newQuantity! } : device
-        );
-        setDevices(updatedDevices);
-      }
-      setEditingId(null);
-      setIsEditButtonClicked(false); // Reset flag
-      setNewQuantity(null);
-    }
-    else if (mode == 1) // for adding mode
-    {
-      if (newDevice) {
-        setDevices([...devices, newDevice]);
-      }
-      setIsAdding(false);
-      setNewDevice(null);
-    }
-=======
   const handleAddingSave = (device: Device) => {
     setDevices([device, ...devices]);
     setIsPopupOpen(false); // Close the popup
->>>>>>> Stashed changes
   };
 
   const handleEditingSave = (id: string) => {
@@ -255,52 +209,3 @@ const ManageDevice: React.FC = () => {
 };
 
 export default ManageDevice;
-
-
-// const initialDevices: Device[] = [
-//   {
-//     id: '#B15GF',
-//     brand: 'BIGSTAR',
-//     name: 'Máy đánh trứng, đánh kem B15GF',
-//     volume: '15L',
-//     quantity: 2,
-//     category: 'Máy đánh trứng, đánh kem',
-//     idmanager: 'admin01',
-//   },
-//   {
-//     id: '#B30',
-//     brand: 'BIGSTAR',
-//     name: 'Máy trộn bột, nhào bột B30L',
-//     volume: '30L',
-//     quantity: 2,
-//     category: 'Máy trộn bột',
-//     idmanager: 'admin01',
-//   },
-//   {
-//     id: '#BJY-E13KW-2BD',
-//     brand: 'Berjaya',
-//     name: 'Lò nướng Berjaya 2 tầng 4 khay',
-//     volume: '1295L',
-//     quantity: 2,
-//     category: 'Lò nướng',
-//     idmanager: 'admin01',
-//   },
-//   {
-//     id: '#SL-24C4',
-//     brand: 'Alaska',
-//     name: 'Tủ mát Alaska SL-24C4, 4 cánh',
-//     volume: '2400L',
-//     quantity: 1,
-//     category: 'Tủ lạnh',
-//     idmanager: 'admin01',
-//   },
-//   {
-//     id: '#TBP1500-2',
-//     brand: 'Turbo Air',
-//     name: 'Tủ trữ lạnh bánh 3 tầng 1m5 Turbo Air',
-//     volume: '615L',
-//     quantity: 1,
-//     category: 'Tủ giữ mát',
-//     idmanager: 'admin01',
-//   },
-// ];
