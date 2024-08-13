@@ -326,10 +326,13 @@ db.createCollection("ingredients", {
                 "ingredientQuantity": {
                     "bsonType": "number"
                 },
+                "ingredientPerQuantity": {
+                    "bsonType": "number"
+                },
                 "ingredientUnit": {
                     "bsonType": "string"
                 },
-                "ingredientPrice": {
+                "ingredientPerPrice": {
                     "bsonType": "number"
                 },
                 "expired": {
