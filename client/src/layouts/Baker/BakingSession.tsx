@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import OrderList from '../../components/Order/SessionListCard';
 import OrderCard from '../../components/Order/BakingSessionCard';
-
+import axios from 'axios';
 interface Cake {
   name: string;
   price: number;
@@ -91,6 +91,40 @@ const BakingSession: React.FC = () => {
 
   const handleConfirm = (id: number) => {
     setOrders((prevOrders) => prevOrders.map((order) => (order.id === id ? { ...order, status: 'completed' } : order)));
+  };
+
+  useEffect(() => {
+    const getTodayOrdered = async () => {
+      const todayHandlingServer = await fetchHandlingToday();
+      setOrders(todayHandlingServer);
+      console.log(todayHandlingServer);
+    };
+    getTodayOrdered();
+  }, []);
+
+  const fetchHandlingToday = async (): Promise<any[]> => {
+    try {
+      const ordered = await axios.get(`http://localhost:8000/get-status-cake/baker?status=handling`);
+      const handlingOrders = ordered.data.data;
+
+      const orderDetails = handlingOrders.map((order: any) => {
+        return {
+          id: order.orderID,
+          items: order.cakes.map((cake: any) => ({
+            name: cake.cakeName,
+            size: cake.size,
+            flavor: cake.flavor,
+            quantity: cake.cakeQuantity,
+            message: cake.cakeMessage,
+            imgSrc: cake.img_url,
+          })),
+        };
+      });
+      return orderDetails;
+    } catch (error) {
+      console.log('Error fetching order history:', error);
+      return [];
+    }
   };
 
   return (
