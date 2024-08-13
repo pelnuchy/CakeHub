@@ -95,11 +95,11 @@ const BakingSession: React.FC = () => {
 
   useEffect(() => {
     const getTodayOrdered = async () => {
-      const todayHandlingServer = await fetchHandlingToday();
-      setOrders(todayHandlingServer);
-      console.log(todayHandlingServer);
+      //const todayHandlingServer = await fetchHandlingToday();
+      //setOrders(todayHandlingServer);
+      //console.log(todayHandlingServer);
     };
-    getTodayOrdered();
+    //getTodayOrdered();
   }, []);
 
   const fetchHandlingToday = async (): Promise<any[]> => {
