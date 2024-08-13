@@ -24,10 +24,10 @@ const Footer = () => {
           <a href="/FAQ" className="hover:underline">
             FAQ
           </a>
-          <a href="!#" className="hover:underline">
+          <a href="/SecurityPolicy" className="hover:underline">
             Chính sách bảo mật
           </a>
-          <a href="!#" className="hover:underline">
+          <a href="/ToS" className="hover:underline">
             Các điều khoản và điều kiện
           </a>
           <a href="!#" className="hover:underline">
