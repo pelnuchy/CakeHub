@@ -84,7 +84,7 @@ const Dashboard: React.FC = () => {
           name: ingredient.name,
           quantity: ingredient.quantity.toString() + " " + ingredient.unit,
           price: ingredient.price.toString(),
-          total: (ingredient.price * ingredient.quantity).toString(),
+          total: (ingredient.price * ingredient.quantity / ingredient.perQuantity).toFixed(2).toString(),
           date: new Date(ingredient.time)
         })),
       );

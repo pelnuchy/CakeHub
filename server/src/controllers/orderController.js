@@ -336,8 +336,9 @@ orderController.getListIngredientsSold = async (req, res) => {
                     ingredID: { $first: "$recipeDetail.ingredients.ingredID" },
                     ingredName: { $first: "$ingredientDetail.ingredientName" },
                     ingredQuantity: { $sum: "$recipeDetail.ingredients.ingredQuantity" },
+                    ingredPerQuantity: { $first: "$ingredientDetail.ingredientPerQuantity" },
                     ingredUnit: { $first: "$ingredientDetail.ingredientUnit" },
-                    ingredPrice: { $first: "$ingredientDetail.ingredientPrice" },
+                    ingredPrice: { $first: "$ingredientDetail.ingredientPerPrice" },
                     completeTime: { $first: "$completeTime" }
                 }
             },
@@ -348,6 +349,7 @@ orderController.getListIngredientsSold = async (req, res) => {
                         $push: {
                             name: "$ingredName",
                             quantity: "$ingredQuantity",
+                            perQuantity: "$ingredPerQuantity",
                             unit: "$ingredUnit",
                             price: "$ingredPrice",
                             time: "$completeTime"
