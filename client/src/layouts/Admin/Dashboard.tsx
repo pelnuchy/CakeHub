@@ -96,44 +96,6 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  // const ingredients: Ingredient[] = [
-  //   {
-  //     name: 'Trứng gà',
-  //     quantity: '1500 quả',
-  //     price: '5,250 VND',
-  //     total: '8,000,000 VND',
-  //     date: new Date('2022-02-10'),
-  //   },
-  //   {
-  //     name: 'Bột mì số 8',
-  //     quantity: '1000 gram',
-  //     price: '1,000,000 VND',
-  //     total: '1,000,000 VND',
-  //     date: new Date('2023-02-11'),
-  //   },
-  //   {
-  //     name: 'Sữa tươi',
-  //     quantity: '2000 ml',
-  //     price: '1,200,000 VND',
-  //     total: '1,200,000 VND',
-  //     date: new Date('2023-02-12'),
-  //   },
-  //   {
-  //     name: 'Đường cát trắng',
-  //     quantity: '1000 gram',
-  //     price: '750,000 VND',
-  //     total: '750,000 VND',
-  //     date: new Date('2024-02-13'),
-  //   },
-  //   { name: 'Bơ', quantity: '500 gram', price: '1,250,000 VND', total: '1,250,000 VND', date: new Date('2024-02-14') },
-  //   {
-  //     name: 'Kem whipping',
-  //     quantity: '2000 ml',
-  //     price: '2,000,000 VND',
-  //     total: '2,000,000 VND',
-  //     date: new Date('2024-02-15'),
-  //   },
-  // ];
 
   // Ensure selectedDate is not null
   const selectedYear = selectedDate ? selectedDate.getFullYear() : new Date().getFullYear();
