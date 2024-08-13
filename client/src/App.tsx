@@ -24,6 +24,9 @@ const BakerDashboard = lazy(() => import('./pages/Baker/Dashboard'));
 const BakingSession = lazy(() => import('./pages/Baker/BakingSession'));
 const SearchResult = lazy(() => import('./pages/SearchResult'));
 const BakerIngredient = lazy(() => import('./pages/Baker/IngredientManagement'));
+const SecurityPolicy = lazy(() => import('./pages/SecurityPolicy'));
+const TermsofService = lazy(() => import('./pages/ToS'));
+
 
 export default function App() {
   const loading = usePageLoading();
@@ -53,6 +56,8 @@ export default function App() {
           <Route path="/baker/bakingsession" element={<BakingSession />} />
           <Route path="/baker/ingredient" element={<BakerIngredient />} />
           <Route path="/search/:keyword" element={<SearchResult />} />
+          <Route path="/securitypolicy" element={<SecurityPolicy/>}/>
+          <Route path="/ToS" element={<TermsofService/>}/>
         </Routes>
       </Suspense>
     </div>
