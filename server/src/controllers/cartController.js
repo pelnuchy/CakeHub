@@ -69,12 +69,11 @@ cartController.removeCakeFromCart = async (req, res) => {
     try {
         const userID = req.query.userID;
         const itemID = req.query.itemID;
-        console.log(userID, itemID);
         const cart = await Cart.updateOne(
             { user_id: userID },
             { $pull: { cakes: { cake_id: itemID } } } //$pull: xóa phần tử trong mảng
         );
-
+        
         return res.status(200).json({
             status: 'SUCCESS',
             message: 'Cake removed from cart',
