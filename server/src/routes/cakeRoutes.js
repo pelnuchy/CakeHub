@@ -7,4 +7,5 @@ router.get('/get-all-cakes-occasion/:occasion', cakeController.getAllCakesOccasi
 router.get('/get-details-cake/:id', cakeController.getDetailCake);
 router.get('/get-cake-related/:id', cakeController.getRelatedCakes);
 router.get("/search-cakes", cakeController.searchCakesByKeyword);
+
 export default router; 
