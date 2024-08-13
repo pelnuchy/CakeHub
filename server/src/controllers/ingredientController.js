@@ -20,13 +20,14 @@ ingredientController.getIngredients = async (req, res) => {
 
 ingredientController.addIngredient = async (req, res) => {
     try {
-        const { id, name, price, unit, quantity, expiryDate } = req.body;
+        const { id, name, price, unit, quantity, perquantity, expiryDate } = req.body;
         const ingredient = await Ingredient.create({
             ingredientID: id,
             ingredientName: name,
             ingredientPerPrice: price,
             ingredientUnit: unit,
             ingredientQuantity: quantity,
+            ingredientPerQuantity: perquantity,
             expired: expiryDate
         });
         return res.status(201).json({
@@ -46,10 +47,11 @@ ingredientController.updateIngredient = async (req, res) => {
     try {
         const { id } = req.params;
         console.log(id);
-        const { name, price, unit, quantity, expiryDate } = req.body;
+        const { name, price, unit, quantity, perquantity, expiryDate } = req.body;
         const ingredient = await Ingredient.findOneAndUpdate({ ingredientID: id }, {
             ingredientName: name,
             ingredientPerPrice: price,
+            ingredientPerQuantity: perquantity, 
             ingredientUnit: unit,
             ingredientQuantity: quantity,
             expired: expiryDate
