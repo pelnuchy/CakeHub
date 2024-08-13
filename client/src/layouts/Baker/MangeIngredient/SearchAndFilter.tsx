@@ -17,11 +17,6 @@ const SearchAndFilter: React.FC = () => {
         </select>
         <span className="font-semibold">mục</span>
       </div>
-      <input
-        type="text"
-        placeholder="Search..."
-        className="rounded border border-primary-500 px-4 py-1 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-      />
     </div>
   );
 };

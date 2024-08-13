@@ -6,10 +6,11 @@ import IngredientTable from './IngredientTable';
 import Pagination from './Pagination';
 import SearchAndFilter from './SearchAndFilter';
 import { Ingredient } from './IngredientType';
+import AddIngredientPopup from '../../../components/AddIngredientPopup';
 
 const formatDate = (isoDate: string): string => {
   const date = new Date(isoDate);
-  return format(date, 'dd/MM/yyyy');
+  return format(date, 'yyyy-MM-dd');
 };
 const checkExpired = (expiryDate: Date) => {
   const today = new Date();
@@ -41,6 +42,8 @@ const fetchIngredients = async (): Promise<any[]> => {
 const InventoryTable: React.FC = () => {
   const [ingredients, setIngredients] = useState<any[]>([]);
   const [isEditing, setIsEditing] = useState<string | null>(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup visibility
+
   const handleEdit = (id: string) => {
     setIsEditing(id);
   };
@@ -50,21 +53,15 @@ const InventoryTable: React.FC = () => {
   };
 
   const handleAdd = () => {
-    const newIngredient: Ingredient = {
-      id: '0',
-      name: 'New Ingredient',
-      price: '0 đồng',
-      perquantity: 0,
-      unit: 'g',
-      quantity: 0,
-      expiryDate: '',
-      status: true, // New ingredient status
-      paymentMethod: '',
-    };
-    setIngredients([newIngredient, ...ingredients]);
+    setIsPopupOpen(true); // Open the popup
   };
 
-  const handleSave = (id: string) => {
+  const handleSave = (ingredient: Ingredient) => {
+    setIngredients([ingredient, ...ingredients]);
+    setIsPopupOpen(false); // Close the popup
+  };
+
+  const handleSaveEdit = (id: string) => {
     setIsEditing(null);
   };
 
@@ -92,7 +89,6 @@ const InventoryTable: React.FC = () => {
     const getIngredients = async () => {
       const ingredientsServer = await fetchIngredients();
       setIngredients(ingredientsServer);
-      console.log(ingredientsServer);
     };
     getIngredients();
   }, []);
@@ -110,11 +106,12 @@ const InventoryTable: React.FC = () => {
           isEditing={isEditing}
           handleEdit={handleEdit}
           handleDelete={handleDelete}
-          handleSave={handleSave}
+          handleSave={handleSaveEdit}
           handleChange={handleChange}
         />
       </div>
       <Pagination />
+      {isPopupOpen && <AddIngredientPopup onSave={handleSave} onClose={() => setIsPopupOpen(false)} />}
     </div>
   );
 };
