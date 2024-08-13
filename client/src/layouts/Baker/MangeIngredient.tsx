@@ -72,7 +72,7 @@ const InventoryTable: React.FC = () => {
   }
   const formatDate = (isoDate: string): string => {
     const date = new Date(isoDate);
-    return format(date, 'dd/MM/yyyy');
+    return format(date, 'yyyy-MM-dd');
   };
   useEffect(() => {
     const getIngredients = async () => {
