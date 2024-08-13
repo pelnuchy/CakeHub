@@ -1,19 +1,19 @@
 import Header from '../../components/Header';
 import Nav from '../../components/Nav';
 import Footer from '../../components/Footer';
-import SecurityPolicy from '../../layouts/SecurityPolicy';
+import ToS from '../../layouts/ToS';
 
-const SecurityPolicypage = () => {
+const TermsofService = () => {
   return (
     <>
       <Header />
       <Nav />
       <main>
-        <SecurityPolicy/>
+        <ToS/>
       </main>
       <Footer />
     </>
   );
 };
 
-export default SecurityPolicypage;
+export default TermsofService;

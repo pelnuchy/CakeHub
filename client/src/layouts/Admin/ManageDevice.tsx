@@ -1,29 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BsTrash, BsPencil, BsPlus, BsSave } from 'react-icons/bs';
 import 'react-datepicker/dist/react-datepicker.css';
+<<<<<<< Updated upstream
 import axios from 'axios';
 
+=======
+import { Device } from '../Admin/DeviceType';
+import AddDevicePopup from '../../components/AddDevicePopup';
+>>>>>>> Stashed changes
 
-
-//real one
-interface Device {
-  id: string;
-  brand: string;
-  name: string;
-  volume: string;
-  quantity: number;
-  category: string;
-  idmanager: string;
-}
 
 const ManageDevice: React.FC = () => {
   const [devices, setDevices] = useState<Device[]>([]);
 
   // for adding
+<<<<<<< Updated upstream
   const [isAdding, setIsAdding] = useState(false);
   const [newDevice, setNewDevice] = useState<Device | null>(null);
   const inputRef = useRef<HTMLInputElement>(null); // Reference to the first input field
 
+=======
+  const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup visibility
+>>>>>>> Stashed changes
   // for editing
   const [editingId, setEditingId] = useState<string | null>(null);
   const [newQuantity, setNewQuantity] = useState<number | null>(null);
@@ -81,18 +79,7 @@ const ManageDevice: React.FC = () => {
 
   const handleAdd = () => {
     // Enter "Add Mode"
-    setIsAdding(true);
-
-    // Create a new device object with default values
-    setNewDevice({
-      id: `#NEW${devices.length + 1}`,
-      brand: '',
-      name: '',
-      volume: '',
-      quantity: 0,
-      category: '',
-      idmanager: '',
-    });
+    setIsPopupOpen(true); // Open the popup
   };
 
   const handleDelete = (id: string) => {
@@ -110,6 +97,7 @@ const ManageDevice: React.FC = () => {
     setOriginalQuantity(currentQuantity); // Store the original quantity when editing
   };
 
+<<<<<<< Updated upstream
   const handleSave = (id: string, mode: number) => {
     if (mode == 0) // for editing mode
     {
@@ -132,12 +120,24 @@ const ManageDevice: React.FC = () => {
       setIsAdding(false);
       setNewDevice(null);
     }
+=======
+  const handleAddingSave = (device: Device) => {
+    setDevices([device, ...devices]);
+    setIsPopupOpen(false); // Close the popup
+>>>>>>> Stashed changes
   };
 
-  const handleAddingInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    if (newDevice)
-      setNewDevice({ ...newDevice, [name]: value });
+  const handleEditingSave = (id: string) => {
+      // Only save if the quantity has changed
+    if (newQuantity !== originalQuantity) {
+      const updatedDevices = devices.map(device => 
+        device.id === id ? { ...device, quantity: newQuantity! } : device
+      );
+      setDevices(updatedDevices);
+    }
+    setEditingId(null);
+    setIsEditButtonClicked(false); // Reset flag
+    setNewQuantity(null);
   };
 
   const handleEditingInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,7 +150,7 @@ const ManageDevice: React.FC = () => {
     // If the user is in editing mode and clicks outside 
     // the input and it's not an edit button click
     if (editingId && !target.closest('.editable-input') && !isEditButtonClicked)
-      handleSave(editingId, 0); // Optional: save changes on click outside
+      handleEditingSave(editingId); // Optional: save changes on click outside
 
     // Reset the flag after the click event
     setIsEditButtonClicked(false);
@@ -178,6 +178,7 @@ const ManageDevice: React.FC = () => {
                 <BsPlus className="" />
                 Thêm thiết bị {/* "Add Device" in Vietnamese */}
               </button>
+              {isPopupOpen && <AddDevicePopup onSave={handleAddingSave} onClose={() => setIsPopupOpen(false)} />}
             </div>
             <div className="rounded-lg bg-white p-4 shadow w-full border overflow-x-auto">
               <table className="w-full border-collapse text-center">
@@ -206,14 +207,14 @@ const ManageDevice: React.FC = () => {
                             type="number"
                             value={newQuantity ?? ''}
                             onChange={handleEditingInputChange}
-                            onBlur={() => handleSave(Device.id, 0)} // Save on blur (optional)
+                            onBlur={() => handleEditingSave(Device.id)} // Save on blur (optional)
                             min={0} // This sets the minimum value to 0
 
                             onKeyDown={(e) => {
                               if (e.key === '-' || e.key === 'ArrowDown' && (newQuantity === 0 || newQuantity === null))
                                 e.preventDefault(); // Prevents typing a negative sign or decreasing below 0
                               else if (e.key === 'Enter') {
-                                handleSave(Device.id, 0); // Call your save function
+                                handleEditingSave(Device.id); // Call your save function
                               }
                             }} // Handle enter key
                             className="border border-gray-300 rounded px-0.1 py-0.5"
@@ -242,85 +243,7 @@ const ManageDevice: React.FC = () => {
                       </td>
                     </tr>
                   ))}
-                  {isAdding && newDevice && (
-                    <tr>
-                      <td className="border px-4 py-2">
-                        <input
-                          type="text"
-                          name="id"
-                          value={newDevice.id}
-                          className="border border-gray-300 rounded px-2 py-1"
-                          ref={inputRef} // Focus on this input
-                        />
-                      </td>
-                      <td className="border px-4 py-2">
-                        <input
-                          type="text"
-                          name="brand"
-                          value={newDevice.brand}
-                          onChange={handleAddingInputChange}
-                          className="border border-gray-300 rounded px-2 py-1"
-                        />
-                      </td>
-                      <td className="border px-4 py-2">
-                        <input
-                          type="text"
-                          name="name"
-                          value={newDevice.name}
-                          onChange={handleAddingInputChange}
-                          className="border border-gray-300 rounded px-2 py-1"
-                        />
-                      </td>
-                      <td className="border px-4 py-2">
-                        <input
-                          type="text"
-                          name="volume"
-                          value={newDevice.volume}
-                          onChange={handleAddingInputChange}
-                          className="border border-gray-300 rounded px-2 py-1"
-                        />
-                      </td>
-                      <td className="border px-4 py-2">
-                        <input
-                          type="number"
-                          name="quantity"
-                          value={newDevice.quantity}
-                          onChange={handleAddingInputChange}
-                          onBlur={() => handleSave(newDevice.id, 0)}
-                          className="border border-gray-300 rounded px-2 py-1"
-                          min={0} // This sets the minimum value to 0
-                          onKeyDown={(e) => {
-                            if (e.key === '-' || e.key === 'ArrowDown' && (newQuantity === 0 || newQuantity === null)) {
-                              e.preventDefault(); // Prevents typing a negative sign or decreasing below 0
-                            }
-                          }}
-                        />
-                      </td>
-                      <td className="border px-4 py-2">
-                        <input
-                          type="text"
-                          name="category"
-                          value={newDevice.category}
-                          onChange={handleAddingInputChange}
-                          className="border border-gray-300 rounded px-2 py-1"
-                        />
-                      </td>
-                      <td className="border px-4 py-2">
-                        <input
-                          type="text"
-                          name="idmanager"
-                          value={newDevice.idmanager}
-                          onChange={handleAddingInputChange}
-                          className="border border-gray-300 rounded px-2 py-1"
-                        />
-                      </td>
-                      <td className="border px-4 py-2 text-center">
-                        <button onClick={() => handleSave('', 1)} className="text-green-500 cursor-pointer">
-                          <BsSave />
-                        </button>
-                      </td>
-                    </tr>
-                  )}
+                  
                 </tbody>
               </table>
             </div>
