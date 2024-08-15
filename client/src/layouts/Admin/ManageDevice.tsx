@@ -79,6 +79,12 @@ const ManageDevice: React.FC = () => {
     setDevices(updatedDevices);
   };
 
+  const handleAddingSave = (device: Device) => {
+    setDevices([device, ...devices]);
+    setIsPopupOpen(false); // Close the popup
+  };
+
+
   const handleEdit = (id: string, currentQuantity: number) => {
     setEditingId(id);
     setNewQuantity(currentQuantity);
@@ -86,10 +92,6 @@ const ManageDevice: React.FC = () => {
     setOriginalQuantity(currentQuantity); // Store the original quantity when editing
   };
 
-  const handleAddingSave = (device: Device) => {
-    setDevices([device, ...devices]);
-    setIsPopupOpen(false); // Close the popup
-  };
 
   const handleEditingSave = (id: string) => {
     // Only save if the quantity has changed
@@ -104,21 +106,23 @@ const ManageDevice: React.FC = () => {
     setNewQuantity(null);
   };
 
-  const handleEditingInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewQuantity(Number(e.target.value));
+  const handleEditingInputChange = async (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
+    const newQuantity = Number(e.target.value);
+    setNewQuantity(newQuantity);
+    await axios.put(`http://localhost:8000/update-quantity-device/${id}/device?newQuantity=${newQuantity}`);
   };
 
-  const handleClickOutside = (event: MouseEvent) => {
-    const target = event.target as Element; // Cast to Element
+  // const handleClickOutside = (event: MouseEvent) => {
+  //   const target = event.target as Element; // Cast to Element
 
-    // If the user is in editing mode and clicks outside 
-    // the input and it's not an edit button click
-    if (editingId && !target.closest('.editable-input') && !isEditButtonClicked)
-      handleEditingSave(editingId); // Optional: save changes on click outside
+  //   // If the user is in editing mode and clicks outside 
+  //   // the input and it's not an edit button click
+  //   if (editingId && !target.closest('.editable-input') && !isEditButtonClicked)
+  //     handleEditingSave(editingId); // Optional: save changes on click outside
 
-    // Reset the flag after the click event
-    setIsEditButtonClicked(false);
-  };
+  //   // Reset the flag after the click event
+  //   setIsEditButtonClicked(false);
+  // };
 
 
 
@@ -170,7 +174,7 @@ const ManageDevice: React.FC = () => {
                           <input
                             type="number"
                             value={newQuantity ?? ''}
-                            onChange={handleEditingInputChange}
+                            onChange={(e) => handleEditingInputChange(e, Device.id)}
                             onBlur={() => handleEditingSave(Device.id)} // Save on blur (optional)
                             min={0} // This sets the minimum value to 0
 
