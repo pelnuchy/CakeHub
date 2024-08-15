@@ -76,7 +76,8 @@ db.createCollection("orders", {
                     "enum": [
                         "ordered",
                         "preparing",
-                        "handling",
+                        "handling_1",
+                        "handling_2",
                         "delivering",
                         "completed"
                     ]
