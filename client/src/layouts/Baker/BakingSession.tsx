@@ -3,7 +3,7 @@ import OrderList from '../../components/Order/SessionListCard';
 import OrderCard from '../../components/Order/BakingSessionCard';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { time } from 'console';
+import moment from 'moment-timezone';
 interface Cake {
   name: string;
   price: number;
@@ -16,72 +16,8 @@ interface Order {
   time: string;
   cakes: Cake[];
   isCompleted: boolean;
-  countdown?: string;
-  status: 'pending' | 'countdown' | 'completed';
+  status: string;
 }
-
-const initialOrders: Order[] = [
-  {
-    id: 350,
-    date: '16/07/2024',
-    time: '14:00',
-    cakes: [
-      { name: 'Bánh kem giáng sinh đỏ', price: 350000, quantity: 1 },
-      { name: 'Bánh kem kỉ niệm', price: 400000, quantity: 1 },
-    ],
-    isCompleted: true,
-    countdown: undefined,
-    status: 'completed',
-  },
-  {
-    id: 351,
-    date: '16/07/2024',
-    time: '15:00',
-    cakes: [
-      { name: 'Bánh kem bắp', price: 350000, quantity: 1 },
-      { name: 'Bánh gato trái dâu', price: 400000, quantity: 2 },
-    ],
-    isCompleted: true,
-    countdown: undefined,
-    status: 'completed',
-  },
-  {
-    id: 352,
-    date: '16/07/2024',
-    time: '17:00',
-    cakes: [
-      { name: 'Bánh gato hình người tuyết', price: 400000, quantity: 1 },
-      { name: 'Bánh gato giáng sinh', price: 400000, quantity: 1 },
-    ],
-    isCompleted: false,
-    countdown: '03:34:12',
-    status: 'countdown',
-  },
-  {
-    id: 353,
-    date: '16/07/2024',
-    time: '20:00',
-    cakes: [
-      { name: 'Bánh kem bắp', price: 350000, quantity: 1 },
-      { name: 'Bánh gato trái dâu', price: 400000, quantity: 1 },
-    ],
-    isCompleted: false,
-    countdown: undefined,
-    status: 'pending',
-  },
-  {
-    id: 354,
-    date: '16/07/2024',
-    time: '22:00',
-    cakes: [
-      { name: 'Bánh kem bắp', price: 350000, quantity: 1 },
-      { name: 'Bánh gato giáng sinh', price: 400000, quantity: 1 },
-    ],
-    isCompleted: false,
-    countdown: undefined,
-    status: 'pending',
-  },
-];
 
 const formatDate = (isoDate: string): string => {
   const date = new Date(isoDate);
@@ -93,16 +29,26 @@ const formatTime = (isoDate: string): string => {
   return format(date, 'HH:mm');
 };
 const BakingSession: React.FC = () => {
-  const [orders, setOrders] = useState<any[]>(initialOrders);
+  const [orders, setOrders] = useState<any[]>([]);
 
-  const handleStart = (id: number) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) => (order.id === id ? { ...order, status: 'countdown' } : order)),
-    );
+  const handleStart = async (id: string) => {
+    try {
+      await axios.put(`http://localhost:8000/update-order-status/baker/${id}?status=handling_2`);
+      setOrders((prevOrders) =>
+        prevOrders.map((order) => (order.id === id ? { ...order, status: 'handling_2' } : order)),
+      );
+    } catch (error) {
+      console.error('Failed to update order status:', error);
+    }
   };
 
-  const handleConfirm = (id: number) => {
-    setOrders((prevOrders) => prevOrders.map((order) => (order.id === id ? { ...order, status: 'completed' } : order)));
+  const handleConfirm = async (id: string) => {
+    try {
+      await axios.put(`http://localhost:8000/update-order-status/baker/${id}?status=delivering`);
+      setOrders((prevOrders) => prevOrders.map((order) => (order.id == id ? { ...order, status: 'delivering' } : order)));
+    } catch (error) {
+      console.error('Failed to update order status:', error);
+    }
   };
 
   useEffect(() => {
@@ -122,8 +68,8 @@ const BakingSession: React.FC = () => {
       const orderDetails = handlingOrders.map((order: any) => {
         return {
           id: order.orderID,
-          date: formatDate(order.shippingDate),
-          time: formatTime(order.shippingDate),
+          date: formatDate(moment.tz(`${order.shippingDate}`, 'Asia/Ho_Chi_Minh').format('YYYY-MM-DD HH:mm')),
+          time: formatTime(moment.tz(`${order.shippingDate}`, 'Asia/Ho_Chi_Minh').format('YYYY-MM-DD HH:mm')),
           status: order.status,
           cakes: order.cakes.map((cake: any) => ({
             name: cake.cakeName,

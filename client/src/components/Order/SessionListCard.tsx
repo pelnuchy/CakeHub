@@ -1,8 +1,8 @@
 import React from 'react';
 
 interface Order {
-  id: number;
-  status: 'pending' | 'countdown' | 'completed';
+  id: string;
+  status: string;
 }
 
 const OrderList: React.FC<{ orders: Order[] }> = ({ orders }) => (
@@ -11,9 +11,9 @@ const OrderList: React.FC<{ orders: Order[] }> = ({ orders }) => (
       <button
         key={order.id}
         className={`m-2 rounded-full px-4 py-2 font-medium ${
-          order.status === 'completed'
+          order.status === 'delivering'
             ? 'bg-green-200 text-green-800'
-            : order.status === 'countdown'
+            : order.status === 'handling_2'
               ? 'bg-yellow-200 text-yellow-800'
               : 'bg-pink-200 text-pink-800'
         }`}

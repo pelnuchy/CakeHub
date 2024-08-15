@@ -15,8 +15,6 @@ interface Order {
   date: string;
   time: string;
   cakes: Cake[];
-  isCompleted: boolean;
-  countdown?: string;
   status: string; // Add status to track order state
 }
 
@@ -46,16 +44,16 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onStart, onConfirm }) => (
         </div>
       ))}
     </div>
-    {order.status === 'completed' ? (
+    {order.status === 'delivering' ? (
       <button className="mt-4 flex w-full items-center justify-center rounded bg-green-500 py-2 text-white transition-colors duration-300 hover:bg-green-600">
         <FaCheckCircle className="mr-2 h-5 w-5" /> Đã hoàn thành
       </button>
-    ) : order.status === 'countdown' ? (
+    ) : order.status === 'handling_2' ? (
       <button
         className="mt-4 flex w-full items-center justify-center rounded bg-yellow-500 py-2 text-white transition-colors duration-300 hover:bg-yellow-600"
         onClick={onConfirm}
       >
-        <FaClock className="mr-2 h-5 w-5" /> {order.countdown}
+        <FaClock className="mr-2 h-5 w-5" /> Đang làm
       </button>
     ) : (
       <button

@@ -88,7 +88,7 @@ const Dashboard: React.FC = () => {
 
   const handleDashBoardToBakingSession = async () => {
     for (const order of newBakingSessionOrders) {
-      await axios.put(`http://localhost:8000/update-order-status/baker/${order.id}?status=handling`);
+      await axios.put(`http://localhost:8000/update-order-status/baker/${order.id}?status=handling_1`);
     }
     navigate('/baker/bakingsession');
   };

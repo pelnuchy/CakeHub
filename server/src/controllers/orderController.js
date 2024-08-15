@@ -1,6 +1,6 @@
 import Order from '../models/Order.js';
 //import Cake from '../models/Cake.js';
-import moment from 'moment';
+import moment from 'moment-timezone';
 const orderController = {};
 
 orderController.getOrderHistory = async (req, res) => {
@@ -98,7 +98,7 @@ orderController.getOwnOrdered = async (req, res) => {
             });
         }
         const orderUser = await Order.aggregate([
-            { $match: { user_id: userID, status: { $in: ["ordered", "handling", "delivering"] } } },
+            { $match: { user_id: userID, status: { $in: ["ordered", "handling_1", "handling_2", "delivering"] } } },
             { $unwind: "$cakes" },
             {
                 $lookup: {
@@ -180,12 +180,8 @@ orderController.orderCheckout = async (req, res) => {
         }
         const formattedShipDateTime = `${formattedDate} ${time}`;
         const shippingDates = moment.utc(formattedShipDateTime,
-            'MM/DD/YYYY HH:mm'
-            // 'MM/DD/YY HH:mm',
-            // 'YY/MM/DD HH:mm',
-            // 'YYYY-MM-DD HH:mm',
-            // 'YYYY-MM-DDTHH:mm:ss.SSSZ', // ISO 8601 format
-        ).toDate(); //Convert back to Date object in UTC
+            'YYYY-MM-DD HH:mm'
+        ).tz('Asia/Bangkok'); //Convert back to Date object in UTC+7
         const orderCheckout = await Order.updateOne(
             { user_id: userID, status: { $exists: false } }, // Điều kiện cập nhật
             { shippingDate: new Date(shippingDates), shippingAddress: address } // Thông tin cập nhật
@@ -443,7 +439,7 @@ orderController.getHandlingCake = async (req, res) => {
     try {
         const status = req.query.status;
         const cakeOrdered = await Order.aggregate([
-            { $match: { status: "handling" } },
+            { $match: { status: { $in: ["handling_1", "handling_2"] } } },
             { $unwind: "$cakes" },
             {
                 $lookup: {

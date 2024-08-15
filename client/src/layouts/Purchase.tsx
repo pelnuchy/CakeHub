@@ -8,7 +8,7 @@ const translatOrderStatus = (status: string) => {
   switch (status) {
     case 'ordered':
       return 'Đã đặt hàng';
-    case 'handling':
+    case 'handling_1' || 'handling_2':
       return 'Đang xử lý';
     case 'delivering':
       return 'Đang giao hàng';
