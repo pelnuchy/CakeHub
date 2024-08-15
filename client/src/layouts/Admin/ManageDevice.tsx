@@ -19,8 +19,6 @@ const ManageDevice: React.FC = () => {
   // original quantity
   const [originalQuantity, setOriginalQuantity] = useState<number | null>(null); // To store the original quantity
 
-
-
   // useEffect(() => {
   //   if (isAdding && inputRef.current) {
   //     inputRef.current.focus(); // Automatically focus the first input field

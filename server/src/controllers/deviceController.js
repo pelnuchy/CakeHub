@@ -45,16 +45,35 @@ deviceController.getAllDevices = async (req, res) => {
     }
 }
 
-// deviceController.addDevice = async (req, res) => {
-//     try {
+deviceController.addDevice = async (req, res) => {
+    try {
+        const { device } = req.body;
 
-//     } catch (error) {
-//         return res.status(404).json({
-//             status: 'ERROR',
-//             message: error.message
-//         });
-//     }
-// }
+        const newDevice = await Device.create(
+            {
+                deviceID: device.id,
+                deviceModel: device.brand,
+                deviceName: device.name,
+                volume: device.volume,
+                quantity: device.quantity,
+                deviceType: device.category,
+                manangerID: device.idmanager
+            }
+        );
+
+        return res.status(200).json({
+            status: 'SUCCESS',
+            message: 'Quantity of device updated successfully',
+            device: newDevice
+        });
+
+    } catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+}
 
 deviceController.updateQuantityDevice = async (req, res) => {
     try {
@@ -79,7 +98,7 @@ deviceController.updateQuantityDevice = async (req, res) => {
 
         return res.status(200).json({
             status: 'SUCCESS',
-            message: 'Device removed successfully',
+            message: 'Quantity of device updated successfully',
             device: device
         });
 

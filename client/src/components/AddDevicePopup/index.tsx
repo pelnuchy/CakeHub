@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import Modal from '../Modal';
 import { Device } from '../../layouts/Admin/DeviceType';
+import axios from 'axios';
+import Button from '../../components/Button';
+
 
 interface AddDevicePopupProps {
   onSave: (device: Device) => void;
@@ -13,12 +16,12 @@ const AddDevicePopup: React.FC<AddDevicePopupProps> = ({ onSave, onClose }) => {
   const adminID = userInfo.userID;
 
   const [device, setDevice] = useState<Device>({
-    id: '',
-    brand: '',
-    name: '',
-    volume: '',
-    quantity: 0,
-    category: '',
+    id: 'ad',
+    brand: 'ad',
+    name: 'ad',
+    volume: 'ad',
+    quantity: 2,
+    category: 'ad',
     idmanager: adminID,
   });
 
@@ -44,11 +47,17 @@ const AddDevicePopup: React.FC<AddDevicePopupProps> = ({ onSave, onClose }) => {
     );
   };
   
-  const handleSave = () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (validateDevice(device)) {
-      onSave(device);
-      const auth = {device};
-      onClose();
+      try {
+        onSave(device);
+        const auth = { device };
+        await axios.post('http://localhost:8000/add-device', auth);
+        onClose();
+      } catch (error) {
+        alert('Failed to add device. Please try again later.');
+      }
     } else {
       alert('Vui lòng kiểm tra lại thông tin nhập vào.');
     }
@@ -59,7 +68,7 @@ const AddDevicePopup: React.FC<AddDevicePopupProps> = ({ onSave, onClose }) => {
     <Modal onClose={onClose}>
       <div className="mx-auto max-w-lg rounded-lg bg-white p-6 shadow-lg">
         <h2 className="mb-6 text-2xl font-bold text-primary-500">Thêm Thiết Bị Mới</h2>
-        <div className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="id" className="block text-sm font-medium">
               Mã Thiết Bị
@@ -158,21 +167,23 @@ const AddDevicePopup: React.FC<AddDevicePopupProps> = ({ onSave, onClose }) => {
               className="my-1 block w-full border border-gray-600 pl-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
             />
           </div>
-        </div>
-        <div className="mt-6 flex justify-end space-x-4">
-          <button
-            onClick={onClose}
-            className="w-32 transform rounded-md bg-gray-700 px-4 py-2 text-white shadow-sm transition-transform hover:scale-105 hover:bg-gray-600"
-          >
-            Hủy
-          </button>
-          <button
-            onClick={handleSave}
-            className="w-32 transform rounded-md bg-primary-500 px-4 py-2 text-white shadow-sm transition-transform hover:scale-105 hover:bg-primary-400"
-          >
-            Lưu
-          </button>
-        </div>
+          <div className="mt-6 flex justify-end space-x-4">
+            <button
+              onClick={onClose}
+              className="w-32 transform rounded-md bg-gray-700 px-4 py-2 text-white shadow-sm transition-transform hover:scale-105 hover:bg-gray-600"
+            >
+              Hủy
+            </button>
+            <Button
+              type='submit'
+              // onClick={() => handleSave}
+              className="w-32 transform rounded-md bg-primary-500 px-4 py-2 text-white shadow-sm transition-transform hover:scale-105 hover:bg-primary-400"
+            >
+              Lưu
+            </Button>
+          </div>
+        </form>
+
       </div>
     </Modal>
   );

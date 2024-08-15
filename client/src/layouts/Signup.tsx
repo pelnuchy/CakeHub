@@ -24,7 +24,7 @@ const SignupForm = () => {
       toast.success('Đăng ký thành công');
       setTimeout(() => {
         navigate('/login');
-      }, 1500);
+      }, 1000);
     } catch (err) {
       toast.error('Đăng ký thất bại. Vui lòng thử lại.');
       console.log(err);
