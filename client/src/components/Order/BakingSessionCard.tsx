@@ -3,18 +3,21 @@ import { FaCheckCircle, FaClock } from 'react-icons/fa';
 
 interface Cake {
   name: string;
-  price: number;
   quantity: number;
+  size: string,
+  flavor: string,
+  message: string,
+  imgSrc: string,
 }
 
 interface Order {
-  id: number;
+  id: string;
   date: string;
   time: string;
   cakes: Cake[];
   isCompleted: boolean;
   countdown?: string;
-  status: 'pending' | 'countdown' | 'completed'; // Add status to track order state
+  status: string; // Add status to track order state
 }
 
 interface OrderCardProps {
@@ -27,16 +30,16 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onStart, onConfirm }) => (
   <div className="m-4 flex flex-col rounded-lg border bg-white p-6 shadow-md transition-shadow duration-300 hover:shadow-lg">
     <h3 className="mb-2 text-lg font-semibold text-gray-900">Đơn hàng #{order.id}</h3>
     <p className="text-gray-800">
-      {order.date}, {order.time}
+      {order.date} {order.time}
     </p>
     <div className="my-4">
       {order.cakes.map((cake, index) => (
         <div key={index} className="mb-2 flex items-center justify-between">
           <div className="flex items-center">
-            <img src="/path/to/cake/image.jpg" alt={cake.name} className="mr-3 h-12 w-12 rounded-full object-cover" />
+            <img src={cake.imgSrc} alt={cake.name} className="mr-3 h-12 w-12 rounded-full object-cover" />
             <div>
               <p className="font-medium text-black">{cake.name}</p>
-              <p className="text-sm text-gray-800">{cake.price.toLocaleString()} VND</p>
+              <p className="text-sm text-gray-800">{cake.flavor} - {cake.size}cm</p>
             </div>
           </div>
           <p className="text-gray-800">SL: {cake.quantity}</p>

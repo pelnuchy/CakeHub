@@ -12,6 +12,7 @@ router.get('/get-list-cakes-sold', orderController.getListCakesSold);
 router.get('/get-list-ingredients-sold', orderController.getListIngredientsSold);
 //baker
 router.get('/get-status-cake/baker', orderController.getOrderedCake);
+router.get('/get-handling-cake/baker', orderController.getHandlingCake);
 router.put('/update-order-status/baker/:orderid', orderController.updateStatusOrder);
 
 export default router;

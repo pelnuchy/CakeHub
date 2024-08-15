@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import OrderList from '../../components/Order/SessionListCard';
 import OrderCard from '../../components/Order/BakingSessionCard';
 import axios from 'axios';
+import { format } from 'date-fns';
+import { time } from 'console';
 interface Cake {
   name: string;
   price: number;
@@ -9,7 +11,7 @@ interface Cake {
 }
 
 interface Order {
-  id: number;
+  id: Number;
   date: string;
   time: string;
   cakes: Cake[];
@@ -80,12 +82,22 @@ const initialOrders: Order[] = [
     status: 'pending',
   },
 ];
+
+const formatDate = (isoDate: string): string => {
+  const date = new Date(isoDate);
+  return format(date, 'yyyy-MM-dd');
+};
+
+const formatTime = (isoDate: string): string => {
+  const date = new Date(isoDate);
+  return format(date, 'HH:mm');
+};
 const BakingSession: React.FC = () => {
-  const [orders, setOrders] = useState<Order[]>(initialOrders);
+  const [orders, setOrders] = useState<any[]>(initialOrders);
 
   const handleStart = (id: number) => {
     setOrders((prevOrders) =>
-      prevOrders.map((order) => (order.id === id ? { ...order, status: 'countdown', countdown: '03:00:00' } : order)),
+      prevOrders.map((order) => (order.id === id ? { ...order, status: 'countdown' } : order)),
     );
   };
 
@@ -95,22 +107,25 @@ const BakingSession: React.FC = () => {
 
   useEffect(() => {
     const getTodayOrdered = async () => {
-      //const todayHandlingServer = await fetchHandlingToday();
-      //setOrders(todayHandlingServer);
-      //console.log(todayHandlingServer);
+      const todayHandlingServer = await fetchHandlingToday();
+      setOrders(todayHandlingServer);
+      console.log(todayHandlingServer);
     };
-    //getTodayOrdered();
+    getTodayOrdered();
   }, []);
 
   const fetchHandlingToday = async (): Promise<any[]> => {
     try {
-      const ordered = await axios.get(`http://localhost:8000/get-status-cake/baker?status=handling`);
+      const ordered = await axios.get(`http://localhost:8000/get-handling-cake/baker`);
       const handlingOrders = ordered.data.data;
 
       const orderDetails = handlingOrders.map((order: any) => {
         return {
           id: order.orderID,
-          items: order.cakes.map((cake: any) => ({
+          date: formatDate(order.shippingDate),
+          time: formatTime(order.shippingDate),
+          status: order.status,
+          cakes: order.cakes.map((cake: any) => ({
             name: cake.cakeName,
             size: cake.size,
             flavor: cake.flavor,

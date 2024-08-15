@@ -9,7 +9,7 @@ import { Ingredient } from './IngredientType';
 
 const formatDate = (isoDate: string): string => {
   const date = new Date(isoDate);
-  return format(date, 'dd/MM/yyyy');
+  return format(date, 'yyyy-MM-dd');
 };
 const checkExpired = (expiryDate: Date) => {
   const today = new Date();

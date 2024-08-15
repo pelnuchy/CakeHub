@@ -439,6 +439,58 @@ orderController.getOrderedCake = async (req, res) => {
     }
 };
 
+orderController.getHandlingCake = async (req, res) => {
+    try {
+        const status = req.query.status;
+        const cakeOrdered = await Order.aggregate([
+            { $match: { status: "handling" } },
+            { $unwind: "$cakes" },
+            {
+                $lookup: {
+                    from: "cakes",
+                    localField: "cakes.cake_id",
+                    foreignField: "cakeID",
+                    as: "cakeDetail"
+                }
+            },
+            { $unwind: "$cakeDetail" },
+            {
+                $addFields: {
+                    "cakes.cakeName": "$cakeDetail.cakeName",
+                    "cakes.size": "$cakeDetail.size",
+                    "cakes.img_url": "$cakeDetail.img_url",
+                    "cakes.flavor": "$cakeDetail.jamFilling"
+                }
+            },
+            {
+                $project: {
+                    "cakes.total_price": 0
+                }
+            },
+            {
+                $group: {
+                    _id: "$_id",
+                    orderID: { $first: "$orderID" },
+                  	shippingDate: {$first: "$shippingDate"},
+                  	status:{$first:"$status"},
+                    cakes: { $push: "$cakes" }
+                }
+            }
+        ]);
+        return res.status(200).json({
+            status: 'SUCCESS',
+            data: cakeOrdered
+        }
+        );
+    }
+
+    catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+};
 
 orderController.updateStatusOrder = async (req, res) => {
     try {
