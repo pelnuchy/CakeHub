@@ -34,6 +34,16 @@ const ManageDevice: React.FC = () => {
   //   };
   // }, [editingId]);
 
+  useEffect(() => {
+    const getListDevices = async () => {
+      const listDevices = await fetchListDevices();
+      setDevices(listDevices);
+    };
+
+    getListDevices();
+
+  }, []);
+
   const fetchListDevices = async (): Promise<Device[]> => {
     try {
       const response = await axios.get(`http://localhost:8000/get-all-devices`);
@@ -82,9 +92,9 @@ const ManageDevice: React.FC = () => {
   };
 
   const handleEditingSave = (id: string) => {
-      // Only save if the quantity has changed
+    // Only save if the quantity has changed
     if (newQuantity !== originalQuantity) {
-      const updatedDevices = devices.map(device => 
+      const updatedDevices = devices.map(device =>
         device.id === id ? { ...device, quantity: newQuantity! } : device
       );
       setDevices(updatedDevices);
@@ -197,7 +207,7 @@ const ManageDevice: React.FC = () => {
                       </td>
                     </tr>
                   ))}
-                  
+
                 </tbody>
               </table>
             </div>
