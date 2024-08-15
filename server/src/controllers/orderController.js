@@ -1,6 +1,6 @@
 import Order from '../models/Order.js';
 //import Cake from '../models/Cake.js';
-import moment from 'moment';
+import moment from 'moment-timezone';
 const orderController = {};
 
 orderController.getOrderHistory = async (req, res) => {
@@ -98,7 +98,7 @@ orderController.getOwnOrdered = async (req, res) => {
             });
         }
         const orderUser = await Order.aggregate([
-            { $match: { user_id: userID, status: { $in: ["ordered", "handling", "delivering"] } } },
+            { $match: { user_id: userID, status: { $in: ["ordered", "handling_1", "handling_2", "delivering"] } } },
             { $unwind: "$cakes" },
             {
                 $lookup: {
@@ -180,12 +180,8 @@ orderController.orderCheckout = async (req, res) => {
         }
         const formattedShipDateTime = `${formattedDate} ${time}`;
         const shippingDates = moment.utc(formattedShipDateTime,
-            'MM/DD/YYYY HH:mm'
-            // 'MM/DD/YY HH:mm',
-            // 'YY/MM/DD HH:mm',
-            // 'YYYY-MM-DD HH:mm',
-            // 'YYYY-MM-DDTHH:mm:ss.SSSZ', // ISO 8601 format
-        ).toDate(); //Convert back to Date object in UTC
+            'YYYY-MM-DD HH:mm'
+        ).tz('Asia/Bangkok'); //Convert back to Date object in UTC+7
         const orderCheckout = await Order.updateOne(
             { user_id: userID, status: { $exists: false } }, // Điều kiện cập nhật
             { shippingDate: new Date(shippingDates), shippingAddress: address } // Thông tin cập nhật
@@ -439,6 +435,58 @@ orderController.getOrderedCake = async (req, res) => {
     }
 };
 
+orderController.getHandlingCake = async (req, res) => {
+    try {
+        const status = req.query.status;
+        const cakeOrdered = await Order.aggregate([
+            { $match: { status: { $in: ["handling_1", "handling_2"] } } },
+            { $unwind: "$cakes" },
+            {
+                $lookup: {
+                    from: "cakes",
+                    localField: "cakes.cake_id",
+                    foreignField: "cakeID",
+                    as: "cakeDetail"
+                }
+            },
+            { $unwind: "$cakeDetail" },
+            {
+                $addFields: {
+                    "cakes.cakeName": "$cakeDetail.cakeName",
+                    "cakes.size": "$cakeDetail.size",
+                    "cakes.img_url": "$cakeDetail.img_url",
+                    "cakes.flavor": "$cakeDetail.jamFilling"
+                }
+            },
+            {
+                $project: {
+                    "cakes.total_price": 0
+                }
+            },
+            {
+                $group: {
+                    _id: "$_id",
+                    orderID: { $first: "$orderID" },
+                  	shippingDate: {$first: "$shippingDate"},
+                  	status:{$first:"$status"},
+                    cakes: { $push: "$cakes" }
+                }
+            }
+        ]);
+        return res.status(200).json({
+            status: 'SUCCESS',
+            data: cakeOrdered
+        }
+        );
+    }
+
+    catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+};
 
 orderController.updateStatusOrder = async (req, res) => {
     try {
@@ -465,5 +513,6 @@ orderController.updateStatusOrder = async (req, res) => {
         });
     }
 }
+
 
 export default orderController;

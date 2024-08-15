@@ -23,7 +23,7 @@ const Dashboard: React.FC = () => {
 
   const fetchTodayOrdered = async (): Promise<any[]> => {
     try {
-      const ordered = await axios.get(`http://localhost:8000/get-ordered-cake/baker?status=ordered`);
+      const ordered = await axios.get(`http://localhost:8000/get-status-cake/baker?status=ordered`);
       const todayOrders = ordered.data.data;
 
       const orderDetails = todayOrders.map((order: any) => {
@@ -48,7 +48,7 @@ const Dashboard: React.FC = () => {
 
   const fetchTodayPreparing = async (): Promise<any[]> => {
     try {
-      const preparing = await axios.get(`http://localhost:8000/get-ordered-cake/baker?status=preparing`);
+      const preparing = await axios.get(`http://localhost:8000/get-status-cake/baker?status=preparing`);
       const todayOrders = preparing.data.data;
 
       const orderDetails = todayOrders.map((order: any) => {
@@ -88,7 +88,7 @@ const Dashboard: React.FC = () => {
 
   const handleDashBoardToBakingSession = async () => {
     for (const order of newBakingSessionOrders) {
-      await axios.put(`http://localhost:8000/update-order-status/baker/${order.id}?status=handling`);
+      await axios.put(`http://localhost:8000/update-order-status/baker/${order.id}?status=handling_1`);
     }
     navigate('/baker/bakingsession');
   };

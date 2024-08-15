@@ -7,7 +7,6 @@ import Pagination from './Pagination';
 import SearchAndFilter from './SearchAndFilter';
 import { Ingredient } from './IngredientType';
 import AddIngredientPopup from '../../../components/AddIngredientPopup';
-
 const formatDate = (isoDate: string): string => {
   const date = new Date(isoDate);
   return format(date, 'yyyy-MM-dd');
@@ -44,7 +43,7 @@ const InventoryTable: React.FC = () => {
   const [isEditing, setIsEditing] = useState<string | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup visibility
 
-  const handleEdit = (id: string) => {
+  const handleEdit = async (id: string) => {
     setIsEditing(id);
   };
 
@@ -56,16 +55,21 @@ const InventoryTable: React.FC = () => {
     setIsPopupOpen(true); // Open the popup
   };
 
-  const handleSave = (ingredient: Ingredient) => {
+  const handleSave = async (ingredient: Ingredient) => {
     setIngredients([ingredient, ...ingredients]);
     setIsPopupOpen(false); // Close the popup
   };
 
-  const handleSaveEdit = (id: string) => {
-    setIsEditing(null);
+  const handleSaveEdit = async (id: string, ingredientData: { name: string, price: number, unit: string, quantity: number, perquantity: number, expiryDate: string }) => {
+    try {
+      await axios.put(`http://localhost:8000/baker/update-ingredient/${id}`, ingredientData);
+      setIsEditing(null);
+    } catch (error) {
+      console.error('Failed to update ingredient:', error);
+    }
   };
 
-  const handleChange = (id: string, field: string, value: string | number) => {
+  const handleChange = async (id: string, field: string, value: string | number) => {
     if (field === 'expiryDate') {
       const today = new Date();
       const expiryDate = new Date(value as string);

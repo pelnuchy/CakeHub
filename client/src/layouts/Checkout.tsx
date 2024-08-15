@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
+import {format} from 'date-fns';
 import 'react-datepicker/dist/react-datepicker.css';
 import Button from '../components/Button';
 import { useCart } from '../contexts/CartContext';
@@ -13,9 +14,16 @@ const Checkout: React.FC = () => {
   const { cartItems } = useCart();
 
   const totalCakePrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const shippingFee = 50000;
-  const totalPrice = totalCakePrice + shippingFee;
-
+  let totalPrice = 0;
+  let shippingFee = 0;
+  if (totalCakePrice === 0) {
+    shippingFee = 0;
+    totalPrice = 0;
+  }
+  else{
+    shippingFee = 50000;
+    totalPrice = totalCakePrice + shippingFee;
+  }
   const userInfoString = sessionStorage.getItem('userInfo');
   const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
 
@@ -36,8 +44,8 @@ const Checkout: React.FC = () => {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
     const year = date.getFullYear();
-    return `${month}/${day}/${year}`;
-  };
+    return `${year}-${month}-${day}`;
+};
   const fetchOrderCheckout = async (userID: string): Promise<any[]> => {
     try {
       const response = await axios.get(`http://localhost:8000/get-info-ordering/${userID}`);
