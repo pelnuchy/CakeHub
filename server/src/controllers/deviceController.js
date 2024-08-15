@@ -45,10 +45,56 @@ deviceController.getAllDevices = async (req, res) => {
     }
 }
 
+// deviceController.addDevice = async (req, res) => {
+//     try {
+
+//     } catch (error) {
+//         return res.status(404).json({
+//             status: 'ERROR',
+//             message: error.message
+//         });
+//     }
+// }
+
+deviceController.updateQuantityDevice = async (req, res) => {
+    try {
+        const deviceID = req.params.device_id;
+        const newQuantity = req.query.newQuantity;
+
+        if (!deviceID || !newQuantity) {
+            return res.status(400).json({
+                status: 'ERROR',
+                message: 'Missing required parameters'
+            });
+        }
+
+        const device = await Device.updateOne(
+            { deviceID: deviceID },
+            {
+                $set: {
+                    quantity: newQuantity
+                }
+            }
+        );
+
+        return res.status(200).json({
+            status: 'SUCCESS',
+            message: 'Device removed successfully',
+            device: device
+        });
+
+    } catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+}
+
 deviceController.deleteDevice = async (req, res) => {
     try {
         const device_id = req.params.id;
-        const device = await Device.deleteOne({deviceID: device_id});
+        const device = await Device.deleteOne({ deviceID: device_id });
         return res.status(200).json({
             status: 'SUCCESS',
             message: 'Device removed successfully',
@@ -61,5 +107,7 @@ deviceController.deleteDevice = async (req, res) => {
         });
     }
 }
+
+
 
 export default deviceController;

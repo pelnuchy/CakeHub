@@ -8,6 +8,10 @@ interface AddDevicePopupProps {
 }
 
 const AddDevicePopup: React.FC<AddDevicePopupProps> = ({ onSave, onClose }) => {
+  const userInfoString = sessionStorage.getItem('userInfo');
+  const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
+  const adminID = userInfo.userID;
+
   const [device, setDevice] = useState<Device>({
     id: '',
     brand: '',
@@ -15,7 +19,7 @@ const AddDevicePopup: React.FC<AddDevicePopupProps> = ({ onSave, onClose }) => {
     volume: '',
     quantity: 0,
     category: '',
-    idmanager: '',
+    idmanager: adminID,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -27,14 +31,6 @@ const AddDevicePopup: React.FC<AddDevicePopupProps> = ({ onSave, onClose }) => {
     }
   };
 
-  const handleSave = () => {
-    if (validateDevice(device)) {
-      onSave(device);
-      onClose();
-    } else {
-      alert('Vui lòng kiểm tra lại thông tin nhập vào.');
-    }
-  };
 
   const validateDevice = (device: Device): boolean => {
     return (
@@ -47,6 +43,17 @@ const AddDevicePopup: React.FC<AddDevicePopupProps> = ({ onSave, onClose }) => {
       !!device.idmanager
     );
   };
+  
+  const handleSave = () => {
+    if (validateDevice(device)) {
+      onSave(device);
+      const auth = {device};
+      onClose();
+    } else {
+      alert('Vui lòng kiểm tra lại thông tin nhập vào.');
+    }
+  };
+
 
   return (
     <Modal onClose={onClose}>
@@ -147,6 +154,7 @@ const AddDevicePopup: React.FC<AddDevicePopupProps> = ({ onSave, onClose }) => {
               name="idmanager"
               value={device.idmanager}
               onChange={handleChange}
+              readOnly
               className="my-1 block w-full border border-gray-600 pl-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
             />
           </div>
