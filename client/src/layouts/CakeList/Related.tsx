@@ -2,8 +2,9 @@ import CakeCard from '../../components/Cake/CakeCard';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { Cake } from '../../utils/interfaces';
 const Related = () => {
-  const [relatedCakes, setRelatedCakes] = useState<object[]>([]);
+  const [relatedCakes, setRelatedCakes] = useState<Cake[]>([]);
   const { id } = useParams();
   useEffect(() => {
     const fetchRelatedCakes = async () => {

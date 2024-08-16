@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import CakeCard from '../components/Cake/CakeCard';
+import { Cake } from '../utils/interfaces';
 
 const SearchResults: React.FC = () => {
   const { keyword } = useParams<{ keyword: string }>();
-  const [searchResults, setSearchResults] = useState<object[]>([]);
+  const [searchResults, setSearchResults] = useState<Cake[]>([]);
 
   useEffect(() => {
     const fetchSearchResults = async () => {

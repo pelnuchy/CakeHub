@@ -1,4 +1,6 @@
-export const shuffleArray = (array: object[]): object[] => {
+import { Cake } from './interfaces';
+
+export const shuffleArray = (array: Cake[]): Cake[] => {
   const shuffledArray = [...array];
   for (let i = shuffledArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));

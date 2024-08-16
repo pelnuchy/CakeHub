@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { shuffleArray } from '../utils/shuffleArray';
 import axios from 'axios';
-export const useShuffledCakes = (numCake: number): object[] => {
-  const [randomCakes, setRandomCakes] = useState<object[]>([]);
+import { Cake } from '../utils/interfaces';
+export const useShuffledCakes = (numCake: number): Cake[] => {
+  const [randomCakes, setRandomCakes] = useState<Cake[]>([]);
 
   useEffect(() => {
     const fetchAndShuffleCakes = async () => {
@@ -22,6 +23,6 @@ export const useShuffledCakes = (numCake: number): object[] => {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
   return randomCakes;
 };

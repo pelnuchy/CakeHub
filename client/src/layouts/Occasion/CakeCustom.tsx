@@ -3,10 +3,11 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import SortControl from './SortControl';
 import CakeCard from '../../components/Cake/CakeCard';
+import { Cake } from '../../utils/interfaces';
 
 const CakeCustom = () => {
   const occasion = useLocation();
-  const [customCakes, setCakeCustom] = useState<object[]>([]);
+  const [customCakes, setCakeCustom] = useState<Cake[]>([]);
   const [sortOption, setSortOption] = useState<string>('');
 
   useEffect(() => {
