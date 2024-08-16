@@ -48,7 +48,13 @@ const InventoryTable: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    setIngredients(ingredients.filter((ingredient) => ingredient.id !== id));
+    try {
+      setIngredients(ingredients.filter((ingredient) => ingredient.id !== id));
+      axios.delete(`http://localhost:8000/baker/delete-ingredient/${id}`);
+    }
+    catch (error) {
+      console.error('Failed to delete ingredient:', error);
+    }
   };
 
   const handleAdd = () => {

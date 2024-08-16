@@ -33,7 +33,9 @@ const ingredientSchema = new mongoose.Schema({
 },
     {
         timestamps: true
-    });
+    },
+    { versionKey: false }
+);
 
 const Ingredient = mongoose.model('ingredients', ingredientSchema);
 

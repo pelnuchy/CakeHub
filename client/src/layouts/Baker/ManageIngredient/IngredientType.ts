@@ -6,6 +6,5 @@ export interface Ingredient {
   unit: string;
   quantity: number;
   expiryDate: string;
-  status: boolean; // Changed to boolean
-  paymentMethod: string;
+  status: boolean;
 }
