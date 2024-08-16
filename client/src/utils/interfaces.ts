@@ -50,7 +50,6 @@ export interface Ingredient {
   quantity: number;
   expiryDate: string;
   status: boolean;
-  paymentMethod: string;
 }
 
 export interface Device {
