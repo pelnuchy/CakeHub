@@ -1,16 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  size: string;
-  flavor: string;
-  quantity: number;
-  image: string;
-  total_price: number;
-}
+import { CartItem } from '../utils/interfaces';
 
 interface CartContextType {
   cartItems: CartItem[];
@@ -21,9 +11,9 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType>({
   cartItems: [],
-  addToCart: () => { },
-  updateCartItem: () => { },
-  removeFromCart: () => { },
+  addToCart: () => {},
+  updateCartItem: () => {},
+  removeFromCart: () => {},
 });
 
 const transSize = (size: number) => {
@@ -59,7 +49,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         cart.cakes.map((cake: any) => ({
           id: cake.cake_id,
           name: cake.cakeName,
-          price: Number(cake.price),
+          price: cake.price,
           size: transSize(cake.size),
           flavor: cake.flavor,
           quantity: cake.cakeQuantity,
@@ -78,18 +68,16 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const addToCart = (item: CartItem) => {
     setCartItems((prevItems) => {
       console.log(item);
-      const existingItem = prevItems.find(
-        (cartItem) => cartItem.id === item.id
-      );
+      const existingItem = prevItems.find((cartItem) => cartItem.id === item.id);
       //console.log(existingItem);
       if (existingItem) {
         return prevItems.map((cartItem) =>
           cartItem.id === item.id && cartItem.size === item.size && cartItem.flavor === item.flavor
             ? {
-              ...cartItem,
-              quantity: cartItem.quantity + item.quantity,
-              total_price: cartItem.total_price + item.total_price,
-            }
+                ...cartItem,
+                quantity: cartItem.quantity + item.quantity,
+                total_price: cartItem.total_price + item.total_price,
+              }
             : cartItem,
         );
       } else {
@@ -113,16 +101,27 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         );
 
         if (updatedFields.size) {
-          const newSize = updatedFields.size
-          await axios.put(`http://localhost:8000/update-cake-size-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newSize=${newSize}`);
-        }
-        else if (updatedFields.flavor) {
-          const newFlavor = updatedFields.flavor === "Chanh dây" ? "CD" : updatedFields.flavor === "Dâu tây" ? "DT" : updatedFields.flavor === "Socola" ? "Soco" : null;
-          await axios.put(`http://localhost:8000/update-cake-flavor-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newFlavor=${newFlavor}`);
-        }
-        else if (updatedFields.quantity) {
+          const newSize = updatedFields.size;
+          await axios.put(
+            `http://localhost:8000/update-cake-size-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newSize=${newSize}`,
+          );
+        } else if (updatedFields.flavor) {
+          const newFlavor =
+            updatedFields.flavor === 'Chanh dây'
+              ? 'CD'
+              : updatedFields.flavor === 'Dâu tây'
+                ? 'DT'
+                : updatedFields.flavor === 'Socola'
+                  ? 'Soco'
+                  : null;
+          await axios.put(
+            `http://localhost:8000/update-cake-flavor-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newFlavor=${newFlavor}`,
+          );
+        } else if (updatedFields.quantity) {
           const newQuantity = updatedFields.quantity;
-          await axios.put(`http://localhost:8000/update-cake-quantity-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newQuantity=${newQuantity}`);
+          await axios.put(
+            `http://localhost:8000/update-cake-quantity-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newQuantity=${newQuantity}`,
+          );
         }
         setRefresh((prev) => !prev); // Trigger useEffect to refresh cart
       } else {

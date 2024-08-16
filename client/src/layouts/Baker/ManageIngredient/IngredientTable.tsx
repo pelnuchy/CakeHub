@@ -1,13 +1,23 @@
 import React from 'react';
 import IngredientRow from './IngredientRow';
-import { Ingredient } from './IngredientType';
+import { Ingredient } from '../../../utils/interfaces';
 
 interface IngredientTableProps {
   ingredients: Ingredient[];
   isEditing: string | null;
   handleEdit: (id: string) => void;
   handleDelete: (id: string) => void;
-  handleSave: (id: string, ingredientData: { name: string, price: number, unit: string, quantity: number, perquantity: number, expiryDate: string }) => void;
+  handleSave: (
+    id: string,
+    ingredientData: {
+      name: string;
+      price: number;
+      unit: string;
+      quantity: number;
+      perquantity: number;
+      expiryDate: string;
+    },
+  ) => void;
   handleChange: (id: string, field: string, value: string | number) => void;
 }
 

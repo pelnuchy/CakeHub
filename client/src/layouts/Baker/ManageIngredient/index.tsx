@@ -5,8 +5,8 @@ import Button from '../../../components/Button';
 import IngredientTable from './IngredientTable';
 import Pagination from './Pagination';
 import SearchAndFilter from './SearchAndFilter';
-import { Ingredient } from './IngredientType';
 import AddIngredientPopup from '../../../components/AddIngredientPopup';
+import { Ingredient } from '../../../utils/interfaces';
 const formatDate = (isoDate: string): string => {
   const date = new Date(isoDate);
   return format(date, 'yyyy-MM-dd');
@@ -60,7 +60,17 @@ const InventoryTable: React.FC = () => {
     setIsPopupOpen(false); // Close the popup
   };
 
-  const handleSaveEdit = async (id: string, ingredientData: { name: string, price: number, unit: string, quantity: number, perquantity: number, expiryDate: string }) => {
+  const handleSaveEdit = async (
+    id: string,
+    ingredientData: {
+      name: string;
+      price: number;
+      unit: string;
+      quantity: number;
+      perquantity: number;
+      expiryDate: string;
+    },
+  ) => {
     try {
       await axios.put(`http://localhost:8000/baker/update-ingredient/${id}`, ingredientData);
       setIsEditing(null);

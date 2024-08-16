@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Modal from '../Modal';
-import { Ingredient } from '../../layouts/Baker/ManageIngredient/IngredientType';
+import { Ingredient } from '../../utils/interfaces';
 
 interface AddIngredientPopupProps {
   onSave: (ingredient: Ingredient) => void;
