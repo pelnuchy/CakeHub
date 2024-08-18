@@ -1,17 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaUser, FaSignInAlt, FaUserPlus, FaSignOutAlt } from 'react-icons/fa';
 
 const Header: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [userLoggedIn, setUserLoggedIn] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
   const handleLogout = () => {
+    sessionStorage.clear();
     setUserLoggedIn(false);
     setDropdownOpen(false);
+    navigate('/');
   };
 
   const handleClickOutside = (event: MouseEvent) => {
