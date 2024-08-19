@@ -1,7 +1,7 @@
 import Header from '../../../components/AdminBaker/Header';
 import AdminNav from '../../../components/AdminBaker/AdminNav';
 import Footer from '../../../components/Footer';
-import Dasboard from '../../../layouts/Admin/Dashboard';
+import Dashboard from '../../../layouts/Admin/Dashboard';
 
 const AdminDashBoard = () => {
   return (
@@ -9,7 +9,7 @@ const AdminDashBoard = () => {
       <Header />
       <AdminNav />
       <main>
-        <Dasboard />
+        <Dashboard />
       </main>
       <Footer />
     </>
