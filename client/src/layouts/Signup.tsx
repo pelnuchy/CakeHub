@@ -20,7 +20,7 @@ const SignupForm = () => {
         toast.error('Mật khẩu không khớp. Vui lòng kiểm tra lại.');
         return;
       }
-      axios.post('http://localhost:8000/signup', auth);
+      axios.post(`${process.env.REACT_APP_API_URL}/signup`, auth);
       toast.success('Đăng ký thành công');
       setTimeout(() => {
         navigate('/login');

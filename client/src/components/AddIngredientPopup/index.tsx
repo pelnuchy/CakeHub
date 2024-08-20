@@ -60,7 +60,7 @@ const AddIngredientPopup: React.FC<AddIngredientPopupProps> = ({ onSave, onClose
       try {
         onSave(ingredient);
         const data = { ingredient };
-        const response = await axios.post('http://localhost:8000/baker/add-ingredient', data);
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/baker/add-ingredient`, data);
         toast.error('Add ingredient response:', response);
         onClose();
       } catch (error) {

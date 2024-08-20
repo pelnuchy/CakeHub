@@ -53,7 +53,7 @@ const Dashboard: React.FC = () => {
 
   const fetchListCakesSold = async (): Promise<Product[]> => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL_LOCAL}/get-list-cakes-sold`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-list-cakes-sold`);
       const listCakesSold = response.data.data;
 
       const cakeSoldDetail = listCakesSold.flatMap((listCakesSold: any) =>
@@ -75,7 +75,7 @@ const Dashboard: React.FC = () => {
 
   const fetchIngredientsSold = async (): Promise<Ingredient[]> => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL_LOCAL}/get-list-ingredients-sold`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-list-ingredients-sold`);
       const listIngredientsSold = response.data.data;
 
       const ingredientSoldDetail = listIngredientsSold.flatMap((listIngredientsSold: any) =>

@@ -22,7 +22,7 @@ const CakeInfo = () => {
 
   const fetchCakeDetail = async (id: string) => {
     try {
-      const response = await axios.get(`http://localhost:8000/get-details-cake/${id}`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-details-cake/${id}`);
       return response.data.data;
     } catch (error) {
       console.log(error);
@@ -89,7 +89,7 @@ const CakeInfo = () => {
         selectedTotalPrice,
       };
       try {
-        await axios.put(`http://localhost:8000/add-cake-to-cart/${userInfoParsed.userID}`, cakeInfo);
+        await axios.put(`${process.env.REACT_APP_API_URL}/add-cake-to-cart/${userInfoParsed.userID}`, cakeInfo);
         toast.success(`${cakeDetail.cakeName} đã được thêm vào giỏ hàng.`);
         setTimeout(() => {
           window.location.reload();

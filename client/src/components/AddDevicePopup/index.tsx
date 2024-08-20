@@ -4,7 +4,6 @@ import { Device } from '../../layouts/Admin/DeviceType';
 import axios from 'axios';
 import Button from '../../components/Button';
 
-
 interface AddDevicePopupProps {
   onSave: (device: Device) => void;
   onClose: () => void;
@@ -34,7 +33,6 @@ const AddDevicePopup: React.FC<AddDevicePopupProps> = ({ onSave, onClose }) => {
     }
   };
 
-
   const validateDevice = (device: Device): boolean => {
     return (
       !!device.id &&
@@ -46,14 +44,14 @@ const AddDevicePopup: React.FC<AddDevicePopupProps> = ({ onSave, onClose }) => {
       !!device.idmanager
     );
   };
-  
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateDevice(device)) {
       try {
         onSave(device);
         const auth = { device };
-        await axios.post('http://localhost:8000/add-device', auth);
+        await axios.post(`${process.env.REACT_APP_API_URL}/add-device`, auth);
         onClose();
       } catch (error) {
         alert('Failed to add device. Please try again later.');
@@ -62,7 +60,6 @@ const AddDevicePopup: React.FC<AddDevicePopupProps> = ({ onSave, onClose }) => {
       alert('Vui lòng kiểm tra lại thông tin nhập vào.');
     }
   };
-
 
   return (
     <Modal onClose={onClose}>
@@ -175,7 +172,7 @@ const AddDevicePopup: React.FC<AddDevicePopupProps> = ({ onSave, onClose }) => {
               Hủy
             </button>
             <Button
-              type='submit'
+              type="submit"
               // onClick={() => handleSave}
               className="w-32 transform rounded-md bg-primary-500 px-4 py-2 text-white shadow-sm transition-transform hover:scale-105 hover:bg-primary-400"
             >
@@ -183,7 +180,6 @@ const AddDevicePopup: React.FC<AddDevicePopupProps> = ({ onSave, onClose }) => {
             </Button>
           </div>
         </form>
-
       </div>
     </Modal>
   );

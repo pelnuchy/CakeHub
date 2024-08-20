@@ -20,7 +20,7 @@ const CakeBirthday = () => {
 
   const fetchAllCakeBirthday = async (occasion: any) => {
     try {
-      const response = await axios.get(`http://localhost:8000/get-all-cakes-occasion${occasion.pathname}`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-all-cakes-occasion${occasion.pathname}`);
       return response.data.data;
     } catch (error) {
       console.log(error);

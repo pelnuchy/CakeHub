@@ -9,7 +9,7 @@ const Related = () => {
   useEffect(() => {
     const fetchRelatedCakes = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/get-cake-related/${id}`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-cake-related/${id}`);
         return response.data.data;
       } catch (error) {
         console.log(error);

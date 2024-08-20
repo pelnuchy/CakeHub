@@ -17,7 +17,7 @@ const translatOrderStatus = (status: string) => {
     default:
       return 'Chưa đặt bánh';
   }
-}
+};
 // Get progress percentage based on status
 const getStatusProgress = (status: string) => {
   switch (status) {
@@ -45,7 +45,7 @@ const Purchase = () => {
   // Handle button click
   const handleReceivedClick = async (id: any) => {
     setOrders(orders.map((order) => (order.id === id ? { ...order, status: 'Đã nhận hàng' } : order)));
-    await axios.put(`http://localhost:8000/update-completed-order/${id}`);
+    await axios.put(`${process.env.REACT_APP_API_URL}/update-completed-order/${id}`);
   };
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const Purchase = () => {
   }, []);
   const fetchOwnOrder = async (userID: string): Promise<any[]> => {
     try {
-      const response = await axios.get(`http://localhost:8000/get-own-ordered/${userID}`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-own-ordered/${userID}`);
       const orders = response.data.data; // Access the 'data' field
       console.log(orders);
 
@@ -113,8 +113,9 @@ const Purchase = () => {
               </button>
             ) : (
               <span
-                className={`rounded-full px-4 py-2 text-sm font-medium ${order.status === 'Đã nhận hàng' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                  }`}
+                className={`rounded-full px-4 py-2 text-sm font-medium ${
+                  order.status === 'Đã nhận hàng' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                }`}
               >
                 {order.status}
               </span>

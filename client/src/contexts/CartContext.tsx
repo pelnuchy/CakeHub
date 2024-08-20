@@ -42,7 +42,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchCartUser = async (userID: string): Promise<any[]> => {
     try {
-      const response = await axios.get(`http://localhost:8000/load-cake-into-cart/${userID}`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/load-cake-into-cart/${userID}`);
       const cart = response.data.data;
 
       const cartDetails = cart.flatMap((cart: any) =>
@@ -103,7 +103,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (updatedFields.size) {
           const newSize = updatedFields.size;
           await axios.put(
-            `http://localhost:8000/update-cake-size-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newSize=${newSize}`,
+            `${process.env.REACT_APP_API_URL}/update-cake-size-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newSize=${newSize}`,
           );
         } else if (updatedFields.flavor) {
           const newFlavor =
@@ -115,12 +115,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
                   ? 'Soco'
                   : null;
           await axios.put(
-            `http://localhost:8000/update-cake-flavor-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newFlavor=${newFlavor}`,
+            `${process.env.REACT_APP_API_URL}/update-cake-flavor-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newFlavor=${newFlavor}`,
           );
         } else if (updatedFields.quantity) {
           const newQuantity = updatedFields.quantity;
           await axios.put(
-            `http://localhost:8000/update-cake-quantity-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newQuantity=${newQuantity}`,
+            `${process.env.REACT_APP_API_URL}/update-cake-quantity-from-cart/${userInfo.userID}/cart?itemID=${itemId}&newQuantity=${newQuantity}`,
           );
         }
         setRefresh((prev) => !prev); // Trigger useEffect to refresh cart
@@ -136,7 +136,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       if (userInfoString) {
         const userInfo = JSON.parse(userInfoString);
-        await axios.put(`http://localhost:8000/remove-cake-from-cart/cart?userID=${userInfo.userID}&itemID=${itemId}`);
+        await axios.put(
+          `${process.env.REACT_APP_API_URL}remove-cake-from-cart/cart?userID=${userInfo.userID}&itemID=${itemId}`,
+        );
         setCartItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
       } else {
         console.log('No user info found');

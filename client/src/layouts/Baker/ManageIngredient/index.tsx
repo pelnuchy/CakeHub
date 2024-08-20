@@ -17,7 +17,7 @@ const checkExpired = (expiryDate: Date) => {
 };
 const fetchIngredients = async (): Promise<any[]> => {
   try {
-    const ingredients = await axios.get(`http://localhost:8000/baker/get-ingredients`);
+    const ingredients = await axios.get(`${process.env.REACT_APP_API_URL}/baker/get-ingredients`);
     const ingredientData = ingredients.data.data;
     const ingredientDetails = ingredientData.map((ingre: any) => {
       return {
@@ -50,9 +50,8 @@ const InventoryTable: React.FC = () => {
   const handleDelete = (id: string) => {
     try {
       setIngredients(ingredients.filter((ingredient) => ingredient.id !== id));
-      axios.delete(`http://localhost:8000/baker/delete-ingredient/${id}`);
-    }
-    catch (error) {
+      axios.delete(`${process.env.REACT_APP_API_URL}/baker/delete-ingredient/${id}`);
+    } catch (error) {
       console.error('Failed to delete ingredient:', error);
     }
   };
@@ -78,7 +77,7 @@ const InventoryTable: React.FC = () => {
     },
   ) => {
     try {
-      await axios.put(`http://localhost:8000/baker/update-ingredient/${id}`, ingredientData);
+      await axios.put(`${process.env.REACT_APP_API_URL}/baker/update-ingredient/${id}`, ingredientData);
       setIsEditing(null);
     } catch (error) {
       console.error('Failed to update ingredient:', error);

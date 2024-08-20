@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
-import {format} from 'date-fns';
+import { format } from 'date-fns';
 import 'react-datepicker/dist/react-datepicker.css';
 import Button from '../components/Button';
 import { useCart } from '../contexts/CartContext';
@@ -19,8 +19,7 @@ const Checkout: React.FC = () => {
   if (totalCakePrice === 0) {
     shippingFee = 0;
     totalPrice = 0;
-  }
-  else{
+  } else {
     shippingFee = 50000;
     totalPrice = totalCakePrice + shippingFee;
   }
@@ -33,7 +32,10 @@ const Checkout: React.FC = () => {
     const checkoutInfo = { formattedDate, address, time };
     try {
       console.log('Checkout info:', checkoutInfo);
-      const response = await axios.put(`http://localhost:8000/update-order-checkout/${userInfo.userID}`, checkoutInfo);
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/update-order-checkout/${userInfo.userID}`,
+        checkoutInfo,
+      );
       console.log(response.data);
     } catch (err) {
       console.log(err);
@@ -45,10 +47,10 @@ const Checkout: React.FC = () => {
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
     const year = date.getFullYear();
     return `${year}-${month}-${day}`;
-};
+  };
   const fetchOrderCheckout = async (userID: string): Promise<any[]> => {
     try {
-      const response = await axios.get(`http://localhost:8000/get-info-ordering/${userID}`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-info-ordering/${userID}`);
       const orders = response.data.data; // Access the 'data' field
       //console.log('Fetched orders:', orders);
 

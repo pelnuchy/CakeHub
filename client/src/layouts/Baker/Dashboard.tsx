@@ -23,7 +23,7 @@ const Dashboard: React.FC = () => {
 
   const fetchTodayOrdered = async (): Promise<any[]> => {
     try {
-      const ordered = await axios.get(`http://localhost:8000/get-status-cake/baker?status=ordered`);
+      const ordered = await axios.get(`${process.env.REACT_APP_API_URL}/get-status-cake/baker?status=ordered`);
       const todayOrders = ordered.data.data;
 
       const orderDetails = todayOrders.map((order: any) => {
@@ -48,7 +48,7 @@ const Dashboard: React.FC = () => {
 
   const fetchTodayPreparing = async (): Promise<any[]> => {
     try {
-      const preparing = await axios.get(`http://localhost:8000/get-status-cake/baker?status=preparing`);
+      const preparing = await axios.get(`${process.env.REACT_APP_API_URL}/get-status-cake/baker?status=preparing`);
       const todayOrders = preparing.data.data;
 
       const orderDetails = todayOrders.map((order: any) => {
@@ -77,18 +77,18 @@ const Dashboard: React.FC = () => {
     }
     setNewBakingSessionOrders([...newBakingSessionOrders, order]);
     setTodaysOrders(todaysOrders.filter((o) => o.id !== order.id));
-    await axios.put(`http://localhost:8000/update-order-status/baker/${order.id}?status=preparing`);
+    await axios.put(`${process.env.REACT_APP_API_URL}/update-order-status/baker/${order.id}?status=preparing`);
   };
 
   const removeOrderFromBakingSession = async (order: any) => {
     setNewBakingSessionOrders(newBakingSessionOrders.filter((o) => o.id !== order.id));
     setTodaysOrders([...todaysOrders, order]);
-    await axios.put(`http://localhost:8000/update-order-status/baker/${order.id}?status=ordered`);
+    await axios.put(`${process.env.REACT_APP_API_URL}/update-order-status/baker/${order.id}?status=ordered`);
   };
 
   const handleDashBoardToBakingSession = async () => {
     for (const order of newBakingSessionOrders) {
-      await axios.put(`http://localhost:8000/update-order-status/baker/${order.id}?status=handling_1`);
+      await axios.put(`${process.env.REACT_APP_API_URL}/update-order-status/baker/${order.id}?status=handling_1`);
     }
     navigate('/baker/bakingsession');
   };
