@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import Modal from '../Modal';
-import { Ingredient } from '../../layouts/Baker/ManageIngredient/IngredientType';
 import axios from 'axios';
 import Button from '../../components/Button';
-import { toast } from 'react-toastify';
 import ToastComponent from '../ToastComponent';
+import { toast } from 'react-toastify';
+import { Ingredient } from '../../utils/interfaces';
 interface AddIngredientPopupProps {
   onSave: (ingredient: Ingredient) => void;
   onClose: () => void;
@@ -19,7 +19,7 @@ const AddIngredientPopup: React.FC<AddIngredientPopupProps> = ({ onSave, onClose
     unit: 'thanh',
     quantity: 11,
     expiryDate: '2020-12-16',
-    status: true
+    status: true,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -60,7 +60,7 @@ const AddIngredientPopup: React.FC<AddIngredientPopupProps> = ({ onSave, onClose
       try {
         onSave(ingredient);
         const data = { ingredient };
-        const response = await axios.post('http://localhost:8000/baker/add-ingredient', data);
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/baker/add-ingredient`, data);
         toast.error('Add ingredient response:', response);
         onClose();
       } catch (error) {
@@ -181,7 +181,7 @@ const AddIngredientPopup: React.FC<AddIngredientPopupProps> = ({ onSave, onClose
               Hủy
             </button>
             <Button
-              type='submit'
+              type="submit"
               // onClick={handleSave}
               className="w-32 transform rounded-md bg-primary-500 px-4 py-2 text-white shadow-sm transition-transform hover:scale-105 hover:bg-primary-400"
             >

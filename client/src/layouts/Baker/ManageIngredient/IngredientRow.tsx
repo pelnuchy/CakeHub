@@ -1,13 +1,23 @@
 import React from 'react';
 import { FaEdit, FaTrashAlt, FaSave } from 'react-icons/fa';
-import { Ingredient } from './IngredientType';
+import { Ingredient } from '../../../utils/interfaces';
 
 interface IngredientRowProps {
   ingredient: Ingredient;
   isEditing: string | null;
   handleEdit: (id: string) => void;
   handleDelete: (id: string) => void;
-  handleSave: (id: string, ingredientData: { name: string, price: number, unit: string, quantity: number, perquantity: number, expiryDate: string }) => void;
+  handleSave: (
+    id: string,
+    ingredientData: {
+      name: string;
+      price: number;
+      unit: string;
+      quantity: number;
+      perquantity: number;
+      expiryDate: string;
+    },
+  ) => void;
   handleChange: (id: string, field: string, value: string | number) => void;
 }
 
@@ -111,14 +121,16 @@ const IngredientRow: React.FC<IngredientRowProps> = ({
       <td className="flex justify-center space-x-2 px-4 py-3 text-center">
         {isEditing === ingredient.id ? (
           <button
-            onClick={() => handleSave(ingredient.id, {
-              name: ingredient.name,
-              price: Number(ingredient.price),
-              unit: ingredient.unit,
-              quantity: ingredient.quantity,
-              perquantity: ingredient.perquantity,
-              expiryDate: ingredient.expiryDate,
-            })}
+            onClick={() =>
+              handleSave(ingredient.id, {
+                name: ingredient.name,
+                price: Number(ingredient.price),
+                unit: ingredient.unit,
+                quantity: ingredient.quantity,
+                perquantity: ingredient.perquantity,
+                expiryDate: ingredient.expiryDate,
+              })
+            }
             className="text-blue-500 transition duration-300 hover:text-blue-700"
           >
             <FaSave className="h-5 w-5" />

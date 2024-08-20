@@ -3,10 +3,11 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import SortControl from './SortControl'; // Make sure to adjust the import path as needed
 import CakeCard from '../../components/Cake/CakeCard';
+import { Cake } from '../../utils/interfaces';
 
 const CakeAnniversary = () => {
   const occasion = useLocation();
-  const [anniversaryCakes, setCakeAnni] = useState<object[]>([]);
+  const [anniversaryCakes, setCakeAnni] = useState<Cake[]>([]);
   const [sortOption, setSortOption] = useState<string>('');
 
   useEffect(() => {
@@ -19,7 +20,7 @@ const CakeAnniversary = () => {
 
   const fetchCakeAnniversary = async (occasion: any) => {
     try {
-      const response = await axios.get(`http://localhost:8000/get-all-cakes-occasion${occasion.pathname}`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-all-cakes-occasion${occasion.pathname}`);
       return response.data.data;
     } catch (error) {
       console.log(error);

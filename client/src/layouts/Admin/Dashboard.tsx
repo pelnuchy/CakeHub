@@ -49,12 +49,11 @@ const Dashboard: React.FC = () => {
 
     getListCakesSold();
     getListIngredientsSold();
-
   }, [selectedDate]);
 
   const fetchListCakesSold = async (): Promise<Product[]> => {
     try {
-      const response = await axios.get(`http://localhost:8000/get-list-cakes-sold`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-list-cakes-sold`);
       const listCakesSold = response.data.data;
 
       const cakeSoldDetail = listCakesSold.flatMap((listCakesSold: any) =>
@@ -63,7 +62,7 @@ const Dashboard: React.FC = () => {
           quantity: cake.cakeQuantity,
           revenue: cake.total_price,
           date: new Date(cake.completeTime),
-          image: cake.img_url
+          image: cake.img_url,
         })),
       );
 
@@ -76,16 +75,16 @@ const Dashboard: React.FC = () => {
 
   const fetchIngredientsSold = async (): Promise<Ingredient[]> => {
     try {
-      const response = await axios.get(`http://localhost:8000/get-list-ingredients-sold`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-list-ingredients-sold`);
       const listIngredientsSold = response.data.data;
 
       const ingredientSoldDetail = listIngredientsSold.flatMap((listIngredientsSold: any) =>
         listIngredientsSold.ingredients_list.map((ingredient: any) => ({
           name: ingredient.name,
-          quantity: ingredient.quantity.toString() + " " + ingredient.unit,
+          quantity: ingredient.quantity.toString() + ' ' + ingredient.unit,
           price: ingredient.price.toString(),
-          total: (ingredient.price * ingredient.quantity / ingredient.perQuantity).toString(),
-          date: new Date(ingredient.time)
+          total: ((ingredient.price * ingredient.quantity) / ingredient.perQuantity).toString(),
+          date: new Date(ingredient.time),
         })),
       );
 
@@ -95,7 +94,6 @@ const Dashboard: React.FC = () => {
       return [];
     }
   };
-
 
   // Ensure selectedDate is not null
   const selectedYear = selectedDate ? selectedDate.getFullYear() : new Date().getFullYear();
@@ -109,15 +107,15 @@ const Dashboard: React.FC = () => {
 
   const aggregatedProducts = viewByYear
     ? filteredProducts.reduce((acc, product) => {
-      const existingProduct = acc.find((p) => p.name === product.name);
-      if (existingProduct) {
-        existingProduct.quantity += product.quantity;
-        existingProduct.revenue = (parseFloat(existingProduct.revenue) + parseFloat(product.revenue)).toFixed(0); // Remove decimal
-      } else {
-        acc.push({ ...product });
-      }
-      return acc;
-    }, [] as Product[])
+        const existingProduct = acc.find((p) => p.name === product.name);
+        if (existingProduct) {
+          existingProduct.quantity += product.quantity;
+          existingProduct.revenue = (parseFloat(existingProduct.revenue) + parseFloat(product.revenue)).toFixed(0); // Remove decimal
+        } else {
+          acc.push({ ...product });
+        }
+        return acc;
+      }, [] as Product[])
     : filteredProducts;
 
   const filteredIngredients = ingredientsSold.filter((ingredient) => {
@@ -130,17 +128,14 @@ const Dashboard: React.FC = () => {
     return viewByYear
       ? date.getFullYear()
       : date.toLocaleDateString('vi-VN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-      });
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        });
   };
 
   const totalRevenue = aggregatedProducts.reduce((total, product) => total + Number(product.revenue), 0);
-  const totalCost = filteredIngredients.reduce(
-    (total, ingredient) => total + parseInt(ingredient.total),
-    0,
-  );
+  const totalCost = filteredIngredients.reduce((total, ingredient) => total + parseInt(ingredient.total), 0);
   const totalProfit = totalRevenue - totalCost;
 
   return (

@@ -16,7 +16,7 @@ const LoginForm = () => {
     const auth = { username, password };
 
     try {
-      const response = await axios.post('http://localhost:8000/login', auth);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, auth);
       sessionStorage.setItem('userInfo', JSON.stringify(response.data.session));
       const userInfo = JSON.stringify(response.data.session);
       sessionStorage.setItem('userInfo', userInfo);

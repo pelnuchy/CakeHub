@@ -20,7 +20,7 @@ interface OrderCardProps {
   onRemove?: () => void;
 }
 
-const OrderCard: React.FC<OrderCardProps> = ({ order, onAdd, onRemove }) => (
+const DashboardOrderCard: React.FC<OrderCardProps> = ({ order, onAdd, onRemove }) => (
   <div className="m-4 flex transform flex-col items-center justify-between rounded-lg bg-white p-4 shadow-md transition-transform hover:scale-105">
     <h3 className="mb-2 text-lg font-semibold">Đơn hàng #{order.id}</h3>
     <div className="mb-2 max-h-40 w-full overflow-y-auto">
@@ -54,4 +54,4 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onAdd, onRemove }) => (
   </div>
 );
 
-export default OrderCard;
+export default DashboardOrderCard;

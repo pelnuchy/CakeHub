@@ -4,26 +4,26 @@ import { FaPlus, FaMinus } from 'react-icons/fa';
 const FAQ = () => {
   const faqs = [
     {
-      question: 'What is Cake Hub?',
-      answer: 'Cake Hub is an online platform where you can order custom cakes for any occasion.',
+      question: 'CakeHub là gì?',
+      answer: 'CakeHub là một nền tảng trực tuyến nơi bạn có thể đặt bánh tự trang trí cho bất kì dịp đặc biệt hay ngày lễ nào.',
     },
     {
-      question: 'How do I place an order?',
+      question: 'Làm sao để bạn có thể đặt hàng?',
       answer:
-        'To place an order, browse our selection of cakes, choose your desired cake, customize it, and proceed to checkout.',
+        'Để đặt đơn hàng, duyệt qua mục lựa chọn bánh của chúng tôi, chọn loại bánh bạn muốn, trang trí cho nó và tiến hành thanh toán.',
     },
     {
-      question: 'What payment methods are accepted?',
-      answer: 'We accept various payment methods including credit/debit cards, PayPal, and bank transfers.',
+      question: 'Những phương thức thanh toán nào được chấp nhận?',
+      answer: 'Chúng tôi chấp nhận rất nhiều các loại phương thức thanh toán khác nhau bao gồm các loại thẻ tín dụng/thẻ ghi nợ, PayPal, và chuyển khoản qua ngân hàng.',
     },
     {
-      question: 'Can I track my order?',
-      answer: "Yes, you can track your order through the 'Order History' section in your account.",
+      question: 'Bạn có thể theo dõi đơn hàng của bạn chứ?',
+      answer: "Hoàn toàn có thể, bạn có thể theo dõi đơn hàng của bạn qua mục 'Lịch sử đơn hàng' trong tài khoản của bạn.",
     },
     {
-      question: 'What is the return policy?',
+      question: 'Chính sách trả hàng là gì?',
       answer:
-        'If you are not satisfied with your order, please contact us within 24 hours of delivery for a possible refund or exchange.',
+        'Nếu bạn cảm thấy không hài lòng với đơn hàng của bạn, xin hãy liên hệ với chúng tôi trong vòng 24 tiếng kể từ khi giao hàng để có thể hoàn tiền hoặc đổi bánh.',
     },
   ];
 

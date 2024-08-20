@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import CakeCard from '../../components/Cake/CakeCard';
 import { useShuffledCakes } from '../../hooks/useShuffledCakes';
 import SortControl from '../Occasion/SortControl';
+import { Cake } from '../../utils/interfaces';
 
 const Trending = () => {
   const [sortOption, setSortOption] = useState<string>('');
-  const [sortedCakes, setSortedCakes] = useState<object[]>([]);
+  const [sortedCakes, setSortedCakes] = useState<Cake[]>([]);
   const randomCakes = useShuffledCakes(8);
 
   useEffect(() => {

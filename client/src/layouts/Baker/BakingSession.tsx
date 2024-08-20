@@ -4,20 +4,6 @@ import OrderCard from '../../components/Order/BakingSessionCard';
 import axios from 'axios';
 import { format } from 'date-fns';
 import moment from 'moment-timezone';
-interface Cake {
-  name: string;
-  price: number;
-  quantity: number;
-}
-
-interface Order {
-  id: Number;
-  date: string;
-  time: string;
-  cakes: Cake[];
-  isCompleted: boolean;
-  status: string;
-}
 
 const formatDate = (isoDate: string): string => {
   const date = new Date(isoDate);
@@ -33,7 +19,7 @@ const BakingSession: React.FC = () => {
 
   const handleStart = async (id: string) => {
     try {
-      await axios.put(`http://localhost:8000/update-order-status/baker/${id}?status=handling_2`);
+      await axios.put(`${process.env.REACT_APP_API_URL}/update-order-status/baker/${id}?status=handling_2`);
       setOrders((prevOrders) =>
         prevOrders.map((order) => (order.id === id ? { ...order, status: 'handling_2' } : order)),
       );
@@ -44,8 +30,10 @@ const BakingSession: React.FC = () => {
 
   const handleConfirm = async (id: string) => {
     try {
-      await axios.put(`http://localhost:8000/update-order-status/baker/${id}?status=delivering`);
-      setOrders((prevOrders) => prevOrders.map((order) => (order.id == id ? { ...order, status: 'delivering' } : order)));
+      await axios.put(`${process.env.REACT_APP_API_URL}/update-order-status/baker/${id}?status=delivering`);
+      setOrders((prevOrders) =>
+        prevOrders.map((order) => (order.id === id ? { ...order, status: 'delivering' } : order)),
+      );
     } catch (error) {
       console.error('Failed to update order status:', error);
     }
@@ -62,7 +50,7 @@ const BakingSession: React.FC = () => {
 
   const fetchHandlingToday = async (): Promise<any[]> => {
     try {
-      const ordered = await axios.get(`http://localhost:8000/get-handling-cake/baker`);
+      const ordered = await axios.get(`${process.env.REACT_APP_API_URL}/get-handling-cake/baker`);
       const handlingOrders = ordered.data.data;
 
       const orderDetails = handlingOrders.map((order: any) => {
