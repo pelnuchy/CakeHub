@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
-import { format } from 'date-fns';
 import 'react-datepicker/dist/react-datepicker.css';
-import Button from '../components/Button';
 import { useCart } from '../contexts/CartContext';
 import axios from 'axios';
-import { PayPalButton } from "react-paypal-button-v2";
+import { PayPalButton } from 'react-paypal-button-v2';
 import { useNavigate } from 'react-router-dom';
 
 const Checkout: React.FC = () => {
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [address, setAddress] = useState('');
   const [time, setTime] = useState('13:00');
-  const [orders, setOrders] = useState<any[]>([]);
   const [sdkReady, setSdkReady] = useState(false);
   const navigate = useNavigate();
   const { cartItems } = useCart();
@@ -23,26 +20,24 @@ const Checkout: React.FC = () => {
   if (totalCakePrice === 0) {
     shippingFee = 0;
     totalPrice = 0;
-  }
-  else {
+  } else {
     shippingFee = 50000;
     totalPrice = totalCakePrice + shippingFee;
   }
   const userInfoString = sessionStorage.getItem('userInfo');
   const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
 
-  const getFormattedDate = (date: Date | null) => {
-    if (!date) return '';
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
-    const year = date.getFullYear();
-    return `${year}-${month}-${day}`;
-  };
+  // const getFormattedDate = (date: Date | null) => {
+  //   if (!date) return '';
+  //   const day = String(date.getDate()).padStart(2, '0');
+  //   const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+  //   const year = date.getFullYear();
+  //   return `${year}-${month}-${day}`;
+  // };
 
   const onSuccessPaypal = async (details: any, data: any) => {
     //console.log('details, data', details, data);
     if (details.status === 'COMPLETED') {
-
       const orderDetail = {
         orderID: 'O002',
         shippingDate: startDate,
@@ -52,52 +47,48 @@ const Checkout: React.FC = () => {
         status: 'ordered',
         user_id: userInfo.userID,
         s_cakeQuantity: cartItems.length,
-        cakes: cartItems.map(item => ({
+        cakes: cartItems.map((item) => ({
           cake_id: item.id,
-          cakeMessage: item.message, 
+          cakeMessage: item.message,
           cakeQuantity: item.quantity,
-          total_price: item.price * item.quantity
-        }))
+          total_price: item.price * item.quantity,
+        })),
       };
-      
+
       try {
         console.log('addPaypalScript', userInfo.userID);
-        const response = await axios.post('http://localhost:8000/create-order', { orderDetail });
-        await axios.put(`http://localhost:8000/remove-all-cakes-from-cart/${userInfo.userID}/cart`);
+        await axios.post(`${process.env.REACT_APP_API_URL}/create-order`, { orderDetail });
+        await axios.put(`${process.env.REACT_APP_API_URL}/remove-all-cakes-from-cart/${userInfo.userID}/cart`);
         navigate('/purchase');
         window.location.reload();
       } catch (error) {
         console.error('Error:', error);
       }
-    }
-    else {
-      alert("Transaction failed");
+    } else {
+      alert('Transaction failed');
     }
   };
 
-
   const addPaypalScript = async () => {
     try {
-    const res = await axios.get('http://localhost:8000/payment/config');
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = `https://www.paypal.com/sdk/js?client-id=${res.data.data}&disable-funding=credit,card`;
-    script.async = true;
-    script.onload = () => setSdkReady(true);
-    script.onerror = () => setSdkReady(false);
-    document.body.appendChild(script);
-
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/payment/config`);
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = `https://www.paypal.com/sdk/js?client-id=${res.data.data}&disable-funding=credit,card`;
+      script.async = true;
+      script.onload = () => setSdkReady(true);
+      script.onerror = () => setSdkReady(false);
+      document.body.appendChild(script);
     } catch (error) {
       console.error('Error:', error);
     }
-  }
+  };
   useEffect(() => {
     if (!window.paypal) {
       addPaypalScript();
-    }
-    else {
+    } else {
       setSdkReady(true);
-    };
+    }
   }, [sdkReady]);
 
   return (
@@ -180,26 +171,23 @@ const Checkout: React.FC = () => {
           </div>
         </div>
         <div className="flex justify-center">
-          {/* <Button type="submit" className="w-[50vh]">
-            Thanh Toán
-          </Button> */}
-
           {sdkReady ? (
             address ? (
-            <PayPalButton
-              amount={totalPrice / 25000}
-              // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
-              onSuccess={onSuccessPaypal}
-              onError={(err: any) => {
-                alert("Transaction error: " + err);
-              }}
-            />
+              <div className="w-full max-w-[50vh] pt-8">
+                <PayPalButton
+                  amount={totalPrice / 25000}
+                  onSuccess={onSuccessPaypal}
+                  onError={(err: any) => {
+                    alert('Transaction error: ' + err);
+                  }}
+                />
+              </div>
+            ) : (
+              <div className="text-red-500">Vui lòng điền địa chỉ giao hàng để thanh toán.</div>
+            )
           ) : (
-            <div className="text-red-500">Vui lòng điền địa chỉ giao hàng để thanh toán.</div>
-          )
-        ) : (
-          <div>Đang tải...</div>
-        )}
+            <div>Đang tải...</div>
+          )}
         </div>
       </div>
     </div>

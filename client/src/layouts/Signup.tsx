@@ -20,13 +20,13 @@ const SignupForm = () => {
         toast.error('Mật khẩu không khớp. Vui lòng kiểm tra lại.');
         return;
       }
-      axios.post(`${process.env.REACT_APP_API_URL}/signup`, auth);
+      await axios.post(`${process.env.REACT_APP_API_URL}/signup`, auth);
       toast.success('Đăng ký thành công');
       setTimeout(() => {
         navigate('/login');
       }, 1000);
     } catch (err) {
-      toast.error('Đăng ký thất bại. Vui lòng thử lại.');
+      toast.error('Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.');
       console.log(err);
     }
   };
