@@ -3,6 +3,30 @@ import Order from '../models/Order.js';
 import moment from 'moment-timezone';
 const orderController = {};
 
+orderController.createOrder = async (req, res) => {
+    try {
+        const { orderDetail} = req.body;
+        if (!orderDetail) {
+            return res.status(401).json({
+                status: 'ERROR',
+                message: "Please fill in order information"
+            });
+        }
+        const order = new Order(orderDetail);
+        await order.save();
+        return res.status(200).json({
+            status: 'SUCCESS',
+            data: order
+        });
+    } catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+} 
+        
+
 orderController.getOrderHistory = async (req, res) => {
     try {
         const userID = req.params.userid;

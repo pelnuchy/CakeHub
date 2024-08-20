@@ -17,6 +17,7 @@ const CakeInfo = () => {
   const [selectedSize, setSelectedSize] = useState('S');
   const [selectedFlavor, setSelectedFlavor] = useState('Chanh dây');
   const [selectedQuantity, setSelectedQuantity] = useState(1);
+  const [selectedMessage, setSelectedMessage] = useState('');
   const [selectedTotalPrice, setSelectedTotalPrice] = useState(0);
   const navigate = useNavigate();
 
@@ -75,6 +76,7 @@ const CakeInfo = () => {
       addToCart({
         id: cakeDetail.cakeID,
         name: cakeDetail.cakeName,
+        message: selectedMessage,
         price: Number(cakeDetail.price),
         size: selectedSize,
         flavor: selectedFlavor,
@@ -85,6 +87,7 @@ const CakeInfo = () => {
       const userInfoParsed = userInfo ? JSON.parse(userInfo) : null;
       const cakeInfo = {
         selectedNewCakeID,
+        selectedMessage,
         selectedQuantity,
         selectedTotalPrice,
       };
@@ -117,6 +120,7 @@ const CakeInfo = () => {
           setSelectedSize={setSelectedSize}
           setSelectedFlavor={setSelectedFlavor}
           setSelectedQuantity={setSelectedQuantity}
+          setMessage={setSelectedMessage}
           handleAddToCart={handleAddToCart}
         />
       </div>

@@ -421,6 +421,9 @@ db.createCollection("carts", {
                             "cake_id": {
                                 "bsonType": "string"
                             },
+                            "cakeMessage": {
+                                "bsonType": "string"
+                            },
                             "cakeQuantity": {
                                 "bsonType": "number"
                             },

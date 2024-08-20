@@ -9,5 +9,6 @@ router.put('/remove-cake-from-cart/cart', cartController.removeCakeFromCart); //
 router.put('/update-cake-quantity-from-cart/:userid/cart', cartController.updateCakeQuantityFromCart);
 router.put('/update-cake-size-from-cart/:userid/cart', cartController.updateCakeSizeFromCart);
 router.put('/update-cake-flavor-from-cart/:userid/cart', cartController.updateCakeFlavorFromCart);
+router.put('/remove-all-cakes-from-cart/:userid/cart', cartController.removeAllCakesFromCart);
 export default router; 
 

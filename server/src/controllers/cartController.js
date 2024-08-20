@@ -27,7 +27,8 @@ cartController.loadCakeIntoCart = async (req, res) => {
                     "cakes.size": "$cakeDetail.size",
                     "cakes.img_url": "$cakeDetail.img_url",
                     "cakes.flavor": "$cakeDetail.jamFilling",
-                    "cakes.price": "$cakeDetail.price"
+                    "cakes.price": "$cakeDetail.price",
+                    "cakes.message": "$cakes.cakeMessage" // Assuming cakeMessage is already a string
                 }
             },
             {
@@ -77,6 +78,28 @@ cartController.removeCakeFromCart = async (req, res) => {
         return res.status(200).json({
             status: 'SUCCESS',
             message: 'Cake removed from cart',
+            cart: cart
+        });
+
+    } catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+}
+
+cartController.removeAllCakesFromCart = async (req, res) => {
+    try {
+        const userID = req.params.userid;
+        const cart = await Cart.updateOne(
+            { user_id: userID },
+            { $set: { cakes: [] } }
+        );
+
+        return res.status(200).json({
+            status: 'SUCCESS',
+            message: 'All cakes removed from cart',
             cart: cart
         });
 
@@ -382,7 +405,7 @@ cartController.updateCakeSizeFromCart = async (req, res) => {
 }
 cartController.addCakeToCart = async (req, res) => {
     try {
-        const { selectedNewCakeID, selectedQuantity, selectedTotalPrice } = req.body;
+        const { selectedNewCakeID, selectedQuantity, selectedTotalPrice, selectedMessage } = req.body;
         const userID = req.params.userid;
         const cart = await Cart.findOne({ user_id: userID });
 
@@ -392,6 +415,7 @@ cartController.addCakeToCart = async (req, res) => {
 
         const newCake = {
             cake_id: selectedNewCakeID,
+            cakeMessage: selectedMessage,
             cakeQuantity: selectedQuantity,
             total_price: selectedTotalPrice
         };

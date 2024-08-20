@@ -7,6 +7,7 @@ import cartRoutes from './src/routes/cartRoutes.js';
 import orderRoutes from './src/routes/orderRoutes.js';
 import ingredientRoutes from './src/routes/ingredientRoutes.js';
 import deviceRoutes from './src/routes/deviceRoutes.js';
+import paymentRoutes from './src/routes/paymentRoutes.js';
 import bodyParser from 'body-parser';
 import session from 'express-session';
 import cors from 'cors';
@@ -37,7 +38,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 
-app.use('/',cakeRoutes, userRoutes, cartRoutes, orderRoutes, ingredientRoutes, deviceRoutes);
+app.use('/',cakeRoutes, userRoutes, cartRoutes, orderRoutes, ingredientRoutes, deviceRoutes, paymentRoutes);
+// // Thêm middleware CSP
+// app.use((req, res, next) => {
+//     res.setHeader("Content-Security-Policy", "script-src 'self' https://*.paypal.com:* https://*.paypalobjects.com 'unsafe-inline' https://apis.google.com; worker-src 'self' blob:;");
+//     next();
+//   });
+
 
 mongoose.connect(process.env.DATABASE_URI_LOCAL)
 .then(async () => { // Sử dụng async để có thể sử dụng await bên trong

@@ -8,6 +8,7 @@ interface CartItem {
   size: string;
   flavor: string;
   quantity: number;
+  message: string;
   image: string;
   total_price: number;
 }
@@ -54,13 +55,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const response = await axios.get(`http://localhost:8000/load-cake-into-cart/${userID}`);
       const cart = response.data.data;
-
       const cartDetails = cart.flatMap((cart: any) =>
         cart.cakes.map((cake: any) => ({
           id: cake.cake_id,
           name: cake.cakeName,
           price: Number(cake.price),
           size: transSize(cake.size),
+          message: cake.message,
           flavor: cake.flavor,
           quantity: cake.cakeQuantity,
           image: cake.img_url,

@@ -9,6 +9,7 @@ const CakeOptionsForm = ({
   selectedQuantity,
   setSelectedSize,
   setSelectedFlavor,
+  setMessage,
   setSelectedQuantity,
   handleAddToCart,
 }: {
@@ -19,6 +20,7 @@ const CakeOptionsForm = ({
   setSelectedSize: (size: string) => void;
   setSelectedFlavor: (flavor: string) => void;
   setSelectedQuantity: (quantity: number) => void;
+  setMessage: (message: string) => void;
   handleAddToCart: (e: React.FormEvent<HTMLFormElement>) => void;
 }) => {
   const [isSpamming, setIsSpamming] = React.useState(false);
@@ -76,7 +78,8 @@ const CakeOptionsForm = ({
 
         <div className="mt-6">
           <p className="text-sm font-semibold">Thông điệp:</p>
-          <input type="text" placeholder="Nhập thông điệp cho bánh" className="mt-2 w-full rounded border p-2" />
+          <input type="text" placeholder="Nhập thông điệp cho bánh" className="mt-2 w-full rounded border p-2" 
+          onChange={(e) => setMessage(e.target.value)}/>
         </div>
 
         <div className="mt-6 flex items-center">
