@@ -14,7 +14,7 @@ const cakeSchema = new mongoose.Schema(
 
 const orderSchema = new mongoose.Schema(
     {
-        orderID: { type: String, required: true },
+        orderID: { type: String, required: false },
         shippingDate: { type: Date, required: true },
         shippingAddress: { type: String, required: true },
         orderTime: { type: Date, required: false },

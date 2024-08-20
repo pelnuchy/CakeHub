@@ -28,7 +28,7 @@ const Dashboard: React.FC = () => {
 
       const orderDetails = todayOrders.map((order: any) => {
         return {
-          id: order.orderID,
+          id: order._id,
           items: order.cakes.map((cake: any) => ({
             name: cake.cakeName,
             size: cake.size,
@@ -53,7 +53,7 @@ const Dashboard: React.FC = () => {
 
       const orderDetails = todayOrders.map((order: any) => {
         return {
-          id: order.orderID,
+          id: order._id,
           items: order.cakes.map((cake: any) => ({
             name: cake.cakeName,
             size: cake.size,

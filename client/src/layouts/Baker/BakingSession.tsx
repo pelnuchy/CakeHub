@@ -55,7 +55,7 @@ const BakingSession: React.FC = () => {
 
       const orderDetails = handlingOrders.map((order: any) => {
         return {
-          id: order.orderID,
+          id: order._id,
           date: formatDate(moment.tz(`${order.shippingDate}`, 'Asia/Ho_Chi_Minh').format('YYYY-MM-DD HH:mm')),
           time: formatTime(moment.tz(`${order.shippingDate}`, 'Asia/Ho_Chi_Minh').format('YYYY-MM-DD HH:mm')),
           status: order.status,

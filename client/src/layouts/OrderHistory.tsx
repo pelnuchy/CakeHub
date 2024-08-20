@@ -19,7 +19,7 @@ const OrderHistory = () => {
         const orders = response.data.data; // Access the 'data' field
         const orderDetails = orders.map((order: any) => ({
           date: order.shippingDate,
-          orderId: order.orderID,
+          orderId: order._id,
           total: `${Number(order.total_price).toLocaleString()} VND`,
           items: order.cakes.map((cake: any) => ({
             name: cake.cakeName,

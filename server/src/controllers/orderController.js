@@ -523,7 +523,7 @@ orderController.updateStatusOrder = async (req, res) => {
             });
         }
         const updateOrder = await Order.updateOne(
-            { orderID: orderID },
+            { _id: orderID },
             { status: status }
         ).lean().exec();
         return res.status(200).json({

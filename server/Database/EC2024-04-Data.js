@@ -1,12 +1,20 @@
 // Select the database to use.
 use("EC2024-04-CakeHub");
 
-db.users.insertOne({
-  userID: "admin01",
-  username: "admin",
-  password: "123",
-  role: "admin",
-});
+db.users.insertMany([
+  {
+    userID: "admin01",
+    username: "admin",
+    password: "123",
+    role: "admin",
+  },
+  {
+    userID: "baker01",
+    username: "baker",
+    password: "123",
+    role: "baker",
+  }
+]);
 
 db.devices.insertMany([
   {

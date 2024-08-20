@@ -70,7 +70,7 @@ const Purchase = () => {
       // Map through orders and use the already detailed cake information
       const orderDetails = orders.map((order: any) => {
         return {
-          id: order.orderID,
+          id: order._id,
           status: translatOrderStatus(order.status),
           address: order.shippingAddress,
           date: order.shippingDate,
