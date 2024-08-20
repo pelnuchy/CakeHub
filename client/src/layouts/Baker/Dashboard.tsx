@@ -8,6 +8,13 @@ const Dashboard: React.FC = () => {
   const [todaysOrders, setTodaysOrders] = useState<any[]>([]);
   const [newBakingSessionOrders, setNewBakingSessionOrders] = useState<any[]>([]);
   const navigate = useNavigate();
+  
+  const userInfo = sessionStorage.getItem('userInfo');
+  const sessionStorageData = userInfo ? JSON.parse(userInfo) : null;
+
+  if (!sessionStorageData || sessionStorageData.role !== 'baker') {
+    navigate('/login');
+  }
 
   useEffect(() => {
     const getTodayOrdered = async () => {

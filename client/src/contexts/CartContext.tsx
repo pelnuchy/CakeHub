@@ -137,7 +137,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (userInfoString) {
         const userInfo = JSON.parse(userInfoString);
         await axios.put(
-          `${process.env.REACT_APP_API_URL}remove-cake-from-cart/cart?userID=${userInfo.userID}&itemID=${itemId}`,
+          `${process.env.REACT_APP_API_URL}/remove-cake-from-cart/cart?userID=${userInfo.userID}&itemID=${itemId}`,
         );
         setCartItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
       } else {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
 // Status steps
 const orderStatuses = ['Đã đặt hàng', 'Đang xử lý', 'Đang giao hàng', 'Đã nhận hàng'];
 
@@ -40,8 +40,17 @@ const transSize = (size: number) => {
 };
 // Purchase component
 const Purchase = () => {
+  const navigate = useNavigate();
   // State to manage orders
   const [orders, setOrders] = useState<any[]>([]);
+
+  const userInfo = sessionStorage.getItem('userInfo');
+  const sessionStorageData = userInfo ? JSON.parse(userInfo) : null;
+
+  if (!sessionStorageData || sessionStorageData.role !== 'customer') {
+    navigate('/login');
+  }
+
   // Handle button click
   const handleReceivedClick = async (id: any) => {
     setOrders(orders.map((order) => (order.id === id ? { ...order, status: 'Đã nhận hàng' } : order)));

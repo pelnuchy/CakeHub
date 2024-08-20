@@ -4,6 +4,7 @@ import OrderCard from '../../components/Order/BakingSessionCard';
 import axios from 'axios';
 import { format } from 'date-fns';
 import moment from 'moment-timezone';
+import { useNavigate } from 'react-router-dom';
 
 const formatDate = (isoDate: string): string => {
   const date = new Date(isoDate);
@@ -15,8 +16,14 @@ const formatTime = (isoDate: string): string => {
   return format(date, 'HH:mm');
 };
 const BakingSession: React.FC = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<any[]>([]);
+  const userInfo = sessionStorage.getItem('userInfo');
+  const sessionStorageData = userInfo ? JSON.parse(userInfo) : null;
 
+  if (!sessionStorageData || sessionStorageData.role !== 'baker') {
+    navigate('/login');
+  }
   const handleStart = async (id: string) => {
     try {
       await axios.put(`${process.env.REACT_APP_API_URL}/update-order-status/baker/${id}?status=handling_2`);

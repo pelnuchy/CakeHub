@@ -4,8 +4,9 @@ import 'react-datepicker/dist/react-datepicker.css';
 import axios from 'axios';
 import { Device } from '../Admin/DeviceType';
 import AddDevicePopup from '../../components/AddDevicePopup';
-
+import { useNavigate } from 'react-router-dom';
 const ManageDevice: React.FC = () => {
+  const navigate = useNavigate();
   const [devices, setDevices] = useState<Device[]>([]);
 
   // for adding
@@ -30,6 +31,14 @@ const ManageDevice: React.FC = () => {
   //     document.removeEventListener('click', handleClickOutside);
   //   };
   // }, [editingId]);
+
+  const userInfo = sessionStorage.getItem('userInfo');
+  const sessionStorageData = userInfo ? JSON.parse(userInfo) : null;
+
+  if (!sessionStorageData || sessionStorageData.role !== 'admin') {
+    navigate('/login');
+  }
+  
 
   useEffect(() => {
     const getListDevices = async () => {

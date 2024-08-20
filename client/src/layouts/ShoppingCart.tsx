@@ -11,6 +11,13 @@ const ShoppingCart: React.FC = () => {
   const { cartItems, removeFromCart, updateCartItem } = useCart();
   const [notification, setNotification] = useState('');
 
+  const userInfo = sessionStorage.getItem('userInfo');
+  const sessionStorageData = userInfo ? JSON.parse(userInfo) : null;
+
+  if (!sessionStorageData || sessionStorageData.role !== 'customer') {
+    navigate('/login');
+  }
+
   const handleQuantityChange = (itemId: string, quantity: number) => {
     if (quantity === 0) {
       if (window.confirm('Số lượng bằng 0. Bạn có muốn xóa sản phẩm khỏi giỏ hàng không?')) {
@@ -31,8 +38,16 @@ const ShoppingCart: React.FC = () => {
   };
 
   const totalCakePrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const shippingFee = 50000;
-  const totalPrice = totalCakePrice + shippingFee;
+  let totalPrice = 0;
+  let shippingFee = 0;
+  if (totalCakePrice === 0) {
+    shippingFee = 0;
+    totalPrice = 0;
+  }
+  else {
+    shippingFee = 50000;
+    totalPrice = totalCakePrice + shippingFee;
+  }
 
   console.log(cartItems);
   const handleTitleOrImageClick = (itemId: string) => {

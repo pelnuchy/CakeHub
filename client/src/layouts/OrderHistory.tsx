@@ -12,6 +12,13 @@ const OrderHistory = () => {
     if (size === 24) return 'L';
   };
 
+  const userInfo = sessionStorage.getItem('userInfo');
+  const sessionStorageData = userInfo ? JSON.parse(userInfo) : null;
+
+  if (!sessionStorageData || sessionStorageData.role !== 'customer') {
+    navigate('/login');
+  }
+  
   useEffect(() => {
     const fetchOrderHistory = async (userID: string): Promise<any[]> => {
       try {

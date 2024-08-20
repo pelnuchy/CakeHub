@@ -5,7 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import revenueImg from '../../assets/admin_dashboard_item/green.png';
 import spendingImg from '../../assets/admin_dashboard_item/red.png';
 import profitImg from '../../assets/admin_dashboard_item/yellow.png';
-
+import { useNavigate } from 'react-router-dom';
 interface Product {
   name: string;
   quantity: number;
@@ -22,10 +22,19 @@ interface Ingredient {
 }
 
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [viewByYear, setViewByYear] = useState<boolean>(false);
   const [cakesSold, setCakesSold] = useState<Product[]>([]);
   const [ingredientsSold, setIngredientsSold] = useState<Ingredient[]>([]);
+
+  const userInfo = sessionStorage.getItem('userInfo');
+  const sessionStorageData = userInfo ? JSON.parse(userInfo) : null;
+
+  if (!sessionStorageData || sessionStorageData.role !== 'admin') {
+    navigate('/login');
+  }
+  
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);

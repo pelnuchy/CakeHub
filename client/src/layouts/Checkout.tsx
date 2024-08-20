@@ -12,7 +12,6 @@ const Checkout: React.FC = () => {
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [address, setAddress] = useState('');
   const [time, setTime] = useState('13:00');
-  const [orders, setOrders] = useState<any[]>([]);
   const [sdkReady, setSdkReady] = useState(false);
   const navigate = useNavigate();
   const { cartItems } = useCart();
@@ -28,8 +27,12 @@ const Checkout: React.FC = () => {
     shippingFee = 50000;
     totalPrice = totalCakePrice + shippingFee;
   }
+
   const userInfoString = sessionStorage.getItem('userInfo');
   const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
+  if (!userInfo || userInfo.role !== 'customer') {
+    navigate('/login');
+  }
 
   const getFormattedDate = (date: Date | null) => {
     if (!date) return '';
@@ -180,26 +183,26 @@ const Checkout: React.FC = () => {
           </div>
         </div>
         <div className="flex justify-center">
-          {/* <Button type="submit" className="w-[50vh]">
-            Thanh Toán
-          </Button> */}
-
-          {sdkReady ? (
-            address ? (
-            <PayPalButton
-              amount={totalPrice / 25000}
-              // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
-              onSuccess={onSuccessPaypal}
-              onError={(err: any) => {
-                alert("Transaction error: " + err);
-              }}
-            />
+        {sdkReady ? (
+            cartItems.length > 0 ? (
+              address ? (
+                <PayPalButton
+                  amount={totalPrice / 25000}
+                  // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
+                  onSuccess={onSuccessPaypal}
+                  onError={(err: any) => {
+                    alert("Transaction error: " + err);
+                  }}
+                />
+              ) : (
+                <div className="text-red-500">Vui lòng điền địa chỉ giao hàng để thanh toán.</div>
+              )
+            ) : (
+              <div className="text-red-500">Giỏ hàng của bạn đang trống.</div>
+            )
           ) : (
-            <div className="text-red-500">Vui lòng điền địa chỉ giao hàng để thanh toán.</div>
-          )
-        ) : (
-          <div>Đang tải...</div>
-        )}
+            <div>Đang tải...</div>
+          )}
         </div>
       </div>
     </div>

@@ -7,6 +7,8 @@ import Pagination from './Pagination';
 import SearchAndFilter from './SearchAndFilter';
 import AddIngredientPopup from '../../../components/AddIngredientPopup';
 import { Ingredient } from '../../../utils/interfaces';
+import { useNavigate } from 'react-router-dom';
+
 const formatDate = (isoDate: string): string => {
   const date = new Date(isoDate);
   return format(date, 'yyyy-MM-dd');
@@ -39,9 +41,17 @@ const fetchIngredients = async (): Promise<any[]> => {
 };
 
 const InventoryTable: React.FC = () => {
+  const navigate = useNavigate();
   const [ingredients, setIngredients] = useState<any[]>([]);
   const [isEditing, setIsEditing] = useState<string | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State to manage popup visibility
+
+  const userInfo = sessionStorage.getItem('userInfo');
+  const sessionStorageData = userInfo ? JSON.parse(userInfo) : null;
+
+  if (!sessionStorageData || sessionStorageData.role !== 'baker') {
+    navigate('/login');
+  }
 
   const handleEdit = async (id: string) => {
     setIsEditing(id);
