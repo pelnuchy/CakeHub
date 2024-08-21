@@ -36,17 +36,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-
-
 app.use('/',cakeRoutes, userRoutes, cartRoutes, orderRoutes, ingredientRoutes, deviceRoutes, paymentRoutes);
-// // Thêm middleware CSP
-// app.use((req, res, next) => {
-//     res.setHeader("Content-Security-Policy", "script-src 'self' https://*.paypal.com:* https://*.paypalobjects.com 'unsafe-inline' https://apis.google.com; worker-src 'self' blob:;");
-//     next();
-//   });
 
 
-mongoose.connect(process.env.DATABASE_URI_LOCAL)
+mongoose.connect(process.env.DATABASE_URI)
 .then(async () => { // Sử dụng async để có thể sử dụng await bên trong
     console.log('Connected to MongoDB');
     console.log('Current Database:', mongoose.connection.db.databaseName);
