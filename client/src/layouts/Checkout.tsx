@@ -14,6 +14,20 @@ const Checkout: React.FC = () => {
   const navigate = useNavigate();
   const { cartItems } = useCart();
 
+  const combineDateAndTime = (date: Date | null, time: string): Date | null => {
+    if (!date) return null;
+  
+    const [hours, minutes] = time.split(':').map(Number);
+    const combinedDate = new Date(date);
+  
+    combinedDate.setHours(hours);
+    combinedDate.setMinutes(minutes);
+    combinedDate.setSeconds(0);
+    combinedDate.setMilliseconds(0);
+  
+    return combinedDate;
+  };
+
   const totalCakePrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   let totalPrice = 0;
   let shippingFee = 0;
@@ -42,9 +56,9 @@ const Checkout: React.FC = () => {
   const onSuccessPaypal = async (details: any, data: any) => {
     //console.log('details, data', details, data);
     if (details.status === 'COMPLETED') {
+      const combinedDate = combineDateAndTime(startDate, time);
       const orderDetail = {
-        orderID: 'O002',
-        shippingDate: startDate,
+        shippingDate: combinedDate,
         shippingAddress: address,
         paymentTime: details.update_time,
         total_price: totalPrice,
@@ -113,7 +127,7 @@ const Checkout: React.FC = () => {
                   {item.message && <p>Lời chúc: {item.message}</p>}
                 </div>
               </div>
-              <div className="font-bold">{item.price.toLocaleString()} VND</div>
+              <div className="font-bold">{item.total_price.toLocaleString()} VND</div>
             </div>
           ))}
         </div>
@@ -149,11 +163,11 @@ const Checkout: React.FC = () => {
             <label className="mb-2 block font-semibold">
               Ngày nhận hàng<span className="text-red-500">*</span>
             </label>
-
             <DatePicker
               selected={startDate}
               onChange={(date) => setStartDate(date ? date : new Date())}
               className="w-full rounded-lg border p-3 shadow-sm"
+              minDate={new Date()} // Ngăn chọn ngày trước ngày hiện tại
             />
           </div>
           <div className="ml-2 w-1/2">
@@ -175,7 +189,7 @@ const Checkout: React.FC = () => {
           </div>
         </div>
         <div className="flex justify-center">
-        {sdkReady ? (
+          {sdkReady ? (
             cartItems.length > 0 ? (
               address ? (
                 <PayPalButton

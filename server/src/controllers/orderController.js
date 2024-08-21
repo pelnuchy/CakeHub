@@ -5,7 +5,7 @@ const orderController = {};
 
 orderController.createOrder = async (req, res) => {
     try {
-        const { orderDetail} = req.body;
+        const { orderDetail } = req.body;
         if (!orderDetail) {
             return res.status(401).json({
                 status: 'ERROR',
@@ -24,8 +24,38 @@ orderController.createOrder = async (req, res) => {
             message: error.message
         });
     }
-} 
-        
+}
+
+orderController.orderCheckout = async (req, res) => {
+    try {
+        const userID = req.params.userid;
+        const { formattedDate, address, time } = req.body;
+        if (!formattedDate || !address || !time) {
+            return res.status(401).json({
+                status: 'ERROR',
+                message: "Please fill in checkout information"
+            });
+        }
+        const formattedShipDateTime = `${formattedDate} ${time}`;
+        const shippingDates = moment.utc(formattedShipDateTime,
+            'YYYY-MM-DD HH:mm'
+        ).tz('Asia/Bangkok'); //Convert back to Date object in UTC+7
+        const orderCheckout = await Order.updateOne(
+            { user_id: userID, status: { $exists: false } }, // Điều kiện cập nhật
+            { shippingDate: new Date(shippingDates), shippingAddress: address } // Thông tin cập nhật
+        ).lean().exec();
+        return res.status(200).json({
+            status: 'SUCCESS',
+            data: orderCheckout,
+        });
+    }
+    catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+}
 
 orderController.getOrderHistory = async (req, res) => {
     try {
@@ -72,7 +102,8 @@ orderController.getOrderHistory = async (req, res) => {
                     s_cakeQuantity: { $first: "$s_cakeQuantity" },
                     cakes: { $push: "$cakes" }
                 }
-            }
+            },
+            { $sort: { completeTime: -1 } } // Sắp xếp giảm dần theo completeTime
         ]);
 
         return res.status(200).json({
@@ -90,6 +121,7 @@ orderController.getOrderHistory = async (req, res) => {
 orderController.updateComletedOrder = async (req, res) => {
     try {
         const orderID = req.params.orderid;
+        const time = req.query.time;
         if (!orderID) {
             return res.status(404).json({
                 status: 'ERROR',
@@ -97,8 +129,8 @@ orderController.updateComletedOrder = async (req, res) => {
             });
         }
         const updateOrder = await Order.updateOne(
-            { orderID: orderID, status: "delivering" },
-            { status: "completed" }
+            { _id: orderID, status: "delivering" },
+            { status: "completed", completeTime: time }
         ).lean().exec();
         return res.status(200).json({
             status: 'SUCCESS',
@@ -156,7 +188,8 @@ orderController.getOwnOrdered = async (req, res) => {
                     s_cakeQuantity: { $first: "$s_cakeQuantity" },
                     cakes: { $push: "$cakes" }
                 }
-            }
+            },
+            { $sort: { shippingDate: 1 } } // Sắp xếp giảm dần theo completeTime
         ]);
         return res.status(200).json({
             status: 'SUCCESS',
@@ -192,36 +225,6 @@ orderController.getInfoOrdering = async (req, res) => {
     }
 }
 
-orderController.orderCheckout = async (req, res) => {
-    try {
-        const userID = req.params.userid;
-        const { formattedDate, address, time } = req.body;
-        if (!formattedDate || !address || !time) {
-            return res.status(401).json({
-                status: 'ERROR',
-                message: "Please fill in checkout information"
-            });
-        }
-        const formattedShipDateTime = `${formattedDate} ${time}`;
-        const shippingDates = moment.utc(formattedShipDateTime,
-            'YYYY-MM-DD HH:mm'
-        ).tz('Asia/Bangkok'); //Convert back to Date object in UTC+7
-        const orderCheckout = await Order.updateOne(
-            { user_id: userID, status: { $exists: false } }, // Điều kiện cập nhật
-            { shippingDate: new Date(shippingDates), shippingAddress: address } // Thông tin cập nhật
-        ).lean().exec();
-        return res.status(200).json({
-            status: 'SUCCESS',
-            data: orderCheckout,
-        });
-    }
-    catch (error) {
-        return res.status(404).json({
-            status: 'ERROR',
-            message: error.message
-        });
-    }
-}
 
 orderController.getListCakesSold = async (req, res) => {
     try {
@@ -408,8 +411,17 @@ orderController.getListIngredientsSold = async (req, res) => {
 orderController.getOrderedCake = async (req, res) => {
     try {
         const status = req.query.status;
+        const today = new Date();
+        const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
+        const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
+
         const cakeOrdered = await Order.aggregate([
-            { $match: { status: status } },
+            {
+                $match: { 
+                    status: status,
+                    shippingDate: { $gte: startOfDay, $lte: endOfDay }
+                }
+            },
             { $unwind: "$cakes" },
             {
                 $lookup: {
@@ -440,18 +452,13 @@ orderController.getOrderedCake = async (req, res) => {
                     cakes: { $push: "$cakes" }
                 }
             }
-        ]
-
-        );
+        ]);
 
         return res.status(200).json({
             status: 'SUCCESS',
             data: cakeOrdered
-        }
-        );
-    }
-
-    catch (error) {
+        });
+    } catch (error) {
         return res.status(404).json({
             status: 'ERROR',
             message: error.message
@@ -461,9 +468,17 @@ orderController.getOrderedCake = async (req, res) => {
 
 orderController.getHandlingCake = async (req, res) => {
     try {
-        const status = req.query.status;
+        const today = new Date();
+        const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
+        const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
+        
         const cakeOrdered = await Order.aggregate([
-            { $match: { status: { $in: ["handling_1", "handling_2"] } } },
+            {
+                $match: {
+                    status: { $in: ["handling_1", "handling_2"] },
+                    shippingDate: { $gte: startOfDay, $lte: endOfDay } // nếu muốn từ hôm nay trở về trc đó thì bỏ startOfDay
+                }
+            },
             { $unwind: "$cakes" },
             {
                 $lookup: {
@@ -491,8 +506,8 @@ orderController.getHandlingCake = async (req, res) => {
                 $group: {
                     _id: "$_id",
                     orderID: { $first: "$orderID" },
-                  	shippingDate: {$first: "$shippingDate"},
-                  	status:{$first:"$status"},
+                    shippingDate: { $first: "$shippingDate" },
+                    status: { $first: "$status" },
                     cakes: { $push: "$cakes" }
                 }
             }
@@ -522,6 +537,7 @@ orderController.updateStatusOrder = async (req, res) => {
                 message: "Please provide order ID and status"
             });
         }
+
         const updateOrder = await Order.updateOne(
             { _id: orderID },
             { status: status }

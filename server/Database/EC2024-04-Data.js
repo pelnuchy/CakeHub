@@ -1082,7 +1082,6 @@ db.recipes.insertMany([
 ]);
 db.orders.insertMany([
   {
-    orderID: "O001",
     shippingDate: new Date("2021-08-17"),
     shippingAddress: "123 Nguyen Van Linh, Da Nang",
     orderTime: new Date("2021-08-17 10:00:00"),
@@ -1102,7 +1101,6 @@ db.orders.insertMany([
     ],
   },
   {
-    orderID: "O002",
     shippingDate: new Date("2022-08-17"),
     shippingAddress: "12 Hai Ba Trung, Da Nang",
     orderTime: new Date("2022-08-17 10:00:00"),
@@ -1128,7 +1126,6 @@ db.orders.insertMany([
     ],
   },
   {
-    orderID: "O003",
     shippingDate: new Date("2021-08-17"),
     shippingAddress: "123 Nguyen Van Linh, Da Nang",
     orderTime: new Date("2021-08-17 10:00:00"),
@@ -1148,7 +1145,6 @@ db.orders.insertMany([
     ],
   },
   {
-    orderID: "O004",
     shippingDate: new Date("2022-08-17"),
     shippingAddress: "12 Hai Ba Trung, Da Nang",
     orderTime: new Date("2022-08-17 10:00:00"),
@@ -1174,7 +1170,6 @@ db.orders.insertMany([
     ],
   },
   {
-    orderID: "O005",
     total_price: 320000,
     user_id: "tra1",
     s_cakeQuantity: 1,

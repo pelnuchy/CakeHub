@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import moment from 'moment-timezone';
+import { format } from 'date-fns';
 // Status steps
 const orderStatuses = ['Đã đặt hàng', 'Đang xử lý', 'Đang giao hàng', 'Đã nhận hàng'];
 
@@ -38,6 +40,15 @@ const transSize = (size: number) => {
   if (size === 16) return 'M';
   if (size === 24) return 'L';
 };
+const formatDate = (isoDate: string): string => {
+  const date = new Date(isoDate);
+  return format(date, 'yyyy-MM-dd');
+};
+
+const formatTime = (isoDate: string): string => {
+  const date = new Date(isoDate);
+  return format(date, 'HH:mm');
+};
 // Purchase component
 const Purchase = () => {
   const navigate = useNavigate();
@@ -54,7 +65,7 @@ const Purchase = () => {
   // Handle button click
   const handleReceivedClick = async (id: any) => {
     setOrders(orders.map((order) => (order.id === id ? { ...order, status: 'Đã nhận hàng' } : order)));
-    await axios.put(`${process.env.REACT_APP_API_URL}/update-completed-order/${id}`);
+    await axios.put(`${process.env.REACT_APP_API_URL}/update-completed-order/${id}?time=${new Date().toISOString()}`);
   };
 
   useEffect(() => {
@@ -82,7 +93,8 @@ const Purchase = () => {
           id: order._id,
           status: translatOrderStatus(order.status),
           address: order.shippingAddress,
-          date: order.shippingDate,
+          date: formatDate(moment.tz(`${order.shippingDate}`, 'Asia/Ho_Chi_Minh').format('YYYY-MM-DD HH:mm')),
+          time: formatTime(moment.tz(`${order.shippingDate}`, 'Asia/Ho_Chi_Minh').format('YYYY-MM-DD HH:mm')),
           total: `${Number(order.total_price).toLocaleString()} VND`,
           items: order.cakes.map((cake: any) => ({
             name: cake.cakeName,
@@ -122,9 +134,8 @@ const Purchase = () => {
               </button>
             ) : (
               <span
-                className={`rounded-full px-4 py-2 text-sm font-medium ${
-                  order.status === 'Đã nhận hàng' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                }`}
+                className={`rounded-full px-4 py-2 text-sm font-medium ${order.status === 'Đã nhận hàng' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                  }`}
               >
                 {order.status}
               </span>
@@ -146,9 +157,10 @@ const Purchase = () => {
               ))}
             </div>
             <div className="rounded-lg bg-gray-50 p-4 shadow-sm">
-              <h4 className="font-semibold text-gray-800">Địa chỉ giao hàng</h4>
-              {/* <p className="text-gray-800">{order.delivery.method}</p> */}
+              <h4 className="font-semibold text-gray-800 mt-6">Địa chỉ giao hàng</h4>
               <p className="text-gray-800">{order.address}</p>
+              <h4 className="font-semibold text-gray-800 mt-6">Ngày nhận bánh dự kiến</h4>
+              <p className="text-gray-800">{order.date} {order.time}</p>
               <div className="mt-4">
                 <p className="flex justify-between text-gray-800">
                   <span className="font-medium">Tổng tiền:</span>
@@ -189,6 +201,7 @@ const Purchase = () => {
         </div>
       ))}
     </div>
+
   );
 };
 

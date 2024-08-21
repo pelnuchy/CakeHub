@@ -48,7 +48,7 @@ const Dashboard: React.FC = () => {
       });
       return orderDetails;
     } catch (error) {
-      console.log('Error fetching order history:', error);
+      console.log('Error fetching baker dashboard:', error);
       return [];
     }
   };
