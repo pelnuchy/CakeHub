@@ -3,18 +3,24 @@ import CakeCard from '../../components/Cake/CakeCard';
 import { useShuffledCakes } from '../../hooks/useShuffledCakes';
 import SortControl from '../Occasion/SortControl';
 import { Cake } from '../../utils/interfaces';
+import Button from '../../components/Button';
+import { useNavigate } from 'react-router-dom';
 
 const Trending = () => {
   const [sortOption, setSortOption] = useState<string>('');
   const [sortedCakes, setSortedCakes] = useState<Cake[]>([]);
   const randomCakes = useShuffledCakes(8);
-
+  const navigate = useNavigate();
   useEffect(() => {
     setSortedCakes(sortCakes(randomCakes, sortOption));
   }, [randomCakes, sortOption]);
 
   const handleSortChange = (option: string) => {
     setSortOption(option);
+  };
+
+  const handleClick = () => {
+    navigate('/trending');
   };
 
   const sortCakes = (cakes: any[], option: string) => {
@@ -40,7 +46,9 @@ const Trending = () => {
             <div className="mr-2 h-8 w-4 bg-bgr-gradient"></div>
             <h2 className="text-4xl font-bold text-black">Xu hướng - tháng 5</h2>
           </div>
-          <span className="cursor-pointer text-blue-600 hover:underline">Xem tất cả</span>
+          <Button onClick={handleClick} className="rounded-xl">
+            Xem tất cả
+          </Button>
         </div>
         <SortControl sortOption={sortOption} onSortChange={handleSortChange} />
         <div className="grid gap-16 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

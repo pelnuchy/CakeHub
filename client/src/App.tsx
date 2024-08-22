@@ -10,6 +10,7 @@ const Anniversary = lazy(() => import('./pages/CakeOccasion/Anniversary'));
 const Birthday = lazy(() => import('./pages/CakeOccasion/Birthday'));
 const Custom = lazy(() => import('./pages/CakeOccasion/Custom'));
 const Christmas = lazy(() => import('./pages/CakeOccasion/Christmas'));
+const Trending = lazy(() => import('./pages/CakeOccasion/Trending'));
 const CakeDetail = lazy(() => import('./pages/CakeDetail'));
 const Login = lazy(() => import('./pages/Login'));
 const Signup = lazy(() => import('./pages/Signup'));
@@ -25,8 +26,7 @@ const BakingSession = lazy(() => import('./pages/Baker/BakingSession'));
 const SearchResult = lazy(() => import('./pages/SearchResult'));
 const BakerIngredient = lazy(() => import('./pages/Baker/IngredientManagement'));
 const SecurityPolicy = lazy(() => import('./pages/SecurityPolicy'));
-const TermsofService = lazy(() => import('./pages/ToS'));
-
+const TermsOfService = lazy(() => import('./pages/ToS'));
 
 export default function App() {
   const loading = usePageLoading();
@@ -56,8 +56,9 @@ export default function App() {
           <Route path="/baker/bakingsession" element={<BakingSession />} />
           <Route path="/baker/ingredient" element={<BakerIngredient />} />
           <Route path="/search/:keyword" element={<SearchResult />} />
-          <Route path="/securitypolicy" element={<SecurityPolicy/>}/>
-          <Route path="/ToS" element={<TermsofService/>}/>
+          <Route path="/securitypolicy" element={<SecurityPolicy />} />
+          <Route path="/ToS" element={<TermsOfService />} />
+          <Route path="/trending" element={<Trending />} />
         </Routes>
       </Suspense>
     </div>
