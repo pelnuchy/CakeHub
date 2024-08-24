@@ -417,7 +417,7 @@ orderController.getOrderedCake = async (req, res) => {
 
         const cakeOrdered = await Order.aggregate([
             {
-                $match: { 
+                $match: {
                     status: status,
                     shippingDate: { $gte: startOfDay, $lte: endOfDay }
                 }
@@ -471,7 +471,7 @@ orderController.getHandlingCake = async (req, res) => {
         const today = new Date();
         const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
         const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
-        
+
         const cakeOrdered = await Order.aggregate([
             {
                 $match: {
@@ -554,5 +554,58 @@ orderController.updateStatusOrder = async (req, res) => {
     }
 }
 
+// Hàm chuyển đổi múi giờ UTC+7
+const convertToUTC7 = (date) => {
+    const originalDate = new Date(date);
+    const utc7Date = new Date(originalDate.getTime() + 7 * 60 * 60 * 1000);
+    return utc7Date;
+};
 
+orderController.checkNumberOfCakesAllOrder = async (req, res) => {
+    try {
+        const date = new Date(req.query.dateSelected); // Lấy ngày từ query parameters
+        console.log("Date from query:", date);
+        const orders = await Order.aggregate([
+            {
+                $match: {
+                    $expr: {
+                        $and: [
+                            { $eq: [{ $dayOfMonth: "$shippingDate" }, { $dayOfMonth: date }] },
+                            { $eq: [{ $month: "$shippingDate" }, { $month: date }] },
+                            { $eq: [{ $year: "$shippingDate" }, { $year: date }] }
+                        ]
+                    }
+                }
+            }
+        ]);
+        // Khởi tạo mảng với 6 phần tử, mỗi phần tử đại diện cho một khung giờ
+        const cakeQuantities = [0, 0, 0, 0, 0, 0];
+
+        // Duyệt qua từng đơn hàng trong mảng orders
+        orders.forEach(order => {
+            // hàm getHours() trả về giờ của ngày, nó tự +7 theo múi giờ UTC+0
+            //getUTCHours() trả về giờ của ngày, không cộng
+            const shippingHour = order.shippingDate.getHours(); 
+            console.log("Shipping hour:", shippingHour);
+
+            // Kiểm tra giờ và cộng số lượng bánh vào phần tử tương ứng trong mảng
+            if (shippingHour >= 13 && shippingHour <= 18) {
+                const index = shippingHour - 13;
+                cakeQuantities[index] += order.s_cakeQuantity;
+            }
+        });
+
+        const result = cakeQuantities.map(quantity => quantity <= 8 ? true : false);
+
+        return res.status(200).json({
+            status: 'SUCCESS',
+            data: result
+        });
+    } catch (error) {
+        return res.status(404).json({
+            status: 'ERROR',
+            message: error.message
+        });
+    }
+};
 export default orderController;

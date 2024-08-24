@@ -11,6 +11,7 @@ const Checkout: React.FC = () => {
   const [address, setAddress] = useState('');
   const [time, setTime] = useState('13:00');
   const [sdkReady, setSdkReady] = useState(false);
+  const [sumOfCake, setSumOfCake] = useState<[]>([]);
   const navigate = useNavigate();
   const { cartItems } = useCart();
 
@@ -45,18 +46,10 @@ const Checkout: React.FC = () => {
     navigate('/login');
   }
 
-  // const getFormattedDate = (date: Date | null) => {
-  //   if (!date) return '';
-  //   const day = String(date.getDate()).padStart(2, '0');
-  //   const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
-  //   const year = date.getFullYear();
-  //   return `${year}-${month}-${day}`;
-  // };
-
   const onSuccessPaypal = async (details: any, data: any) => {
-    //console.log('details, data', details, data);
     if (details.status === 'COMPLETED') {
       const combinedDate = combineDateAndTime(startDate, time);
+      const totalCakeQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
       const orderDetail = {
         shippingDate: combinedDate,
         shippingAddress: address,
@@ -64,7 +57,7 @@ const Checkout: React.FC = () => {
         total_price: totalPrice,
         status: 'ordered',
         user_id: userInfo.userID,
-        s_cakeQuantity: cartItems.length,
+        s_cakeQuantity: totalCakeQuantity,
         cakes: cartItems.map((item) => ({
           cake_id: item.id,
           cakeMessage: item.message,
@@ -74,7 +67,6 @@ const Checkout: React.FC = () => {
       };
 
       try {
-        console.log('addPaypalScript', userInfo.userID);
         await axios.post(`${process.env.REACT_APP_API_URL}/create-order`, { orderDetail });
         await axios.put(`${process.env.REACT_APP_API_URL}/remove-all-cakes-from-cart/${userInfo.userID}/cart`);
         navigate('/purchase');
@@ -101,13 +93,37 @@ const Checkout: React.FC = () => {
       console.error('Error:', error);
     }
   };
-  useEffect(() => {
-    if (!window.paypal) {
-      addPaypalScript();
-    } else {
-      setSdkReady(true);
+
+  const fetchSumCakeOrder = async (userID: string) => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/check-num-cake-order/${userID}?dateSelected=${startDate}`);
+      const sumOfCake = response.data.data;
+      return sumOfCake;
+    } catch (error) {
+      console.error('Error:', error);
     }
-  }, [sdkReady]);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const sumOfCakeDB = await fetchSumCakeOrder(userInfo.userID);
+        setSumOfCake(sumOfCakeDB);
+  
+        if (!window.paypal) {
+          addPaypalScript();
+        } else {
+          setSdkReady(true);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+  
+    fetchData();
+  },[sdkReady, startDate]);
+
+  const timeSlots = ["13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
 
   return (
     <div className="container mx-auto p-8">
@@ -179,12 +195,11 @@ const Checkout: React.FC = () => {
               onChange={(e) => setTime(e.target.value)}
               className="w-full rounded-lg border p-3 shadow-sm"
             >
-              <option>13:00</option>
-              <option>14:00</option>
-              <option>15:00</option>
-              <option>16:00</option>
-              <option>17:00</option>
-              <option>18:00</option>
+              {timeSlots.map((slot, index) => (
+                <option key={slot} value={slot} disabled={!sumOfCake[index]}>
+                  {slot}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -194,7 +209,6 @@ const Checkout: React.FC = () => {
               address ? (
                 <PayPalButton
                   amount={totalPrice / 25000}
-                  // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
                   onSuccess={onSuccessPaypal}
                   onError={(err: any) => {
                     alert("Transaction error: " + err);
