@@ -5,13 +5,13 @@ db.users.insertMany([
   {
     userID: "admin01",
     username: "admin",
-    password: "123",
+    password: "$2b$10$oy5hRFVoLfsgH7AoPBD/deneGCY3GTuhutSksrnX7M1bPMRLAljnu",
     role: "admin",
   },
   {
     userID: "baker01",
     username: "baker",
-    password: "123",
+    password: "$2b$10$oy5hRFVoLfsgH7AoPBD/deneGCY3GTuhutSksrnX7M1bPMRLAljnu",
     role: "baker",
   }
 ]);
