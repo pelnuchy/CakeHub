@@ -23,6 +23,7 @@ const AdminDashBoard = lazy(() => import('./pages/Admin/Dashboard'));
 const AdminDeviceManagement = lazy(() => import('./pages/Admin/DeviceManagement'));
 const BakerDashboard = lazy(() => import('./pages/Baker/Dashboard'));
 const BakingSession = lazy(() => import('./pages/Baker/BakingSession'));
+const BakerCake = lazy(() => import('./pages/Baker/CakeManagement'));
 const SearchResult = lazy(() => import('./pages/SearchResult'));
 const BakerIngredient = lazy(() => import('./pages/Baker/IngredientManagement'));
 const SecurityPolicy = lazy(() => import('./pages/SecurityPolicy'));
@@ -55,6 +56,7 @@ export default function App() {
           <Route path="/baker/dashboard" element={<BakerDashboard />} />
           <Route path="/baker/bakingsession" element={<BakingSession />} />
           <Route path="/baker/ingredient" element={<BakerIngredient />} />
+          <Route path="/baker/newcake" element={<BakerCake />} />
           <Route path="/search/:keyword" element={<SearchResult />} />
           <Route path="/securitypolicy" element={<SecurityPolicy />} />
           <Route path="/ToS" element={<TermsOfService />} />

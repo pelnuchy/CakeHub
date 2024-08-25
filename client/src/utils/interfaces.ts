@@ -15,28 +15,28 @@ export interface Cake {
   cakeName: string;
   size: number;
   jamFilling: string;
-  price?: number;
-  img_url?: string;
-  cakeType?: 'gato' | 'corn cream';
-  occasion?: 'custom' | 'birthday' | 'christmas' | 'anniversary';
-  description?: string;
-  recipe_id?: string;
-  decor_id?: string;
-  temp_grill?: number;
-  time_grill?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
+  price: number;
+  img_url: string;
+  cakeType: 'gato' | 'corn cream';
+  occasion: 'custom' | 'birthday' | 'christmas' | 'anniversary';
+  description: string;
+  recipe_id: string;
+  decor_id: string;
+  temp_grill: number;
+  time_grill: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Order {
   orderID: string;
-  shippingDate?: Date;
-  shippingAddress?: string;
-  orderTime?: Date;
-  paymentTime?: Date;
-  completeTime?: Date;
-  total_price?: number;
-  status?: string;
+  shippingDate: Date;
+  shippingAddress: string;
+  orderTime: Date;
+  paymentTime: Date;
+  completeTime: Date;
+  total_price: number;
+  status: string;
   user_id: string;
   s_cakeQuantity: number;
   cakes: Cake[];

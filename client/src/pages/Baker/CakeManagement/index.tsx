@@ -1,17 +1,17 @@
 import BakerNav from '../../../components/AdminBaker/BakerNav';
 import Header from '../../../components/AdminBaker/Header';
-import InventoryTable from '../../../layouts/Baker/ManageIngredient';
+import CakeModel from '../../../layouts/Baker/ManageCake';
 
-const BakerIngredient = () => {
+const BakerCake = () => {
   return (
     <>
       <Header />
       <BakerNav />
       <main>
-        <InventoryTable />
+        <CakeModel />
       </main>
     </>
   );
 };
 
-export default BakerIngredient;
+export default BakerCake;
