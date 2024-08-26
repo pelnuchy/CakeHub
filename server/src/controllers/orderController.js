@@ -564,7 +564,6 @@ const convertToUTC7 = (date) => {
 orderController.checkNumberOfCakesAllOrder = async (req, res) => {
     try {
         const date = new Date(req.query.dateSelected); // Lấy ngày từ query parameters
-        console.log("Date from query:", date);
         const orders = await Order.aggregate([
             {
                 $match: {
@@ -586,7 +585,6 @@ orderController.checkNumberOfCakesAllOrder = async (req, res) => {
             // hàm getHours() trả về giờ của ngày, nó tự +7 theo múi giờ UTC+0
             //getUTCHours() trả về giờ của ngày, không cộng
             const shippingHour = order.shippingDate.getHours(); 
-            console.log("Shipping hour:", shippingHour);
 
             // Kiểm tra giờ và cộng số lượng bánh vào phần tử tương ứng trong mảng
             if (shippingHour >= 13 && shippingHour <= 18) {
@@ -595,11 +593,11 @@ orderController.checkNumberOfCakesAllOrder = async (req, res) => {
             }
         });
 
-        const result = cakeQuantities.map(quantity => quantity <= 8 ? true : false);
+        //const result = cakeQuantities.map(quantity => quantity <= 8 ? true : false);
 
         return res.status(200).json({
             status: 'SUCCESS',
-            data: result
+            data: cakeQuantities
         });
     } catch (error) {
         return res.status(404).json({
