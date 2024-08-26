@@ -4,29 +4,10 @@ import { Cake } from '../../../utils/interfaces';
 
 interface CakeTableProps {
   cakes: Cake[];
-  isEditing: string | null;
-  handleEdit: (id: string) => void;
   handleDelete: (id: string) => void;
-  handleSave: (
-    id: string,
-    cakeData: {
-      img_url: string;
-      name: string;
-      occasion: string;
-      description: string;
-    },
-  ) => void;
-  handleChange: (id: string, field: string, value: string | number) => void;
 }
 
-const CakeTable: React.FC<CakeTableProps> = ({
-  cakes,
-  isEditing,
-  handleEdit,
-  handleDelete,
-  handleSave,
-  handleChange,
-}) => {
+const CakeTable: React.FC<CakeTableProps> = ({ cakes, handleDelete }) => {
   return (
     <table className="min-w-full border border-gray-300 bg-white">
       <thead>
@@ -36,22 +17,12 @@ const CakeTable: React.FC<CakeTableProps> = ({
           <th className="border-b px-4 py-3">Tên bánh</th>
           <th className="border-b px-4 py-3">Dịp</th>
           <th className="border-b px-4 py-3">Mô tả</th>
-          <th className="border-b px-4 py-3">Sửa / Xóa</th>
+          <th className="border-b px-4 py-3">Xóa</th>
         </tr>
       </thead>
       <tbody>
         {cakes.length > 0 ? (
-          cakes.map((cake) => (
-            <CakeRow
-              key={cake.cakeID}
-              cake={cake}
-              isEditing={isEditing}
-              handleEdit={handleEdit}
-              handleDelete={handleDelete}
-              handleSave={handleSave}
-              handleChange={handleChange}
-            />
-          ))
+          cakes.map((cake) => <CakeRow key={cake.cakeID} cake={cake} handleDelete={handleDelete} />)
         ) : (
           <tr>
             <td colSpan={6} className="py-4 text-center">
