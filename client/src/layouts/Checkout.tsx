@@ -11,21 +11,22 @@ const Checkout: React.FC = () => {
   const [address, setAddress] = useState('');
   const [time, setTime] = useState('13:00');
   const [sdkReady, setSdkReady] = useState(false);
-  const [sumOfCake, setSumOfCake] = useState<[]>([]);
+  const [sumOfCake, setSumOfCake] = useState<boolean[]>([]);
+  const [sumOfCakeToHandleOrder, setSumOfCakeToHandleOrder] = useState<number[]>([]);
   const navigate = useNavigate();
   const { cartItems } = useCart();
 
   const combineDateAndTime = (date: Date | null, time: string): Date | null => {
     if (!date) return null;
-  
+
     const [hours, minutes] = time.split(':').map(Number);
     const combinedDate = new Date(date);
-  
+
     combinedDate.setHours(hours);
     combinedDate.setMinutes(minutes);
     combinedDate.setSeconds(0);
     combinedDate.setMilliseconds(0);
-  
+
     return combinedDate;
   };
 
@@ -104,12 +105,33 @@ const Checkout: React.FC = () => {
     }
   };
 
+  const checkCakeAvailability = (sumOfCakeToHandleOrder: number[], cartItems: any[]) => {
+    const hours = [13, 14, 15, 16, 17, 18];
+    return hours.map((hour, index) => {
+      return 8 - sumOfCakeToHandleOrder[index];
+    });
+  };
+
+  const selectedHour = parseInt(time.split(':')[0], 10);
+  const availability = checkCakeAvailability(sumOfCakeToHandleOrder, cartItems);
+
+  // Tính tổng số lượng bánh trong giỏ hàng
+  const totalCakesInCart = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  // Kiểm tra số lượng bánh trong giỏ hàng so với giá trị availability của khung giờ đã chọn
+  const canCheckout = totalCakesInCart <= availability[selectedHour - 13];
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const sumOfCakeDB = await fetchSumCakeOrder(userInfo.userID);
-        setSumOfCake(sumOfCakeDB);
-  
+        const sumOfCakeDB: number[] = await fetchSumCakeOrder(userInfo.userID);
+        setSumOfCakeToHandleOrder(sumOfCakeDB);
+        const changeNumToBoolean: boolean[] = sumOfCakeDB.map((quantity: number) => quantity <= 8 ? true : false);
+        setSumOfCake(changeNumToBoolean);
+        // console.log(sumOfCakeToHandleOrder);
+        // console.log(sumOfCake);
+        // console.log(availability);
+
         if (!window.paypal) {
           addPaypalScript();
         } else {
@@ -119,9 +141,9 @@ const Checkout: React.FC = () => {
         console.error('Error:', error);
       }
     };
-  
+
     fetchData();
-  },[sdkReady, startDate]);
+  }, [sdkReady, startDate]);
 
   const timeSlots = ["13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
 
@@ -206,16 +228,23 @@ const Checkout: React.FC = () => {
         <div className="flex justify-center">
           {sdkReady ? (
             cartItems.length > 0 ? (
-              address ? (
-                <PayPalButton
-                  amount={totalPrice / 25000}
-                  onSuccess={onSuccessPaypal}
-                  onError={(err: any) => {
-                    alert("Transaction error: " + err);
-                  }}
-                />
+              canCheckout ? (
+                address ? (
+                  <PayPalButton
+                    amount={totalPrice / 25000}
+                    onSuccess={onSuccessPaypal}
+                    onError={(err: any) => {
+                      alert("Transaction error: " + err);
+                    }}
+                  />
+                ) : (
+                  <div className="text-red-500">Vui lòng điền địa chỉ giao hàng để thanh toán.</div>
+                )
               ) : (
-                <div className="text-red-500">Vui lòng điền địa chỉ giao hàng để thanh toán.</div>
+                <div className="text-red-500">
+                  Số lượng bánh trong giỏ hàng vượt quá số lượng bánh còn lại có thể đặt trong khung giờ.<br />
+                  Số lượng bánh còn lại có thể đặt: {availability[selectedHour - 13]}.
+                </div>
               )
             ) : (
               <div className="text-red-500">Giỏ hàng của bạn đang trống.</div>
