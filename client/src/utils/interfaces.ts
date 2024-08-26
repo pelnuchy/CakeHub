@@ -15,17 +15,17 @@ export interface Cake {
   cakeName: string;
   size: number;
   jamFilling: string;
-  price: number;
-  img_url: string;
-  cakeType: 'gato' | 'corn cream';
+  price?: number;
+  img_url?: string;
+  cakeType?: 'gato' | 'corn cream';
   occasion: 'custom' | 'birthday' | 'christmas' | 'anniversary';
-  description: string;
-  recipe_id: string;
-  decor_id: string;
-  temp_grill: number;
-  time_grill: number;
-  createdAt: Date;
-  updatedAt: Date;
+  description?: string;
+  recipe_id?: string;
+  decor_id?: string;
+  temp_grill?: number;
+  time_grill?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface Order {

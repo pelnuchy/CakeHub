@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
 import { AiOutlineUpload, AiOutlineFileAdd } from 'react-icons/ai';
-import Modal from '../Modal';
-import Button from '../../components/Button';
+import { Cake } from '../../utils/interfaces';
 
 interface AddCakePopupProps {
-  onSave: (cakeData: any) => void;
+  onSave: (cake: Cake) => Promise<void>;
   onClose: () => void;
 }
 
@@ -16,7 +16,26 @@ const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose }) => {
     description: '',
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [file, setFile] = useState<File | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const popupRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [onClose]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setCakeData({
       ...cakeData,
@@ -24,32 +43,71 @@ const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose }) => {
     });
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCakeData({ ...cakeData, img_url: reader.result as string });
-      };
-      reader.readAsDataURL(file);
+      setFile(e.target.files[0]);
     }
   };
 
-  const handleSave = () => {
-    onSave(cakeData);
-    onClose();
+  const handleSubmit = async () => {
+    if (!cakeData.name || !cakeData.occasion || !file || !cakeData.description) {
+      setError('Please fill out all required fields.');
+      return;
+    }
+
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('name', cakeData.name);
+    formData.append('occasion', cakeData.occasion);
+    formData.append('image', file);
+    formData.append('description', cakeData.description);
+
+    try {
+      const response = await axios.post('http://localhost:8000/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log('Response:', response.data);
+      const savedCake: Cake = {
+        cakeID: 'Cxxxx',
+        cakeName: cakeData.name,
+        size: 0,
+        jamFilling: '',
+        img_url: response.data.imageUrl,
+        occasion: cakeData.occasion as 'custom' | 'birthday' | 'christmas' | 'anniversary', // Adjust as needed
+        description: cakeData.description,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      await onSave(savedCake);
+      setError(null);
+      setCakeData({
+        name: '',
+        occasion: '',
+        img_url: '',
+        description: '',
+      });
+      setFile(null);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      setError('There was an error uploading the cake. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <Modal onClose={onClose}>
-      <div className="mx-auto max-w-lg rounded-lg bg-white p-6 shadow-lg">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-500 bg-opacity-50 backdrop-blur-sm">
+      <div ref={popupRef} className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
         <div className="mb-6 flex items-center">
           <AiOutlineFileAdd className="mr-3 text-3xl text-gray-700" />
-          <h2 className="text-xl font-semibold text-gray-800">Thêm bánh</h2>
+          <h2 className="text-xl font-semibold">Thêm bánh</h2>
         </div>
         <div className="space-y-6">
+          {error && <p className="text-red-500">{error}</p>}
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="name" className="block text-sm font-medium">
               Tên bánh*
             </label>
             <input
@@ -58,12 +116,12 @@ const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose }) => {
               value={cakeData.name}
               onChange={handleChange}
               className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-              placeholder="Sinh nhật"
+              placeholder="Tên bánh"
               required
             />
           </div>
           <div>
-            <label htmlFor="occasion" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="occasion" className="block text-sm font-medium">
               Dịp*
             </label>
             <input
@@ -72,39 +130,39 @@ const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose }) => {
               value={cakeData.occasion}
               onChange={handleChange}
               className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-              placeholder="Christmas"
+              placeholder="Dịp lễ"
               required
             />
           </div>
           <div>
-            <label htmlFor="img_url" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="image" className="block text-sm font-medium">
               Ảnh bánh*
             </label>
             <div className="relative mt-1 flex items-center justify-center rounded-md border-2 border-dashed border-gray-300 p-4">
               <div className="flex items-center">
                 <AiOutlineUpload className="mr-3 text-2xl text-primary-500" />
-                {cakeData.img_url ? (
-                  <img src={cakeData.img_url} alt="Cake Preview" className="h-24 w-24 rounded-lg object-cover" />
+                {file ? (
+                  <span className="text-gray-800">{file.name}</span>
                 ) : (
-                  <div className="text-gray-400">
-                    <span className="text-primary-500">Click to upload</span> or drag and drop
+                  <div className="text-gray-600">
+                    <span className="text-primary-500">Click to upload or drag and drop image</span>
                   </div>
                 )}
               </div>
               <input
-                id="img_url"
-                name="img_url"
+                id="image"
+                name="image"
                 type="file"
                 accept="image/*"
-                onChange={handleImageUpload}
+                onChange={handleFileChange}
                 className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                 required
               />
             </div>
-            <p className="mt-2 text-xs text-gray-500">SVG, PNG, JPG or GIF (max. 800x400px)</p>
+            <p className="mt-2 text-xs text-gray-800">SVG, PNG, JPG or GIF (max. 800x400px)</p>
           </div>
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="description" className="block text-sm font-medium">
               Mô tả*
             </label>
             <input
@@ -118,22 +176,27 @@ const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose }) => {
             />
           </div>
           <div className="mt-6 flex justify-end space-x-4">
-            <Button
+            <button
               onClick={onClose}
-              className="w-28 rounded-md bg-gray-200 px-4 py-2 text-gray-700 shadow-sm hover:bg-gray-300"
+              className="w-28 rounded-md bg-gray-700 px-4 py-2 text-white shadow-sm hover:bg-gray-600"
             >
               Hủy
-            </Button>
-            <Button
-              onClick={handleSave}
-              className="w-28 rounded-md bg-gradient-to-r from-yellow-400 to-yellow-500 px-4 py-2 text-white shadow-sm hover:from-yellow-500 hover:to-yellow-600"
+            </button>
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className={`w-28 rounded-md px-4 py-2 text-black shadow-sm ${
+                loading
+                  ? 'cursor-not-allowed bg-gray-700'
+                  : 'bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600'
+              }`}
             >
-              Lưu
-            </Button>
+              {loading ? 'Đang lưu...' : 'Lưu'}
+            </button>
           </div>
         </div>
       </div>
-    </Modal>
+    </div>
   );
 };
 

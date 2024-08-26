@@ -29,19 +29,23 @@ const fetchCakes = async (): Promise<Cake[]> => {
 const CakeModel: React.FC = () => {
   const navigate = useNavigate();
   const [cakes, setCakes] = useState<Cake[]>([]);
-  const [isEditing, setIsEditing] = useState<string | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const userInfo = sessionStorage.getItem('userInfo');
-  const sessionStorageData = userInfo ? JSON.parse(userInfo) : null;
+  useEffect(() => {
+    const userInfo = sessionStorage.getItem('userInfo');
+    const sessionStorageData = userInfo ? JSON.parse(userInfo) : null;
 
-  if (!sessionStorageData || sessionStorageData.role !== 'baker') {
-    navigate('/login');
-  }
+    if (!sessionStorageData || sessionStorageData.role !== 'baker') {
+      navigate('/login');
+    }
 
-  const handleEdit = async (id: string) => {
-    setIsEditing(id);
-  };
+    const getCakes = async () => {
+      const cakesFromServer = await fetchCakes();
+      setCakes(cakesFromServer);
+    };
+
+    getCakes();
+  }, [navigate]);
 
   const handleDelete = async (id: string) => {
     try {
@@ -53,42 +57,20 @@ const CakeModel: React.FC = () => {
   };
 
   const handleAdd = () => {
+    console.log('Add button clicked');
     setIsPopupOpen(true);
   };
 
   const handleSave = async (cake: Cake) => {
+    console.log('Save handler called with:', cake);
     setCakes([cake, ...cakes]);
     setIsPopupOpen(false);
   };
 
-  const handleSaveEdit = async (
-    id: string,
-    cakeData: {
-      img_url: string;
-      name: string;
-      occasion: string;
-      description: string;
-    },
-  ) => {
-    try {
-      await axios.put(`${process.env.REACT_APP_API_URL}/baker/update-cake/${id}`, cakeData);
-      setIsEditing(null);
-    } catch (error) {
-      console.error('Failed to update cake:', error);
-    }
+  const handleClose = () => {
+    console.log('Popup close handler called');
+    setIsPopupOpen(false);
   };
-
-  const handleChange = async (id: string, field: string, value: string | number) => {
-    setCakes(cakes.map((cake) => (cake.cakeID === id ? { ...cake, [field]: value } : cake)));
-  };
-
-  useEffect(() => {
-    const getCakes = async () => {
-      const cakesFromServer = await fetchCakes();
-      setCakes(cakesFromServer);
-    };
-    getCakes();
-  }, []);
 
   return (
     <div className="rounded-lg bg-white p-6 shadow-lg">
@@ -98,17 +80,10 @@ const CakeModel: React.FC = () => {
       </div>
       <SearchAndFilter />
       <div className="overflow-x-auto">
-        <CakeTable
-          cakes={cakes}
-          isEditing={isEditing}
-          handleEdit={handleEdit}
-          handleDelete={handleDelete}
-          handleSave={handleSaveEdit}
-          handleChange={handleChange}
-        />
+        <CakeTable cakes={cakes} handleDelete={handleDelete} />
       </div>
       <Pagination />
-      {isPopupOpen && <AddCakePopup onSave={handleSave} onClose={() => setIsPopupOpen(false)} />}
+      {isPopupOpen && <AddCakePopup onSave={handleSave} onClose={handleClose} />}
     </div>
   );
 };
