@@ -27,7 +27,7 @@ import SearchResult from './pages/SearchResult';
 import BakerIngredient from './pages/Baker/IngredientManagement';
 import SecurityPolicy from './pages/SecurityPolicy';
 import TermsOfService from './pages/ToS';
-import PrivateRoute from './components/PrivateRoute';
+import PublicRoute from './components/Routes/PublicRoute';
 
 export default function App() {
   const loading = usePageLoading();
@@ -37,7 +37,7 @@ export default function App() {
       {loading && <Preloader />}
       <Suspense fallback={<Preloader />}>
         <Routes>
-          <Route path="/" element={<PrivateRoute element={Homepage} />} />
+          <Route path="/" element={<Homepage />} />
           <Route path="/cake/:id" element={<CakeDetail />} />
           <Route path="/anniversary" element={<Anniversary />} />
           <Route path="/birthday" element={<Birthday />} />
@@ -47,7 +47,14 @@ export default function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/purchase" element={<Purchase />} />
           <Route path="/purchased" element={<HistoryPurchase />} />
-          <Route path="/login" element={<Login />} />
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
           <Route path="/signup" element={<Signup />} />
           <Route path="/FAQ" element={<FAQPage />} />
           <Route path="/*" element={<NotFoundPage />} />
