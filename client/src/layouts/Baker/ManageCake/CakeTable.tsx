@@ -34,7 +34,7 @@ const CakeTable: React.FC<CakeTableProps> = ({
           <th className="border-b px-4 py-3">Mã bánh</th>
           <th className="border-b px-4 py-3">Hình ảnh</th>
           <th className="border-b px-4 py-3">Tên bánh</th>
-          <th className="border-b px-4 py-3">Dịp lễ</th>
+          <th className="border-b px-4 py-3">Dịp</th>
           <th className="border-b px-4 py-3">Mô tả</th>
           <th className="border-b px-4 py-3">Sửa / Xóa</th>
         </tr>

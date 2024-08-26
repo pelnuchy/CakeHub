@@ -46,7 +46,7 @@ const CakeRow: React.FC<CakeRowProps> = ({ cake, isEditing, handleEdit, handleDe
           <img src={cake.img_url} alt={cake.cakeName} className="h-12 w-12 object-cover" />
         )}
       </td>
-      <td className="border-b px-4 py-3 text-center">
+      <td className="border-b px-4 py-3 text-left">
         {isEditing === cake.cakeID ? (
           <input
             type="text"

@@ -56,7 +56,7 @@ export default function App() {
           <Route path="/baker/dashboard" element={<BakerDashboard />} />
           <Route path="/baker/bakingsession" element={<BakingSession />} />
           <Route path="/baker/ingredient" element={<BakerIngredient />} />
-          <Route path="/baker/newcake" element={<BakerCake />} />
+          <Route path="/baker/cake" element={<BakerCake />} />
           <Route path="/search/:keyword" element={<SearchResult />} />
           <Route path="/securitypolicy" element={<SecurityPolicy />} />
           <Route path="/ToS" element={<TermsOfService />} />
