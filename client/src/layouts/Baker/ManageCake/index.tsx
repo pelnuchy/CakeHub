@@ -7,23 +7,32 @@ import SearchAndFilter from './SearchAndFilter';
 import { Cake } from '../../../utils/interfaces';
 import { useNavigate } from 'react-router-dom';
 import AddCakePopup from '../../../components/AddCakePopup';
+import ToastComponent from '../../../components/ToastComponent';
+import { toast } from 'react-toastify';
 
 const fetchCakes = async (): Promise<Cake[]> => {
   try {
     const {
       data: { data },
-    } = await axios.get(`${process.env.REACT_APP_API_URL}/get-all-cakes`);
+    } = await axios.get(`${process.env.REACT_APP_API_URL}/get-all-cakes-baker`);
     return data.map(
       (cake: any): Cake => ({
-        ...cake,
-        createdAt: new Date(cake.createdAt),
-        updatedAt: new Date(cake.updatedAt),
+        ...cake
       }),
     );
   } catch (error) {
     console.error('Error fetching cakes:', error);
     return [];
   }
+};
+
+const getNextCakeId = (cakes: Cake[]): string => {
+  if (cakes.length === 0) return 'C1';
+  
+  const lastCakeId = cakes[cakes.length - 1].cakeID;
+  const lastIdNumber = parseInt(lastCakeId.replace('C', ''));
+  const newIdNumber = lastIdNumber + 1;
+  return `C${newIdNumber}`;
 };
 
 const CakeModel: React.FC = () => {
@@ -50,9 +59,14 @@ const CakeModel: React.FC = () => {
   const handleDelete = async (id: string) => {
     try {
       setCakes(cakes.filter((cake) => cake.cakeID !== id));
-      await axios.delete(`${process.env.REACT_APP_API_URL}/baker/delete-cake/${id}`);
+      await axios.delete(`${process.env.REACT_APP_API_URL}/delete-cake/${id}`);
     } catch (error) {
-      console.error('Failed to delete cake:', error);
+      if (axios.isAxiosError(error) && error.response) {
+        toast.error('Giỏ hàng hoặc đơn hàng đã chứa bánh này. Không thể xóa bánh này');
+      } else {
+        toast.error('An unexpected error occurred');
+        console.error('Failed to delete cake:', error);
+      }
     }
   };
 
@@ -83,7 +97,14 @@ const CakeModel: React.FC = () => {
         <CakeTable cakes={cakes} handleDelete={handleDelete} />
       </div>
       <Pagination />
-      {isPopupOpen && <AddCakePopup onSave={handleSave} onClose={handleClose} />}
+      {isPopupOpen && (
+        <AddCakePopup
+          onSave={handleSave}
+          onClose={handleClose}
+          getNextCakeId={() => getNextCakeId(cakes)}
+        />
+      )}
+      <ToastComponent />
     </div>
   );
 };

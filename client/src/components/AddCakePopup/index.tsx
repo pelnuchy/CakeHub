@@ -6,14 +6,16 @@ import { Cake } from '../../utils/interfaces';
 interface AddCakePopupProps {
   onSave: (cake: Cake) => Promise<void>;
   onClose: () => void;
+  getNextCakeId: () => string;
 }
 
-const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose }) => {
+
+const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose,getNextCakeId }) => {
   const [cakeData, setCakeData] = useState({
-    name: '',
-    occasion: '',
+    name: 'mewo',
+    occasion: 'christmas',
     img_url: '',
-    description: '',
+    description: 'taolao',
   });
 
   const [file, setFile] = useState<File | null>(null);
@@ -56,29 +58,27 @@ const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose }) => {
     }
 
     setLoading(true);
+    const newCakeId = getNextCakeId()
     const formData = new FormData();
+    formData.append('id', newCakeId);
     formData.append('name', cakeData.name);
     formData.append('occasion', cakeData.occasion);
     formData.append('image', file);
     formData.append('description', cakeData.description);
 
     try {
-      const response = await axios.post('http://localhost:8000/upload', formData, {
+      const response = await axios.post('http://localhost:8000/add-cake', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
       console.log('Response:', response.data);
       const savedCake: Cake = {
-        cakeID: 'Cxxxx',
+        cakeID: newCakeId,
         cakeName: cakeData.name,
-        size: 0,
-        jamFilling: '',
         img_url: response.data.imageUrl,
         occasion: cakeData.occasion as 'custom' | 'birthday' | 'christmas' | 'anniversary', // Adjust as needed
-        description: cakeData.description,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        description: cakeData.description
       };
       await onSave(savedCake);
       setError(null);

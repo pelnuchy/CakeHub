@@ -13,8 +13,8 @@ export interface CartItem {
 export interface Cake {
   cakeID: string;
   cakeName: string;
-  size: number;
-  jamFilling: string;
+  size?: number;
+  jamFilling?: string;
   price?: number;
   img_url?: string;
   cakeType?: 'gato' | 'corn cream';
@@ -24,8 +24,6 @@ export interface Cake {
   decor_id?: string;
   temp_grill?: number;
   time_grill?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
 export interface Order {
