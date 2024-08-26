@@ -1,7 +1,7 @@
 import Cake from "../models/Cake.js";
+import cloudinary from "cloudinary";
+
 const cakeController = {};
-
-
 
 cakeController.getAllCakes = async (req, res) => {
     try {
@@ -42,7 +42,7 @@ cakeController.getAllCakesOccasion = async (req, res) => {
         const response = await Cake.find({ cakeID: { $regex: pattern }, occasion: occasion }).lean().exec();
         return res.status(200).json({
             status: 'SUCCESS',
-            data: response
+            data: response  
         });
     }
     catch (error) {
@@ -172,6 +172,26 @@ cakeController.searchCakesByKeyword = async (req, res) => {
     res.status(500).json({ error: "Failed to search cakes" });
   }
 };
+
+cakeController.addCake = async (req, res) => {
+    try {
+      const result = await cloudinary.v2.uploader.upload(req.file.path);
+  
+      fs.unlinkSync(path.resolve(req.file.path)); // Clean up the temporary file
+  
+      const newCake = new Cake({
+        name: req.body.name,
+        occasion: req.body.occasion,
+        img_url: result.secure_url,
+        description: req.body.description,
+      });
+  
+      await newCake.save();
+      res.status(200).json({ message: "Cake added successfully", cake: newCake });
+    } catch (error) {
+      res.status(500).json({ message: "Image upload failed", error });
+    }
+  };
 
 
 export default cakeController;
