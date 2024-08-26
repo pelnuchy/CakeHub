@@ -71,7 +71,7 @@ app.post("/upload", upload.single("image"), async (req, res) => {
     });
 
     await newCake.save();
-    res.status(201).json({ message: "Cake added successfully", cake: newCake });
+    res.status(200).json({ message: "Cake added successfully", cake: newCake });
   } catch (error) {
     res.status(500).json({ message: "Image upload failed", error });
   }
