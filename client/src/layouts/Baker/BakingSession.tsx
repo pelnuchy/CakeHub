@@ -30,6 +30,7 @@ const BakingSession: React.FC = () => {
       setOrders((prevOrders) =>
         prevOrders.map((order) => (order.id === id ? { ...order, status: 'handling_2' } : order)),
       );
+      await axios.put(`${process.env.REACT_APP_API_URL}/baker/calculate-ingredient/${id}`);
     } catch (error) {
       console.error('Failed to update order status:', error);
     }
