@@ -39,7 +39,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/',cakeRoutes, userRoutes, cartRoutes, orderRoutes, ingredientRoutes, deviceRoutes, paymentRoutes);
 
 
-mongoose.connect(process.env.DATABASE_URI)
+mongoose.connect(process.env.DATABASE_URI_LOCAL)
 .then(async () => { // Sử dụng async để có thể sử dụng await bên trong
     console.log('Connected to MongoDB');
     console.log('Current Database:', mongoose.connection.db.databaseName);
