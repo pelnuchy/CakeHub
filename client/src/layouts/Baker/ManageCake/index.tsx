@@ -4,9 +4,9 @@ import Button from '../../../components/Button';
 import CakeTable from './CakeTable';
 import Pagination from './Pagination';
 import SearchAndFilter from './SearchAndFilter';
-// import AddIngredientPopup from '../../../components/AddIngredientPopup';
 import { Cake } from '../../../utils/interfaces';
 import { useNavigate } from 'react-router-dom';
+import AddCakePopup from '../../../components/AddCakePopup';
 
 const fetchCakes = async (): Promise<Cake[]> => {
   try {
@@ -108,7 +108,7 @@ const CakeModel: React.FC = () => {
         />
       </div>
       <Pagination />
-      {/* {isPopupOpen && <AddIngredientPopup onSave={handleSave} onClose={() => setIsPopupOpen(false)} />} */}
+      {isPopupOpen && <AddCakePopup onSave={handleSave} onClose={() => setIsPopupOpen(false)} />}
     </div>
   );
 };
