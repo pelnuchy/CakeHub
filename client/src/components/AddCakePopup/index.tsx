@@ -9,8 +9,7 @@ interface AddCakePopupProps {
   getNextCakeId: () => string;
 }
 
-
-const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose,getNextCakeId }) => {
+const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose, getNextCakeId }) => {
   const [cakeData, setCakeData] = useState({
     name: 'mewo',
     occasion: 'christmas',
@@ -37,7 +36,7 @@ const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose,getNextCake
     };
   }, [onClose]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setCakeData({
       ...cakeData,
@@ -53,12 +52,12 @@ const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose,getNextCake
 
   const handleSubmit = async () => {
     if (!cakeData.name || !cakeData.occasion || !file || !cakeData.description) {
-      setError('Please fill out all required fields.');
+      setError('Vui lòng điền đầy đủ thông tin');
       return;
     }
 
     setLoading(true);
-    const newCakeId = getNextCakeId()
+    const newCakeId = getNextCakeId();
     const formData = new FormData();
     formData.append('id', newCakeId);
     formData.append('name', cakeData.name);
@@ -67,7 +66,7 @@ const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose,getNextCake
     formData.append('description', cakeData.description);
 
     try {
-      const response = await axios.post('http://localhost:8000/add-cake', formData, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/add-cake`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -77,8 +76,8 @@ const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose,getNextCake
         cakeID: newCakeId,
         cakeName: cakeData.name,
         img_url: response.data.imageUrl,
-        occasion: cakeData.occasion as 'custom' | 'birthday' | 'christmas' | 'anniversary', // Adjust as needed
-        description: cakeData.description
+        occasion: cakeData.occasion as 'custom' | 'birthday' | 'christmas' | 'anniversary',
+        description: cakeData.description,
       };
       await onSave(savedCake);
       setError(null);
@@ -90,7 +89,6 @@ const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose,getNextCake
       });
       setFile(null);
     } catch (error) {
-      console.error('Error uploading image:', error);
       setError('There was an error uploading the cake. Please try again.');
     } finally {
       setLoading(false);
@@ -124,15 +122,19 @@ const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose,getNextCake
             <label htmlFor="occasion" className="block text-sm font-medium">
               Dịp*
             </label>
-            <input
+            <select
               id="occasion"
               name="occasion"
               value={cakeData.occasion}
               onChange={handleChange}
               className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-              placeholder="Dịp lễ"
               required
-            />
+            >
+              <option value="custom">Trang trí</option>
+              <option value="birthday">Sinh nhật</option>
+              <option value="christmas">Giáng sinh</option>
+              <option value="anniversary">Kỷ niệm</option>
+            </select>
           </div>
           <div>
             <label htmlFor="image" className="block text-sm font-medium">

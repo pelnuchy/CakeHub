@@ -17,7 +17,7 @@ const fetchCakes = async (): Promise<Cake[]> => {
     } = await axios.get(`${process.env.REACT_APP_API_URL}/get-all-cakes-baker`);
     return data.map(
       (cake: any): Cake => ({
-        ...cake
+        ...cake,
       }),
     );
   } catch (error) {
@@ -28,7 +28,7 @@ const fetchCakes = async (): Promise<Cake[]> => {
 
 const getNextCakeId = (cakes: Cake[]): string => {
   if (cakes.length === 0) return 'C1';
-  
+
   const lastCakeId = cakes[cakes.length - 1].cakeID;
   const lastIdNumber = parseInt(lastCakeId.replace('C', ''));
   const newIdNumber = lastIdNumber + 1;
@@ -55,8 +55,12 @@ const CakeModel: React.FC = () => {
 
     getCakes();
   }, [navigate]);
-
   const handleDelete = async (id: string) => {
+    const isConfirmed = window.confirm('Bạn có chắc chắn muốn xoá bánh? Hành động này không thể hoàn tác');
+    if (!isConfirmed) {
+      return;
+    }
+
     try {
       setCakes(cakes.filter((cake) => cake.cakeID !== id));
       await axios.delete(`${process.env.REACT_APP_API_URL}/delete-cake/${id}`);
@@ -64,25 +68,25 @@ const CakeModel: React.FC = () => {
       if (axios.isAxiosError(error) && error.response) {
         toast.error('Giỏ hàng hoặc đơn hàng đã chứa bánh này. Không thể xóa bánh này');
       } else {
-        toast.error('An unexpected error occurred');
-        console.error('Failed to delete cake:', error);
+        toast.error('Có lỗi xảy ra khi xóa bánh');
       }
     }
   };
 
   const handleAdd = () => {
-    console.log('Add button clicked');
     setIsPopupOpen(true);
   };
 
   const handleSave = async (cake: Cake) => {
-    console.log('Save handler called with:', cake);
     setCakes([cake, ...cakes]);
     setIsPopupOpen(false);
+    toast.success('Thêm bánh thành công');
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   };
 
   const handleClose = () => {
-    console.log('Popup close handler called');
     setIsPopupOpen(false);
   };
 
@@ -98,11 +102,7 @@ const CakeModel: React.FC = () => {
       </div>
       <Pagination />
       {isPopupOpen && (
-        <AddCakePopup
-          onSave={handleSave}
-          onClose={handleClose}
-          getNextCakeId={() => getNextCakeId(cakes)}
-        />
+        <AddCakePopup onSave={handleSave} onClose={handleClose} getNextCakeId={() => getNextCakeId(cakes)} />
       )}
       <ToastComponent />
     </div>

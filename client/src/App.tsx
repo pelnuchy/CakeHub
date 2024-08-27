@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Preloader from './components/Preloader';
 import usePageLoading from './hooks/usePageLoading';
 import Homepage from './pages/Home';
