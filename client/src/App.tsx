@@ -33,7 +33,7 @@ export default function App() {
   const loading = usePageLoading();
 
   return (
-    <div className="h-screen">
+    <div className="max-h-fit">
       {loading && <Preloader />}
       <Suspense fallback={<Preloader />}>
         <Routes>
