@@ -206,6 +206,7 @@ const SecurityPolicy: React.FC = () => {
       </p>
       <ul style={{ fontSize: '16px' }}>
         <li>Qua email: cakehub18@gmail.com</li>
+        <li>Qua số điện thoại: +88015-88888-9999</li>
       </ul>
     </div>
   );
