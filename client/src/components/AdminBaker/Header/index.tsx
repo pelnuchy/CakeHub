@@ -1,19 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaUser, FaSignInAlt, FaUserPlus, FaSignOutAlt } from 'react-icons/fa';
+import { resetAuthToken } from '../../../utils/auth-service';
 
 const Header: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [userLoggedIn, setUserLoggedIn] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
+  const isAdmin = sessionStorage.getItem('authToken') === 'admin_logged';
+  let navLink = '/';
+  if (isAdmin) {
+    navLink = '/admin/dashboard';
+  } else {
+    navLink = '/baker/dashboard';
+  }
   const handleLogout = () => {
     sessionStorage.clear();
     setUserLoggedIn(false);
     setDropdownOpen(false);
+    resetAuthToken();
     navigate('/');
   };
 
@@ -37,7 +45,7 @@ const Header: React.FC = () => {
   return (
     <header className="fixed left-0 right-0 top-0 z-50 flex h-[100px] items-center bg-black px-16 shadow-md">
       <div className="flex flex-auto items-center">
-        <Link to="/" className="cursor-pointer">
+        <Link to={navLink} className="cursor-pointer">
           <img src={'../../assets/logo/black-hub-logo.png'} alt="Logo" className="h-16 w-16" />
         </Link>
       </div>

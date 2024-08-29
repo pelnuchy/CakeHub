@@ -1,11 +1,10 @@
+let authToken = sessionStorage.getItem('authToken');
 let auth = {
   isGuest: true,
   isUser: false,
   isBaker: false,
   isAdmin: false,
 };
-
-let authToken = sessionStorage.getItem('authToken');
 
 if (authToken === 'admin_logged') {
   auth = {
@@ -14,16 +13,14 @@ if (authToken === 'admin_logged') {
     isBaker: false,
     isAdmin: true,
   };
-}
-else if (authToken === 'baker_logged') {
+} else if (authToken === 'baker_logged') {
   auth = {
     isGuest: false,
     isUser: false,
     isBaker: true,
     isAdmin: false,
   };
-}
-else if (authToken === 'user_logged') {
+} else if (authToken === 'user_logged') {
   auth = {
     isGuest: false,
     isUser: true,
@@ -31,4 +28,14 @@ else if (authToken === 'user_logged') {
     isAdmin: false,
   };
 }
-export default auth;
+function resetAuthToken() {
+  sessionStorage.clear();
+  auth = {
+    isGuest: true,
+    isUser: false,
+    isBaker: false,
+    isAdmin: false,
+  };
+}
+
+export { auth, resetAuthToken };
