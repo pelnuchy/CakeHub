@@ -97,7 +97,9 @@ const Checkout: React.FC = () => {
 
   const fetchSumCakeOrder = async (userID: string) => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/check-num-cake-order/${userID}?dateSelected=${startDate}`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/check-num-cake-order/${userID}?dateSelected=${startDate}`,
+      );
       const sumOfCake = response.data.data;
       return sumOfCake;
     } catch (error) {
@@ -126,7 +128,7 @@ const Checkout: React.FC = () => {
       try {
         const sumOfCakeDB: number[] = await fetchSumCakeOrder(userInfo.userID);
         setSumOfCakeToHandleOrder(sumOfCakeDB);
-        const changeNumToBoolean: boolean[] = sumOfCakeDB.map((quantity: number) => quantity <= 8 ? true : false);
+        const changeNumToBoolean: boolean[] = sumOfCakeDB.map((quantity: number) => (quantity <= 8 ? true : false));
         setSumOfCake(changeNumToBoolean);
         // console.log(sumOfCakeToHandleOrder);
         // console.log(sumOfCake);
@@ -145,7 +147,7 @@ const Checkout: React.FC = () => {
     fetchData();
   }, [sdkReady, startDate]);
 
-  const timeSlots = ["13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+  const timeSlots = ['13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
 
   return (
     <div className="container mx-auto p-8">
@@ -230,19 +232,22 @@ const Checkout: React.FC = () => {
             cartItems.length > 0 ? (
               canCheckout ? (
                 address ? (
-                  <PayPalButton
-                    amount={totalPrice / 25000}
-                    onSuccess={onSuccessPaypal}
-                    onError={(err: any) => {
-                      alert("Transaction error: " + err);
-                    }}
-                  />
+                  <div className="w-full max-w-[50vh] pt-8">
+                    <PayPalButton
+                      amount={totalPrice / 25000}
+                      onSuccess={onSuccessPaypal}
+                      onError={(err: any) => {
+                        alert('Transaction error: ' + err);
+                      }}
+                    />
+                  </div>
                 ) : (
                   <div className="text-red-500">Vui lòng điền địa chỉ giao hàng để thanh toán.</div>
                 )
               ) : (
                 <div className="text-red-500">
-                  Số lượng bánh trong giỏ hàng vượt quá số lượng bánh còn lại có thể đặt trong khung giờ.<br />
+                  Số lượng bánh trong giỏ hàng vượt quá số lượng bánh còn lại có thể đặt trong khung giờ.
+                  <br />
                   Số lượng bánh còn lại có thể đặt: {availability[selectedHour - 13]}.
                 </div>
               )
