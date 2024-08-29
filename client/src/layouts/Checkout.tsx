@@ -13,6 +13,7 @@ const Checkout: React.FC = () => {
   const [sdkReady, setSdkReady] = useState(false);
   const [sumOfCake, setSumOfCake] = useState<boolean[]>([]);
   const [sumOfCakeToHandleOrder, setSumOfCakeToHandleOrder] = useState<number[]>([]);
+  const [limitCake, setLimitCake] = useState<number>(0);
   const navigate = useNavigate();
   const { cartItems } = useCart();
 
@@ -107,35 +108,48 @@ const Checkout: React.FC = () => {
     }
   };
 
-  const checkCakeAvailability = (sumOfCakeToHandleOrder: number[], cartItems: any[]) => {
+  const fetchLimitCakes = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/limit-cakes-baseon-bake`);
+      const limitCake = response.data.limitCake;
+      return limitCake;
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const checkCakeAvailability = (sumOfCakeToHandleOrder: number[], cartItems: any[], limitCake: number) => {
     const hours = [13, 14, 15, 16, 17, 18];
     return hours.map((hour, index) => {
-      return 8 - sumOfCakeToHandleOrder[index];
+      return limitCake - sumOfCakeToHandleOrder[index];
     });
   };
 
   const selectedHour = parseInt(time.split(':')[0], 10);
-  const availability = checkCakeAvailability(sumOfCakeToHandleOrder, cartItems);
+  const availability = checkCakeAvailability(sumOfCakeToHandleOrder, cartItems, limitCake);
 
   // Tính tổng số lượng bánh trong giỏ hàng
   const totalCakesInCart = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   // Kiểm tra số lượng bánh trong giỏ hàng so với giá trị availability của khung giờ đã chọn
-  console.log('totalCakesInCart', totalCakesInCart);
-  console.log('availability[selectedHour - 13]', availability[selectedHour - 13]);
   const canCheckout = totalCakesInCart <= availability[selectedHour - 13];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // lấy giới hạn bánh được đặt trong khung giờ
+        const limitCakeDB: number = await fetchLimitCakes();
+        setLimitCake(limitCakeDB);
+        // lấy số lượng bánh đã đặt trong ngày qua 6 khung giờ
         const sumOfCakeDB: number[] = await fetchSumCakeOrder(userInfo.userID);
         setSumOfCakeToHandleOrder(sumOfCakeDB);
-        const changeNumToBoolean: boolean[] = sumOfCakeDB.map((quantity: number) => (quantity <= 8 ? true : false));
+        // chuyển số lượng bánh đã đặt trong ngày qua 6 khung giờ thành boolean
+        const changeNumToBoolean: boolean[] = sumOfCakeDB.map((quantity: number) => (quantity <= limitCake ? true : false));
         setSumOfCake(changeNumToBoolean);
-        console.log(sumOfCakeToHandleOrder);
-        console.log(sumOfCake);
-        console.log('avai',availability);
-        console.log('cartItem', cartItems.length);
+
+        console.log('sum', sumOfCakeToHandleOrder);
+        console.log('bool ', sumOfCake);
+        console.log('avai', availability);
 
         if (!window.paypal) {
           addPaypalScript();
@@ -152,6 +166,15 @@ const Checkout: React.FC = () => {
 
   const timeSlots = ['13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
 
+  // Hàm kiểm tra xem khung giờ hiện tại đã qua hay chưa
+  const isTimeSlotDisabled = (slot:string) => {
+    const now = new Date();
+    const selectedDate = startDate ? new Date(startDate) : new Date();
+    const isToday = now.toDateString() === selectedDate.toDateString();
+    const [hour, minutes] = slot.split(':').map(Number);
+    const isPast = hour < now.getHours() || (hour === now.getHours() && minutes <= now.getMinutes());
+    return isToday && isPast;
+  };
   return (
     <div className="container mx-auto p-8">
       <h1 className="mb-8 text-3xl font-bold">THÔNG TIN GIAO HÀNG</h1>
@@ -223,7 +246,7 @@ const Checkout: React.FC = () => {
               className="w-full rounded-lg border p-3 shadow-sm"
             >
               {timeSlots.map((slot, index) => (
-                <option key={slot} value={slot} disabled={!sumOfCake[index]}>
+                <option key={slot} value={slot} disabled={isTimeSlotDisabled(slot)||!sumOfCake[index]}>
                   {slot}
                 </option>
               ))}
@@ -249,7 +272,7 @@ const Checkout: React.FC = () => {
                 )
               ) : (
                 <div className="text-red-500">
-                  Số lượng bánh trong giỏ hàng là {totalCakesInCart} vượt quá số lượng bánh còn lại có thể đặt trong khung giờ.<br />
+                  Số lượng bánh trong giỏ hàng là {totalCakesInCart} vượt quá số lượng bánh còn lại có thể đặt trong khung giờ {time} giờ.<br />
                   Số lượng bánh còn lại có thể đặt: {availability[selectedHour - 13]}.
                 </div>
               )

@@ -43,7 +43,7 @@ deviceController.getAllDevices = async (req, res) => {
             message: error.message
         });
     }
-}
+};
 
 deviceController.addDevice = async (req, res) => {
     try {
@@ -57,7 +57,7 @@ deviceController.addDevice = async (req, res) => {
                 volume: device.volume,
                 quantity: device.quantity,
                 deviceType: device.category,
-                manangerID: device.idmanager
+                managerID: device.idmanager
             }
         );
 
@@ -73,7 +73,7 @@ deviceController.addDevice = async (req, res) => {
             message: error.message
         });
     }
-}
+};
 
 deviceController.updateQuantityDevice = async (req, res) => {
     try {
@@ -108,7 +108,7 @@ deviceController.updateQuantityDevice = async (req, res) => {
             message: error.message
         });
     }
-}
+};
 
 deviceController.deleteDevice = async (req, res) => {
     try {
@@ -125,7 +125,27 @@ deviceController.deleteDevice = async (req, res) => {
             message: error.message
         });
     }
-}
+};
+
+deviceController.calculateLimitCakeOnAllBakes = async (req, res) => {
+    try {
+        const listBake = await Device.find({
+            deviceName: { $regex: /lò nướng/i } // Tìm kiếm thiết bị có tên chứa "lò nướng" (không phân biệt chữ hoa chữ thường)
+        });
+        // Tính tổng volume nhân với số lượng
+        const totalVolume = listBake.reduce((sum, device) => {
+            // Chuyển đổi volume từ string sang số và nhân với số lượng
+            const volume = parseFloat(device.volume);
+            const quantity = parseInt(device.quantity, 10);
+            return sum + (isNaN(volume) || isNaN(quantity) ? 0 : volume * quantity);
+        }, 0);
+
+        const limitCake = Math.floor(totalVolume / 14); // Mỗi 15 dm3 là 1 bánh, lấy phần nguyên
+        res.status(200).json({ limitCake }); // Trả về tổng volume
+    } catch (error) {
+        res.status(500).json({ message: "Error calculating total volume", error });
+    }
+};
 
 
 

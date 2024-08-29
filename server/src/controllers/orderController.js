@@ -189,7 +189,7 @@ orderController.getOwnOrdered = async (req, res) => {
                     cakes: { $push: "$cakes" }
                 }
             },
-            { $sort: { shippingDate: 1 } } // Sắp xếp giảm dần theo completeTime
+            { $sort: { shippingDate: -1 } } // Sắp xếp giảm dần theo completeTime
         ]);
         return res.status(200).json({
             status: 'SUCCESS',
