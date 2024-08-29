@@ -5,6 +5,8 @@ import axios from 'axios';
 import { format } from 'date-fns';
 import moment from 'moment-timezone';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import ToastComponent from '../../components/ToastComponent';
 
 const formatDate = (isoDate: string): string => {
   const date = new Date(isoDate);
@@ -26,11 +28,21 @@ const BakingSession: React.FC = () => {
   }
   const handleStart = async (id: string) => {
     try {
-      await axios.put(`${process.env.REACT_APP_API_URL}/update-order-status/baker/${id}?status=handling_2`);
-      setOrders((prevOrders) =>
-        prevOrders.map((order) => (order.id === id ? { ...order, status: 'handling_2' } : order)),
-      );
-      await axios.put(`${process.env.REACT_APP_API_URL}/baker/calculate-ingredient/${id}`);
+      // await axios.put(`${process.env.REACT_APP_API_URL}/update-order-status/baker/${id}?status=handling_2`);
+      // setOrders((prevOrders) =>
+      //   prevOrders.map((order) => (order.id === id ? { ...order, status: 'handling_2' } : order)),
+      // );
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/baker/calculate-ingredient/${id}`);
+      const status = response.status;
+      if (status == 201 || status == 401)
+        toast.error(response.data.status);
+      else {
+        await axios.put(`${process.env.REACT_APP_API_URL}/update-order-status/baker/${id}?status=handling_2`);
+        setOrders((prevOrders) =>
+          prevOrders.map((order) => (order.id === id ? { ...order, status: 'handling_2' } : order)),
+        );
+        toast.success(response.data.status);
+      }
     } catch (error) {
       console.error('Failed to update order status:', error);
     }
@@ -98,6 +110,7 @@ const BakingSession: React.FC = () => {
           />
         ))}
       </div>
+      <ToastComponent />
     </div>
   );
 };

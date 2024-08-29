@@ -104,7 +104,7 @@ ingredientController.deleteIngredient = async (req, res) => {
 ingredientController.calculateIngredients = async (req, res) => {
     try {
         const orderID = new ObjectId(req.params.orderid);
-        const remaining_ingred_list = await Order.aggregate([
+        const result = await Order.aggregate([
             {
                 $match: {
                     _id: orderID
@@ -224,6 +224,8 @@ ingredientController.calculateIngredients = async (req, res) => {
             }
         ]);
 
+        const remaining_ingred_list = result[0]?.remaining_ingred_list || [];
+
         if (remaining_ingred_list.length === 0) {
             return res.status(200).json({
                 status: 'SUCCESS',
@@ -231,8 +233,43 @@ ingredientController.calculateIngredients = async (req, res) => {
             });
         }
 
+
+        try {
+            for (const ingred of remaining_ingred_list) {
+                if (ingred.remainingQuantity < 0) {
+                    // Truy vấn ingredientName từ collection "ingredients"
+                    const ingredient_not_enough = await Ingredient.findOne({ ingredientID: ingred.ingredID });
+                    let statusMessage;
+                    if (ingredient_not_enough) {
+                        const missingQuantity = Math.abs(ingred.remainingQuantity); // Chuyển remainingQuantity thành số dương
+                        statusMessage = `Nguyên liệu ${ingredient_not_enough.ingredientName} đang thiếu ${missingQuantity} ${ingredient_not_enough.ingredientUnit}`;
+                        return res.status(201).json({
+                            status: statusMessage,
+                            data: remaining_ingred_list
+                        });
+                    } else {
+                        statusMessage = `Ingredient with ID ${ingred.ingredID} not found`;
+                        return res.status(401).json({
+                            status: statusMessage,
+                            data: remaining_ingred_list
+                        });
+                    }
+                }
+
+                // Cập nhật ingredientQuantity
+                await Ingredient.updateOne(
+                    { ingredientID: ingred.ingredID },
+                    { $set: { ingredientQuantity: ingred.remainingQuantity } }
+                );
+            }
+            console.log('Ingredient quantities updated successfully.');
+        } catch (error) {
+            console.error('Error updating ingredient quantities:', error);
+            return res.status(500).json({ status: 'Error', message: 'Internal server error' });
+        }
+
         return res.status(200).json({
-            status: 'SUCCESS',
+            status: 'Nguyên liệu đã được tính thành công',
             data: remaining_ingred_list
         });
     }
