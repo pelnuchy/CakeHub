@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 interface Section {
   title: string;
   subTitle: string;
@@ -64,7 +62,7 @@ const SecurityPolicy: React.FC = () => {
         '- Loại: Persistent Cookies',
         '- Quản lý bởi: Admin CakeHub',
         '- Mục đích: Những Cookies này cho phép chúng tôi ghi nhớ các lựa chọn Bạn thực hiện khi Bạn sử dụng Trang Web, chẳng hạn như ghi nhớ chi tiết đăng nhập của bạn hoặc tùy chọn ngôn ngữ. Mục đích của những Cookies này là cung cấp cho Bạn một trải nghiệm cá nhân hơn và tránh việc Bạn phải nhập lại tùy chọn của mình mỗi khi Bạn sử dụng Trang Web.',
-        ],
+      ],
     },
     {
       title: '',
@@ -187,12 +185,8 @@ const SecurityPolicy: React.FC = () => {
           <h2 style={{ fontSize: '24px', fontWeight: 'bold', textTransform: 'uppercase', color: '#0A0A0A' }}>
             {section.title}
           </h2>
-          <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#161616' }}>
-            {section.subTitle}
-          </h2>
-          <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#161616' }}>
-            {section.type}
-          </h2>
+          <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#161616' }}>{section.subTitle}</h2>
+          <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#161616' }}>{section.type}</h2>
           {section.content.map((paragraph, idx) => (
             <p key={idx} style={{ fontSize: '16px', marginBottom: '10px', color: '#1D1C1C' }}>
               {paragraph}
