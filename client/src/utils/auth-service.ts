@@ -5,7 +5,7 @@ let auth = {
   isAdmin: false,
 };
 
-const authToken = sessionStorage.getItem('authToken');
+let authToken = sessionStorage.getItem('authToken');
 
 if (authToken === 'admin_logged') {
   auth = {
@@ -15,7 +15,7 @@ if (authToken === 'admin_logged') {
     isAdmin: true,
   };
 }
-if (authToken === 'baker_logged') {
+else if (authToken === 'baker_logged') {
   auth = {
     isGuest: false,
     isUser: false,
@@ -23,7 +23,7 @@ if (authToken === 'baker_logged') {
     isAdmin: false,
   };
 }
-if (authToken === 'user_logged') {
+else if (authToken === 'user_logged') {
   auth = {
     isGuest: false,
     isUser: true,

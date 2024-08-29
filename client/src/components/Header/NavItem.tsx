@@ -91,6 +91,7 @@ const NavItem: React.FC = () => {
     setUserInfo(null);
     setDropdownOpen(false);
     navigate('/');
+    window.location.reload();
   };
 
   const handleClickOutside = (event: MouseEvent) => {

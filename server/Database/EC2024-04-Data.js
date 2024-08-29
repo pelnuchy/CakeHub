@@ -39,7 +39,7 @@ db.devices.insertMany([
     deviceID: "BJY-E13KW-2BD",
     deviceModel: "Berjaya",
     deviceName: "Lò nướng Berjaya 2 tầng 4 khay",
-    volume: "1295L",
+    volume: "117L",
     quantity: 2,
     deviceType: "baking_oven",
     managerID: "admin01",

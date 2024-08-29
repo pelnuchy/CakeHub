@@ -44,7 +44,7 @@ const Trending = () => {
         <div className="mb-8 flex items-center justify-between">
           <div className="flex items-center">
             <div className="mr-2 h-8 w-4 bg-bgr-gradient"></div>
-            <h2 className="text-4xl font-bold text-black">Xu hướng - tháng 5</h2>
+            <h2 className="text-4xl font-bold text-black">Xu hướng</h2>
           </div>
           <Button onClick={handleClick} className="rounded-xl">
             Xem tất cả

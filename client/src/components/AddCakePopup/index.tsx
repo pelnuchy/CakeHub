@@ -11,10 +11,10 @@ interface AddCakePopupProps {
 
 const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose, getNextCakeId }) => {
   const [cakeData, setCakeData] = useState({
-    name: 'mewo',
-    occasion: 'christmas',
+    name: '',
+    occasion: '',
     img_url: '',
-    description: 'taolao',
+    description: '',
   });
 
   const [file, setFile] = useState<File | null>(null);
