@@ -7,8 +7,8 @@ const deviceSchema = new mongoose.Schema(
         deviceName: { type: String, required: true },
         volume: { type: String, required: true },
         quantity: { type: Number, required: true },
-        deviceType: {type: String, required: true},
-        managerID: {type: String, required: true},
+        deviceType: { type: String, required: true },
+        managerID: { type: String, required: true },
     },
     {
         timestamps: true

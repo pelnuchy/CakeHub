@@ -57,7 +57,7 @@ deviceController.addDevice = async (req, res) => {
                 volume: device.volume,
                 quantity: device.quantity,
                 deviceType: device.category,
-                manangerID: device.idmanager
+                managerID: device.idmanager
             }
         );
 
