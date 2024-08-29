@@ -93,6 +93,7 @@ const NavItem: React.FC = () => {
     setDropdownOpen(false);
     resetAuthToken();
     navigate('/');
+    window.location.reload();
   };
 
   const handleClickOutside = (event: MouseEvent) => {

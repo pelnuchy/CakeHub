@@ -121,6 +121,8 @@ const Checkout: React.FC = () => {
   const totalCakesInCart = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   // Kiểm tra số lượng bánh trong giỏ hàng so với giá trị availability của khung giờ đã chọn
+  console.log('totalCakesInCart', totalCakesInCart);
+  console.log('availability[selectedHour - 13]', availability[selectedHour - 13]);
   const canCheckout = totalCakesInCart <= availability[selectedHour - 13];
 
   useEffect(() => {
@@ -130,9 +132,10 @@ const Checkout: React.FC = () => {
         setSumOfCakeToHandleOrder(sumOfCakeDB);
         const changeNumToBoolean: boolean[] = sumOfCakeDB.map((quantity: number) => (quantity <= 8 ? true : false));
         setSumOfCake(changeNumToBoolean);
-        // console.log(sumOfCakeToHandleOrder);
-        // console.log(sumOfCake);
-        // console.log(availability);
+        console.log(sumOfCakeToHandleOrder);
+        console.log(sumOfCake);
+        console.log('avai',availability);
+        console.log('cartItem', cartItems.length);
 
         if (!window.paypal) {
           addPaypalScript();
@@ -246,8 +249,7 @@ const Checkout: React.FC = () => {
                 )
               ) : (
                 <div className="text-red-500">
-                  Số lượng bánh trong giỏ hàng vượt quá số lượng bánh còn lại có thể đặt trong khung giờ.
-                  <br />
+                  Số lượng bánh trong giỏ hàng là {totalCakesInCart} vượt quá số lượng bánh còn lại có thể đặt trong khung giờ.<br />
                   Số lượng bánh còn lại có thể đặt: {availability[selectedHour - 13]}.
                 </div>
               )

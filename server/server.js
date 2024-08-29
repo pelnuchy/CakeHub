@@ -50,7 +50,7 @@ app.use(
 );
 
 mongoose
-  .connect(process.env.DATABASE_URI_LOCAL)
+  .connect(process.env.DATABASE_URI)
   .then(async () => {
     // Sử dụng async để có thể sử dụng await bên trong
     console.log("Connected to MongoDB");

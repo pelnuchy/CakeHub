@@ -56,14 +56,9 @@ const CakeModel: React.FC = () => {
     getCakes();
   }, [navigate]);
   const handleDelete = async (id: string) => {
-    const isConfirmed = window.confirm('Bạn có chắc chắn muốn xoá bánh? Hành động này không thể hoàn tác');
-    if (!isConfirmed) {
-      return;
-    }
-
     try {
-      setCakes(cakes.filter((cake) => cake.cakeID !== id));
       await axios.delete(`${process.env.REACT_APP_API_URL}/delete-cake/${id}`);
+      setCakes(cakes.filter((cake) => cake.cakeID !== id));
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         toast.error('Giỏ hàng hoặc đơn hàng đã chứa bánh này. Không thể xóa bánh này');
