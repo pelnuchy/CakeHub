@@ -22,23 +22,24 @@ const LoginForm = () => {
       sessionStorage.setItem('userInfo', userInfo);
 
       const role = JSON.parse(userInfo).role;
+      let authToken = 'guest';
 
       if (role === 'admin') {
-        const authToken = 'admin_logged';
+        authToken = 'admin_logged';
         sessionStorage.setItem('authToken', authToken);
         toast.success('Đăng nhập thành công');
         setTimeout(() => {
           navigate('/admin/dashboard');
         }, 1500);
       } else if (role === 'baker') {
-        const authToken = 'baker_logged';
+        authToken = 'baker_logged';
         sessionStorage.setItem('authToken', authToken);
         toast.success('Đăng nhập thành công');
         setTimeout(() => {
           navigate('/baker/dashboard');
         }, 1500);
       } else {
-        const authToken = 'user_logged';
+        authToken = 'user_logged';
         sessionStorage.setItem('authToken', authToken);
         toast.success('Đăng nhập thành công');
         setTimeout(() => {
