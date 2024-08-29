@@ -15,12 +15,12 @@ const AddDevicePopup: React.FC<AddDevicePopupProps> = ({ onSave, onClose }) => {
   const adminID = userInfo.userID;
 
   const [device, setDevice] = useState<Device>({
-    id: 'ad',
-    brand: 'ad',
-    name: 'ad',
-    volume: 'ad',
-    quantity: 2,
-    category: 'ad',
+    id: '',
+    brand: '',
+    name: '',
+    volume: '',
+    quantity: 1,
+    category: '',
     idmanager: adminID,
   });
 
