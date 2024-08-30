@@ -135,6 +135,12 @@ cakeController.getRelatedCakes = async (req, res) => {
         });
     }
 }
+const createFuzzyRegex = (keyword) => {
+    // Chuyển đổi từ khóa thành một chuỗi regex với các ký tự đại diện giữa các ký tự
+    const fuzzyKeyword = keyword.split('').join('.*');
+    // Tạo regex từ chuỗi đó, không phân biệt chữ hoa chữ thường
+    return new RegExp(fuzzyKeyword, "i");
+};
 
 cakeController.searchCakesByKeyword = async (req, res) => {
     const { keyword } = req.query;
@@ -145,7 +151,7 @@ cakeController.searchCakesByKeyword = async (req, res) => {
 
     const searchCakesByKeyword = async (keyword) => {
         try {
-            const regex = new RegExp(keyword, "i");
+            const regex = createFuzzyRegex(keyword);
 
             // Tìm tất cả các bánh có liên quan đến từ khóa
             const cakes = await Cake.find({
