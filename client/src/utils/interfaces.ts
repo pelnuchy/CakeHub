@@ -43,7 +43,7 @@ export interface Order {
 export interface Ingredient {
   id: string;
   name: string;
-  price: string;
+  price: number;
   perquantity: number;
   unit: string;
   quantity: number;
@@ -59,4 +59,10 @@ export interface Device {
   quantity: number;
   deviceType: string;
   managerID: string;
+}
+export interface Product {
+  name: string;
+  quantity: number;
+  revenue: string;
+  date: Date;
 }
