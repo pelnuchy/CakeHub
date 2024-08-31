@@ -18,7 +18,7 @@ export interface Cake {
   price?: number;
   img_url?: string;
   cakeType?: 'gato' | 'corn cream';
-  occasion: 'custom' | 'birthday' | 'christmas' | 'anniversary';
+  occasion: string;
   description?: string;
   recipe_id?: string;
   decor_id?: string;
