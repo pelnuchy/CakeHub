@@ -1,12 +1,11 @@
 import React from 'react';
-import { FaEdit, FaTrashAlt, FaSave } from 'react-icons/fa';
+import { FaEdit, FaSave } from 'react-icons/fa';
 import { Ingredient } from '../../../utils/interfaces';
 
 interface IngredientRowProps {
   ingredient: Ingredient;
   isEditing: string | null;
   handleEdit: (id: string) => void;
-  handleDelete: (id: string) => void;
   handleSave: (
     id: string,
     ingredientData: {
@@ -25,7 +24,6 @@ const IngredientRow: React.FC<IngredientRowProps> = ({
   ingredient,
   isEditing,
   handleEdit,
-  handleDelete,
   handleSave,
   handleChange,
 }) => {
@@ -143,12 +141,6 @@ const IngredientRow: React.FC<IngredientRowProps> = ({
             <FaEdit className="h-5 w-5" />
           </button>
         )}
-        <button
-          onClick={() => handleDelete(ingredient.id)}
-          className="text-red-500 transition duration-300 hover:text-red-700"
-        >
-          <FaTrashAlt className="h-5 w-5" />
-        </button>
       </td>
     </tr>
   );

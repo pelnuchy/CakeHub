@@ -3,8 +3,6 @@ import axios from 'axios';
 import { format } from 'date-fns';
 import Button from '../../../components/Button';
 import IngredientTable from './IngredientTable';
-import Pagination from './Pagination';
-import SearchAndFilter from './SearchAndFilter';
 import AddIngredientPopup from '../../../components/AddIngredientPopup';
 import { Ingredient } from '../../../utils/interfaces';
 import { useNavigate } from 'react-router-dom';
@@ -55,15 +53,6 @@ const InventoryTable: React.FC = () => {
 
   const handleEdit = async (id: string) => {
     setIsEditing(id);
-  };
-
-  const handleDelete = (id: string) => {
-    try {
-      setIngredients(ingredients.filter((ingredient) => ingredient.id !== id));
-      axios.delete(`${process.env.REACT_APP_API_URL}/baker/delete-ingredient/${id}`);
-    } catch (error) {
-      console.error('Failed to delete ingredient:', error);
-    }
   };
 
   const handleAdd = () => {
@@ -128,18 +117,15 @@ const InventoryTable: React.FC = () => {
         <h1 className="text-2xl font-bold">Quản lý nguyên liệu tồn kho</h1>
         <Button onClick={handleAdd}>+ Thêm nguyên liệu</Button>
       </div>
-      <SearchAndFilter />
       <div className="overflow-x-auto">
         <IngredientTable
           ingredients={ingredients}
           isEditing={isEditing}
           handleEdit={handleEdit}
-          handleDelete={handleDelete}
           handleSave={handleSaveEdit}
           handleChange={handleChange}
         />
       </div>
-      <Pagination />
       {isPopupOpen && <AddIngredientPopup onSave={handleSave} onClose={() => setIsPopupOpen(false)} />}
     </div>
   );
