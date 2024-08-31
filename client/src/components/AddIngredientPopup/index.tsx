@@ -14,7 +14,7 @@ const AddIngredientPopup: React.FC<AddIngredientPopupProps> = ({ onSave, onClose
   const [ingredient, setIngredient] = useState<Ingredient>({
     id: 'phomai',
     name: 'cheese',
-    price: '123',
+    price: 1000,
     perquantity: 12,
     unit: 'thanh',
     quantity: 11,

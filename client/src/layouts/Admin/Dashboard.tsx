@@ -6,20 +6,7 @@ import revenueImg from '../../assets/admin_dashboard_item/green.png';
 import spendingImg from '../../assets/admin_dashboard_item/red.png';
 import profitImg from '../../assets/admin_dashboard_item/yellow.png';
 import { useNavigate } from 'react-router-dom';
-interface Product {
-  name: string;
-  quantity: number;
-  revenue: string;
-  date: Date;
-}
-
-interface Ingredient {
-  name: string;
-  quantity: string;
-  price: string;
-  total: string;
-  date: Date;
-}
+import { Ingredient, Product } from '../../utils/interfaces';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -34,7 +21,6 @@ const Dashboard: React.FC = () => {
   if (!sessionStorageData || sessionStorageData.role !== 'admin') {
     navigate('/login');
   }
-  
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
@@ -128,8 +114,8 @@ const Dashboard: React.FC = () => {
     : filteredProducts;
 
   const filteredIngredients = ingredientsSold.filter((ingredient) => {
-    const ingredientYear = ingredient.date.getFullYear();
-    const ingredientMonth = ingredient.date.getMonth();
+    const ingredientYear = Number(ingredient.expiryDate);
+    const ingredientMonth = Number(ingredient.expiryDate);
     return ingredientYear === selectedYear && (viewByYear || ingredientMonth === selectedMonth);
   });
 
@@ -144,7 +130,7 @@ const Dashboard: React.FC = () => {
   };
 
   const totalRevenue = aggregatedProducts.reduce((total, product) => total + Number(product.revenue), 0);
-  const totalCost = filteredIngredients.reduce((total, ingredient) => total + parseInt(ingredient.total), 0);
+  const totalCost = filteredIngredients.reduce((total, ingredient) => total + ingredient.price, 0);
   const totalProfit = totalRevenue - totalCost;
 
   return (
@@ -238,8 +224,8 @@ const Dashboard: React.FC = () => {
                   <td className="border px-4 py-2">{ingredient.name}</td>
                   <td className="border px-4 py-2">{ingredient.quantity}</td>
                   <td className="border px-4 py-2">{Number(ingredient.price).toLocaleString()} VNĐ</td>
-                  <td className="border px-4 py-2">{Number(ingredient.total).toLocaleString()} VNĐ</td>
-                  <td className="border px-4 py-2">{formatDate(ingredient.date)}</td>
+                  <td className="border px-4 py-2">{Number(ingredient.price).toLocaleString()} VNĐ</td>
+                  <td className="border px-4 py-2">{formatDate(new Date(ingredient.expiryDate))}</td>
                 </tr>
               ))}
             </tbody>
