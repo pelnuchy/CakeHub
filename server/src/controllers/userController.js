@@ -69,7 +69,6 @@ userController.loginUser = async (req, res) => {
     else {
         return res.status(401).json({ message: 'Invalid credentials' });
     }
-
 };
 
 export default userController;
