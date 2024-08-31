@@ -14,7 +14,7 @@ interface IngredientRowProps {
       unit: string;
       quantity: number;
       perquantity: number;
-      expiryDate: string;
+      expiryDate: Date;
     },
   ) => void;
   handleChange: (id: string, field: string, value: string | number) => void;
@@ -104,13 +104,13 @@ const IngredientRow: React.FC<IngredientRowProps> = ({
       <td className="border-b px-4 py-3 text-center">
         {isEditing === ingredient.id ? (
           <input
-            type="text"
-            value={ingredient.expiryDate}
+            type="date"
+            value={ingredient.expiryDate.toISOString().split('T')[0]}
             onChange={(e) => handleChange(ingredient.id, 'expiryDate', e.target.value)}
             className="w-full border-b px-2"
           />
         ) : (
-          ingredient.expiryDate
+          ingredient.expiryDate.toISOString().split('T')[0]
         )}
       </td>
       <td className={`border-b px-4 py-3 text-center ${ingredient.status ? 'text-green-500' : 'text-red-500'}`}>

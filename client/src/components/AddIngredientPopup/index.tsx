@@ -18,7 +18,7 @@ const AddIngredientPopup: React.FC<AddIngredientPopupProps> = ({ onSave, onClose
     perquantity: 12,
     unit: 'thanh',
     quantity: 11,
-    expiryDate: '2020-12-16',
+    expiryDate: new Date('2020-12-16'),
     status: true,
   });
 
@@ -167,7 +167,7 @@ const AddIngredientPopup: React.FC<AddIngredientPopupProps> = ({ onSave, onClose
               id="expiryDate"
               type="date"
               name="expiryDate"
-              value={ingredient.expiryDate}
+              value={ingredient.expiryDate.toISOString().split('T')[0]} // Convert Date to string in 'YYYY-MM-DD' format
               onChange={handleChange}
               min={today} // Set the min attribute to today's date
               className="my-1 block w-full border border-gray-600 pl-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"

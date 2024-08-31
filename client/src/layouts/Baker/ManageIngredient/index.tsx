@@ -72,7 +72,7 @@ const InventoryTable: React.FC = () => {
       unit: string;
       quantity: number;
       perquantity: number;
-      expiryDate: string;
+      expiryDate: Date;
     },
   ) => {
     try {

@@ -44,10 +44,10 @@ export interface Ingredient {
   id: string;
   name: string;
   price: number;
+  quantity: number;
   perquantity: number;
   unit: string;
-  quantity: number;
-  expiryDate: string;
+  expiryDate: Date;
   status: boolean;
 }
 
@@ -59,10 +59,4 @@ export interface Device {
   quantity: number;
   deviceType: string;
   managerID: string;
-}
-export interface Product {
-  name: string;
-  quantity: number;
-  revenue: string;
-  date: Date;
 }
