@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment-timezone';
 import { format } from 'date-fns';
+
 // Status steps
 const orderStatuses = ['Đã đặt hàng', 'Đang xử lý', 'Đang giao hàng', 'Đã nhận hàng'];
 
@@ -115,12 +116,6 @@ const Purchase = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="mb-8 text-3xl font-bold text-primary-600">Đơn hàng của tôi</h1>
-      {/* <nav className="mb-8">
-        <ul className="flex space-x-6 border-b-2 border-gray-200 pb-2">
-          <li className="cursor-pointer font-semibold text-primary-500">Đơn mua</li>
-          <li className="cursor-pointer text-gray-500 hover:text-primary-500">Lịch sử mua hàng</li>
-        </ul>
-      </nav> */}
       {orders.map((order) => (
         <div key={order.id} className="mb-8 rounded-lg border border-gray-200 bg-white p-6 shadow-lg">
           <div className="mb-4 flex items-center justify-between">
@@ -170,10 +165,6 @@ const Purchase = () => {
                   <span className="font-medium">Phí vận chuyển:</span>
                   <span className="font-semibold">{Number(50000).toLocaleString()}</span>
                 </p>
-                {/* <p className="flex justify-between text-gray-800">
-                  <span className="font-medium">Giảm giá:</span>
-                  <span className="font-semibold">{order.discount}</span>
-                </p> */}
               </div>
             </div>
           </div>

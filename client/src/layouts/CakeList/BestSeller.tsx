@@ -1,4 +1,3 @@
-import React from 'react';
 import CakeCard from '../../components/Cake/CakeCard';
 import { useShuffledCakes } from '../../hooks/useShuffledCakes';
 

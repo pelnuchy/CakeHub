@@ -147,10 +147,6 @@ const Checkout: React.FC = () => {
         const changeNumToBoolean: boolean[] = sumOfCakeDB.map((quantity: number) => (quantity <= limitCake ? true : false));
         setSumOfCake(changeNumToBoolean);
 
-        console.log('sum', sumOfCakeToHandleOrder);
-        console.log('bool ', sumOfCake);
-        console.log('avai', availability);
-
         if (!window.paypal) {
           addPaypalScript();
         } else {
