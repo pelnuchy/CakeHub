@@ -6,7 +6,6 @@ interface IngredientTableProps {
   ingredients: Ingredient[];
   isEditing: string | null;
   handleEdit: (id: string) => void;
-  handleDelete: (id: string) => void;
   handleSave: (
     id: string,
     ingredientData: {
@@ -25,7 +24,6 @@ const IngredientTable: React.FC<IngredientTableProps> = ({
   ingredients,
   isEditing,
   handleEdit,
-  handleDelete,
   handleSave,
   handleChange,
 }) => {
@@ -41,7 +39,7 @@ const IngredientTable: React.FC<IngredientTableProps> = ({
           <th className="border-b px-4 py-3">Số lượng tồn kho</th>
           <th className="border-b px-4 py-3">Hạn sử dụng</th>
           <th className="border-b px-4 py-3">Status</th>
-          <th className="border-b px-4 py-3">Sửa / Xóa</th>
+          <th className="border-b px-4 py-3">Chỉnh sửa</th>
         </tr>
       </thead>
       <tbody>
@@ -51,7 +49,6 @@ const IngredientTable: React.FC<IngredientTableProps> = ({
             ingredient={ingredient}
             isEditing={isEditing}
             handleEdit={handleEdit}
-            handleDelete={handleDelete}
             handleSave={handleSave}
             handleChange={handleChange}
           />

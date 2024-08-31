@@ -12,7 +12,7 @@ interface AddCakePopupProps {
 const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose, getNextCakeId }) => {
   const [cakeData, setCakeData] = useState({
     name: '',
-    occasion: '',
+    occasion: 'custom',
     img_url: '',
     description: '',
   });
@@ -52,6 +52,7 @@ const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose, getNextCak
 
   const handleSubmit = async () => {
     if (!cakeData.name || !cakeData.occasion || !file || !cakeData.description) {
+      console.log('Missing data:', cakeData);
       setError('Vui lòng điền đầy đủ thông tin');
       return;
     }
@@ -76,7 +77,7 @@ const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose, getNextCak
         cakeID: newCakeId,
         cakeName: cakeData.name,
         img_url: response.data.imageUrl,
-        occasion: cakeData.occasion as 'custom' | 'birthday' | 'christmas' | 'anniversary',
+        occasion: cakeData.occasion,
         description: cakeData.description,
       };
       await onSave(savedCake);

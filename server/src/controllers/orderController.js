@@ -1,5 +1,4 @@
 import Order from '../models/Order.js';
-//import Cake from '../models/Cake.js';
 import moment from 'moment-timezone';
 const orderController = {};
 
@@ -521,14 +520,8 @@ orderController.updateStatusOrder = async (req, res) => {
             message: error.message
         });
     }
-}
-
-// Hàm chuyển đổi múi giờ UTC+7
-const convertToUTC7 = (date) => {
-    const originalDate = new Date(date);
-    const utc7Date = new Date(originalDate.getTime() + 7 * 60 * 60 * 1000);
-    return utc7Date;
 };
+
 
 orderController.checkNumberOfCakesAllOrder = async (req, res) => {
     try {

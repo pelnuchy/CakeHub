@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Button from '../../../components/Button';
 import CakeTable from './CakeTable';
-import Pagination from './Pagination';
-import SearchAndFilter from './SearchAndFilter';
 import { Cake } from '../../../utils/interfaces';
 import { useNavigate } from 'react-router-dom';
 import AddCakePopup from '../../../components/AddCakePopup';
@@ -91,11 +89,9 @@ const CakeModel: React.FC = () => {
         <h1 className="text-2xl font-bold">Quản lý bánh trong kho</h1>
         <Button onClick={handleAdd}>+ Thêm bánh</Button>
       </div>
-      <SearchAndFilter />
       <div className="overflow-x-auto">
         <CakeTable cakes={cakes} handleDelete={handleDelete} />
       </div>
-      <Pagination />
       {isPopupOpen && (
         <AddCakePopup onSave={handleSave} onClose={handleClose} getNextCakeId={() => getNextCakeId(cakes)} />
       )}

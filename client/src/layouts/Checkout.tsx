@@ -121,13 +121,14 @@ const Checkout: React.FC = () => {
   const checkCakeAvailability = (sumOfCakeToHandleOrder: number[], cartItems: any[], limitCake: number) => {
     const hours = [13, 14, 15, 16, 17, 18];
     return hours.map((hour, index) => {
-      return limitCake - sumOfCakeToHandleOrder[index];
+      const availableCakes = limitCake - sumOfCakeToHandleOrder[index];
+      return availableCakes < 0 ? 0 : availableCakes;
     });
   };
 
   const selectedHour = parseInt(time.split(':')[0], 10);
   const availability = checkCakeAvailability(sumOfCakeToHandleOrder, cartItems, limitCake);
-
+  console.log(availability);
   // Tính tổng số lượng bánh trong giỏ hàng
   const totalCakesInCart = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -146,10 +147,6 @@ const Checkout: React.FC = () => {
         // chuyển số lượng bánh đã đặt trong ngày qua 6 khung giờ thành boolean
         const changeNumToBoolean: boolean[] = sumOfCakeDB.map((quantity: number) => (quantity <= limitCake ? true : false));
         setSumOfCake(changeNumToBoolean);
-
-        console.log('sum', sumOfCakeToHandleOrder);
-        console.log('bool ', sumOfCake);
-        console.log('avai', availability);
 
         if (!window.paypal) {
           addPaypalScript();
