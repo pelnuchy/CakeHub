@@ -1,6 +1,10 @@
 import express, { Router } from "express";
 import mongoose from "mongoose";
 import "dotenv/config";
+import bodyParser from "body-parser";
+import session from "express-session";
+import cors from "cors";
+
 import userRoutes from "./src/routes/userRoutes.js";
 import cakeRoutes from "./src/routes/cakeRoutes.js";
 import cartRoutes from "./src/routes/cartRoutes.js";
@@ -8,9 +12,6 @@ import orderRoutes from "./src/routes/orderRoutes.js";
 import ingredientRoutes from "./src/routes/ingredientRoutes.js";
 import deviceRoutes from "./src/routes/deviceRoutes.js";
 import paymentRoutes from "./src/routes/paymentRoutes.js";
-import bodyParser from "body-parser";
-import session from "express-session";
-import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 5000;

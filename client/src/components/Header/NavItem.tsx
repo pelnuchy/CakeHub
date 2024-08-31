@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaUser, FaSignInAlt, FaUserPlus, FaList, FaHistory, FaSignOutAlt } from 'react-icons/fa';
 import { useCart } from '../../contexts/CartContext';
 import { useUser } from '../../hooks/useUser'; // Assuming you have moved useUser to hooks
+import { resetAuthToken } from '../../utils/auth-service';
 
 const DropdownMenu: React.FC<{
   userLoggedIn: boolean;
@@ -90,7 +91,9 @@ const NavItem: React.FC = () => {
     setUserLoggedIn(false);
     setUserInfo(null);
     setDropdownOpen(false);
+    resetAuthToken();
     navigate('/');
+    window.location.reload();
   };
 
   const handleClickOutside = (event: MouseEvent) => {

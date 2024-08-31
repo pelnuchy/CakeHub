@@ -8,8 +8,11 @@ export const useShuffledCakes = (numCake: number): Cake[] => {
   useEffect(() => {
     const fetchAndShuffleCakes = async () => {
       const cakeDB = await fetchRandomCakes();
-      const shuffledCakes = shuffleArray(cakeDB).slice(0, numCake);
-      setRandomCakes(shuffledCakes);
+      if (numCake != 0 && cakeDB != null)
+      {
+        let shuffledCakes = cakeDB.slice(0, numCake);
+        setRandomCakes(shuffledCakes);
+      }
     };
 
     fetchAndShuffleCakes();

@@ -7,4 +7,5 @@ router.get('/baker/get-ingredients', ingredientController.getIngredients);
 router.post('/baker/add-ingredient', ingredientController.addIngredient);
 router.put('/baker/update-ingredient/:id', ingredientController.updateIngredient);
 router.delete('/baker/delete-ingredient/:id', ingredientController.deleteIngredient);
+router.put('/baker/calculate-ingredient/:orderid', ingredientController.calculateIngredients);
 export default router;

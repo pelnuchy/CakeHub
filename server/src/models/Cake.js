@@ -6,28 +6,30 @@ const cakeSchema = new mongoose.Schema(
     cakeName: { type: String, required: true },
     size: {
       type: Number,
-      required: [true, 'must be one of the allowed values and is required'],
+      required: [false, 'must be one of the allowed values and is required'],
       enum: [10, 16, 24]
     },
     jamFilling: {
       type: String,
-      required: [true, 'Must be one of the allowed values and is required']
+      required: [false, 'Must be one of the allowed values and is required']
     },
-    price: { type: Number },
-    img_url: { type: String },
+    price: { type: Number, required: false },
+    img_url: { type: String, required: false },
     cakeType: {
+      required: false,
       type: String,
       enum: ['gato', 'corn cream']
     },
     occasion: {
+      required: false,
       type: String,
       enum: ['custom', 'birthday', 'christmas', 'anniversary']
     },
-    description: { type: String }, // Note: Fixed typo from "desciption" to "description"
-    recipe_id: { type: String },
-    decor_id: { type: String },
-    temp_grill: { type: Number },
-    time_grill: { type: Number }
+    description: { type: String, required: false }, // Note: Fixed typo from "desciption" to "description"
+    recipe_id: { type: String, required: false },
+    decor_id: { type: String, required: false },
+    temp_grill: { type: Number, required: false },
+    time_grill: { type: Number, required: false }
   },
   {
     timestamps: true

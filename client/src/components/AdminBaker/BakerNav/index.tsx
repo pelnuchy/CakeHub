@@ -14,6 +14,9 @@ const BakerNav: React.FC = () => {
         <Link to="/baker/ingredient" className="text-black hover:underline">
           Quản lý nguyên liệu
         </Link>
+        <Link to="/baker/cake" className="text-black hover:underline">
+          Quản lý bánh
+        </Link>
       </div>
     </nav>
   );

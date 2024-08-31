@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import moment from 'moment-timezone';
+import { format } from 'date-fns';
 
 const OrderHistory = () => {
   const navigate = useNavigate();
@@ -10,6 +12,16 @@ const OrderHistory = () => {
     if (size === 10) return 'S';
     if (size === 16) return 'M';
     if (size === 24) return 'L';
+  };
+
+  const formatDate = (isoDate: string): string => {
+    const date = new Date(isoDate);
+    return format(date, 'yyyy-MM-dd');
+  };
+
+  const formatTime = (isoDate: string): string => {
+    const date = new Date(isoDate);
+    return format(date, 'HH:mm');
   };
 
   const userInfo = sessionStorage.getItem('userInfo');
@@ -25,7 +37,8 @@ const OrderHistory = () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-order-history/${userID}`);
         const orders = response.data.data; // Access the 'data' field
         const orderDetails = orders.map((order: any) => ({
-          date: order.shippingDate,
+          date: formatDate(moment.tz(`${order.completeTime}`, 'Asia/Ho_Chi_Minh').format('YYYY-MM-DD HH:mm')),
+          time: formatTime(moment.tz(`${order.completeTime}`, 'Asia/Ho_Chi_Minh').format('YYYY-MM-DD HH:mm')),
           orderId: order._id,
           total: `${Number(order.total_price).toLocaleString()} VND`,
           items: order.cakes.map((cake: any) => ({
@@ -79,7 +92,7 @@ const OrderHistory = () => {
               <div className="mb-4 flex items-center justify-between">
                 <div>
                   <p className="text-black">Ngày nhận bánh</p>
-                  <p className="font-semibold text-gray-800">{order.date}</p>
+                  <p className="font-semibold text-gray-800">{order.date} {order.time}</p>
                 </div>
                 <div>
                   <p className="text-black">Đơn hàng</p>
