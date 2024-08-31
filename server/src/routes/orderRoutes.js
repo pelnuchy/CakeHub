@@ -12,11 +12,13 @@ router.put('/update-completed-order/:orderid', orderController.updateComletedOrd
 router.get('/check-num-cake-order/:userid', orderController.checkNumberOfCakesAllOrder);
 router.put('/update-order-checkout/:userid', orderController.orderCheckout);
 router.post('/create-order', orderController.createOrder);
-
 router.get('/get-info-ordering/:userid', orderController.getInfoOrdering);
+
+
 //admin
 router.get('/get-list-cakes-sold', orderController.getListCakesSold);
 router.get('/get-list-ingredients-sold', orderController.getListIngredientsSold);
+
 
 //baker
 //dashboard

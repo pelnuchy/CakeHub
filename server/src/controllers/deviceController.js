@@ -140,7 +140,7 @@ deviceController.calculateLimitCakeOnAllBakes = async (req, res) => {
             return sum + (isNaN(volume) || isNaN(quantity) ? 0 : volume * quantity);
         }, 0);
 
-        const limitCake = Math.floor(totalVolume / 14); // Mỗi 15 dm3 là 1 bánh, lấy phần nguyên
+        const limitCake = Math.floor(totalVolume / 14); // Mỗi 14 dm3 là 1 bánh, lấy phần nguyên
         res.status(200).json({ limitCake }); // Trả về tổng volume
     } catch (error) {
         res.status(500).json({ message: "Error calculating total volume", error });
