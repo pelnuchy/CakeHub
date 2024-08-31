@@ -1082,14 +1082,13 @@ db.recipes.insertMany([
 ]);
 db.orders.insertMany([
   {
-    shippingDate: new Date("2021-08-17"),
+    shippingDate: new Date("2024-08-17 13:00:00"),
     shippingAddress: "123 Nguyen Van Linh, Da Nang",
-    orderTime: new Date("2021-08-17 10:00:00"),
-    paymentTime: new Date("2021-08-17 10:30:00"),
-    completeTime: new Date("2021-08-17 11:00:00"),
+    paymentTime: new Date("2024-08-17 10:30:00"),
+    completeTime: new Date("2024-08-17 13:30:00"),
     total_price: 320000,
     status: "completed",
-    user_id: "admin01",
+    user_id: "tracustomer",
     s_cakeQuantity: 1,
     cakes: [
       {
@@ -1101,14 +1100,12 @@ db.orders.insertMany([
     ],
   },
   {
-    shippingDate: new Date("2022-08-17"),
+    shippingDate: new Date("2024-08-31 14:00:00"),
     shippingAddress: "12 Hai Ba Trung, Da Nang",
-    orderTime: new Date("2022-08-17 10:00:00"),
-    paymentTime: new Date("2022-08-17 10:30:00"),
-    completeTime: new Date("2022-08-17 11:00:00"),
+    paymentTime: new Date("2024-08-31 10:30:00"),
     total_price: 640000,
-    status: "completed",
-    user_id: "admin01",
+    status: "delivering",
+    user_id: "tracustomer",
     s_cakeQuantity: 2,
     cakes: [
       {
@@ -1126,14 +1123,12 @@ db.orders.insertMany([
     ],
   },
   {
-    shippingDate: new Date("2021-08-17"),
+    shippingDate: new Date("2024-09-02 15:00:00"),
     shippingAddress: "123 Nguyen Van Linh, Da Nang",
-    orderTime: new Date("2021-08-17 10:00:00"),
-    paymentTime: new Date("2021-08-17 10:30:00"),
-    completeTime: new Date("2021-08-17 11:00:00"),
+    paymentTime: new Date("2024-08-31 10:30:00"),
     total_price: 320000,
-    status: "completed",
-    user_id: "tra1",
+    status: "ordered",
+    user_id: "tracustomer",
     s_cakeQuantity: 1,
     cakes: [
       {
@@ -1145,14 +1140,13 @@ db.orders.insertMany([
     ],
   },
   {
-    shippingDate: new Date("2022-08-17"),
+    shippingDate: new Date("2024-08-25 13:00:00"),
     shippingAddress: "12 Hai Ba Trung, Da Nang",
-    orderTime: new Date("2022-08-17 10:00:00"),
-    paymentTime: new Date("2022-08-17 10:30:00"),
-    completeTime: new Date("2022-08-17 11:00:00"),
+    paymentTime: new Date("2024-08-24 10:30:00"),
+    completeTime: new Date("2024-08-25 13:30:00"),
     total_price: 640000,
-    status: "completed",
-    user_id: "tra1",
+    status: "ordered",
+    user_id: "tracustomer",
     s_cakeQuantity: 2,
     cakes: [
       {
@@ -1164,19 +1158,6 @@ db.orders.insertMany([
       {
         cake_id: "C02-Soco-L",
         cakeMessage: 'Happy Christmas',
-        cakeQuantity: 1,
-        total_price: 320000,
-      }
-    ],
-  },
-  {
-    total_price: 320000,
-    user_id: "tra1",
-    s_cakeQuantity: 1,
-    cakes: [
-      {
-        cake_id: "C01-DT-S",
-        cakeMessage: 'Happy Birthday',
         cakeQuantity: 1,
         total_price: 320000,
       }
