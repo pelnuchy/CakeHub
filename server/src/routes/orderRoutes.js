@@ -9,10 +9,9 @@ router.get('/get-order-history/:userid', orderController.getOrderHistory);
 router.get('/get-own-ordered/:userid', orderController.getOwnOrdered);
 router.put('/update-completed-order/:orderid', orderController.updateComletedOrder);
 //Checkout
-router.get('/check-num-cake-order/:userid', orderController.checkNumberOfCakesAllOrder);
-router.put('/update-order-checkout/:userid', orderController.orderCheckout);
 router.post('/create-order', orderController.createOrder);
 router.get('/get-info-ordering/:userid', orderController.getInfoOrdering);
+router.get('/check-num-cake-order/:userid', orderController.checkNumberOfCakesAllOrder);
 
 
 //admin

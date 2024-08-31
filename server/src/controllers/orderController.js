@@ -26,37 +26,6 @@ orderController.createOrder = async (req, res) => {
     }
 }
 
-orderController.orderCheckout = async (req, res) => {
-    try {
-        const userID = req.params.userid;
-        const { formattedDate, address, time } = req.body;
-        if (!formattedDate || !address || !time) {
-            return res.status(401).json({
-                status: 'ERROR',
-                message: "Please fill in checkout information"
-            });
-        }
-        const formattedShipDateTime = `${formattedDate} ${time}`;
-        const shippingDates = moment.utc(formattedShipDateTime,
-            'YYYY-MM-DD HH:mm'
-        ).tz('Asia/Bangkok'); //Convert back to Date object in UTC+7
-        const orderCheckout = await Order.updateOne(
-            { user_id: userID, status: { $exists: false } }, // Điều kiện cập nhật
-            { shippingDate: new Date(shippingDates), shippingAddress: address } // Thông tin cập nhật
-        ).lean().exec();
-        return res.status(200).json({
-            status: 'SUCCESS',
-            data: orderCheckout,
-        });
-    }
-    catch (error) {
-        return res.status(404).json({
-            status: 'ERROR',
-            message: error.message
-        });
-    }
-}
-
 orderController.getOrderHistory = async (req, res) => {
     try {
         const userID = req.params.userid;
