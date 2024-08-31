@@ -114,7 +114,7 @@ const IngredientRow: React.FC<IngredientRowProps> = ({
         )}
       </td>
       <td className={`border-b px-4 py-3 text-center ${ingredient.status ? 'text-green-500' : 'text-red-500'}`}>
-        {ingredient.status ? 'Chưa hết hạn' : 'Hết hạn'}
+        {ingredient.status ? 'Còn hạn' : 'Hết hạn'}
       </td>
       <td className="flex justify-center space-x-2 px-4 py-3 text-center">
         {isEditing === ingredient.id ? (

@@ -90,7 +90,7 @@ const AddCakePopup: React.FC<AddCakePopupProps> = ({ onSave, onClose, getNextCak
       });
       setFile(null);
     } catch (error) {
-      setError('There was an error uploading the cake. Please try again.');
+      setError('Có lỗi khi đang thêm bánh. Vui lòng thử lại.');
     } finally {
       setLoading(false);
     }

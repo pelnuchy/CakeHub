@@ -2,7 +2,9 @@ import express from 'express';
 import cakeController from '../controllers/cakeController.js';
 import multer from 'multer';
 
-const upload = multer({ dest: "uploads/" });
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
 const router = express.Router();
 
 //client
