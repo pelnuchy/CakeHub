@@ -67,9 +67,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const addToCart = (item: CartItem) => {
     setCartItems((prevItems) => {
-      console.log(item);
       const existingItem = prevItems.find((cartItem) => cartItem.id === item.id);
-      //console.log(existingItem);
       if (existingItem) {
         return prevItems.map((cartItem) =>
           cartItem.id === item.id && cartItem.size === item.size && cartItem.flavor === item.flavor

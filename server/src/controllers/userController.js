@@ -14,7 +14,6 @@ userController.signupUser = async (req, res) => {
 
     //Check password match
     if (password !== rePassword) {
-        console.log(password, rePassword);
         return res.status(400).json({ message: `Password in signup do not match` });
     }
     //check duplicate username
@@ -53,7 +52,6 @@ userController.loginUser = async (req, res) => {
     // Check user
     const user = await User.findOne({ username }).lean().exec();
 
-    //console.log(user);
     if (!user) {
         return res.status(404).json({ message: 'User not found' });
     }

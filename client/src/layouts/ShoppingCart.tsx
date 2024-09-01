@@ -49,7 +49,6 @@ const ShoppingCart: React.FC = () => {
     totalPrice = totalCakePrice + shippingFee;
   }
 
-  console.log(cartItems);
   const handleTitleOrImageClick = (itemId: string) => {
     const rootCakeID = itemId.split('-')[0];
     setTimeout(() => {

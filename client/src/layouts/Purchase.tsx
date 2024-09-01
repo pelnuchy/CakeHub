@@ -86,7 +86,6 @@ const Purchase = () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-own-ordered/${userID}`);
       const orders = response.data.data; // Access the 'data' field
-      console.log(orders);
 
       // Map through orders and use the already detailed cake information
       const orderDetails = orders.map((order: any) => {
