@@ -7,12 +7,30 @@ import spendingImg from '../../assets/admin_dashboard_item/red.png';
 import profitImg from '../../assets/admin_dashboard_item/yellow.png';
 import { useNavigate } from 'react-router-dom';
 
+interface DashboardCake {
+  name: string;
+  quantity: number;
+  revenue: number;
+  date: Date;
+  image: string;
+}
+
+interface DashboardIngredient {
+  name: string;
+  quantity: number;
+  unit: number;
+  price: number;
+  perQuantity: number;
+  total: number;
+  timeSold: Date;
+}
+
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [viewByYear, setViewByYear] = useState<boolean>(false);
-  const [cakesSold, setCakesSold] = useState<any[]>([]);
-  const [ingredientsSold, setIngredientsSold] = useState<any[]>([]);
+  const [cakesSold, setCakesSold] = useState<DashboardCake[]>([]);
+  const [ingredientsSold, setIngredientsSold] = useState<DashboardIngredient[]>([]);
 
   const userInfo = sessionStorage.getItem('userInfo');
   const sessionStorageData = userInfo ? JSON.parse(userInfo) : null;
@@ -44,11 +62,10 @@ const Dashboard: React.FC = () => {
     getListIngredientsSold();
   }, [selectedDate]);
 
-  const fetchListCakesSold = async (): Promise<any[]> => {
+  const fetchListCakesSold = async (): Promise<DashboardCake[]> => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-list-cakes-sold`);
       const listCakesSold = response.data.data[0];
-      console.log(listCakesSold);
       if (listCakesSold && listCakesSold.cakes) {
         const cakeSoldDetail = listCakesSold.cakes.map((cake: any) => ({
           name: cake.cakeName,
@@ -68,7 +85,7 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const fetchIngredientsSold = async (): Promise<any[]> => {
+  const fetchIngredientsSold = async (): Promise<DashboardIngredient[]> => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-list-ingredients-sold`);
       const listIngredientsSold = response.data.data[0];
@@ -80,7 +97,7 @@ const Dashboard: React.FC = () => {
           price: ingredient.price,
           perQuantity: ingredient.perQuantity,
           total: (ingredient.price * ingredient.quantity) / ingredient.perQuantity,
-          timeSold: ingredient.time,
+          timeSold: new Date(ingredient.time),
         }));
         return ingredientSoldDetail;
       } else {
@@ -92,33 +109,76 @@ const Dashboard: React.FC = () => {
       return [];
     }
   };
+
   const selectedYear = selectedDate ? selectedDate.getFullYear() : new Date().getFullYear();
   const selectedMonth = selectedDate ? selectedDate.getMonth() : new Date().getMonth();
 
-  const filteredProducts = cakesSold.filter((product) => {
-    if (!product.date) {
-      return false;
-    }
-    const productYear = product.date.getFullYear();
-    const productMonth = product.date.getMonth();
-    return productYear === selectedYear && (viewByYear || productMonth === selectedMonth);
+  const filteredCakes = cakesSold.filter((cake) => {
+    const cakeYear = cake.date.getFullYear();
+    const cakeMonth = cake.date.getMonth();
+
+    return cakeYear === selectedYear && (viewByYear || cakeMonth === selectedMonth);
   });
 
-  const aggregatedProducts = viewByYear
-    ? filteredProducts.reduce(
-        (acc, product) => {
-          const existingProduct = acc.find((p: any) => p.name === product.name);
-          if (existingProduct) {
-            existingProduct.quantity += product.quantity;
-            existingProduct.revenue = (parseFloat(existingProduct.revenue) + parseFloat(product.revenue)).toFixed(0); // Remove decimal
-          } else {
-            acc.push({ ...product });
-          }
-          return acc;
-        },
-        [] as [],
-      )
-    : filteredProducts;
+  const mergeCakes = (cakes: DashboardCake[], viewByYear: boolean, selectedYear: number, selectedMonth?: number) => {
+    const mergedCakes: { [key: string]: DashboardCake } = {};
+
+    cakes.forEach((cake) => {
+      const cakeYear = cake.date.getFullYear();
+      const cakeMonth = cake.date.getMonth();
+
+      if (cakeYear === selectedYear && (viewByYear || cakeMonth === selectedMonth)) {
+        if (!mergedCakes[cake.name]) {
+          mergedCakes[cake.name] = {
+            name: cake.name,
+            quantity: 0,
+            revenue: 0,
+            date: cake.date,
+            image: cake.image,
+          };
+        }
+
+        mergedCakes[cake.name].quantity += cake.quantity;
+        mergedCakes[cake.name].revenue += cake.revenue;
+      }
+    });
+
+    return Object.values(mergedCakes);
+  };
+  const mergedCakes = mergeCakes(filteredCakes, viewByYear, selectedYear, selectedMonth);
+
+  const mergeIngredients = (
+    ingredients: DashboardIngredient[],
+    viewByYear: boolean,
+    selectedYear: number,
+    selectedMonth?: number,
+  ) => {
+    const mergedIngredients: { [key: string]: DashboardIngredient } = {};
+
+    ingredients.forEach((ingredient) => {
+      const ingredientYear = ingredient.timeSold.getFullYear();
+      const ingredientMonth = ingredient.timeSold.getMonth();
+
+      if (ingredientYear === selectedYear && (viewByYear || ingredientMonth === selectedMonth)) {
+        if (!mergedIngredients[ingredient.name]) {
+          mergedIngredients[ingredient.name] = {
+            name: ingredient.name,
+            quantity: 0,
+            unit: ingredient.unit,
+            price: ingredient.price,
+            perQuantity: ingredient.perQuantity,
+            total: 0,
+            timeSold: ingredient.timeSold, // Assuming the date should be preserved or used later
+          };
+        }
+
+        mergedIngredients[ingredient.name].quantity += ingredient.quantity;
+        mergedIngredients[ingredient.name].total += (ingredient.price * ingredient.quantity) / ingredient.perQuantity;
+      }
+    });
+
+    return Object.values(mergedIngredients);
+  };
 
   const filteredIngredients = ingredientsSold.filter((ingredient) => {
     if (!ingredient.timeSold) {
@@ -129,18 +189,20 @@ const Dashboard: React.FC = () => {
     return ingredientYear === selectedYear && (viewByYear || ingredientMonth === selectedMonth);
   });
 
+  const mergedIngredients = mergeIngredients(filteredIngredients, viewByYear, selectedYear, selectedMonth);
+
   const formatDate = (date: Date) => {
-    return viewByYear
-      ? date.getFullYear()
-      : date.toLocaleDateString('vi-VN', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-        });
+    if (viewByYear) {
+      return date.getFullYear().toString();
+    } else {
+      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Get month and pad with zero if necessary
+      const year = date.getFullYear();
+      return `${month}/${year}`;
+    }
   };
 
-  const totalRevenue = aggregatedProducts.reduce((total: any, product: any) => total + Number(product.revenue), 0);
-  const totalCost = filteredIngredients.reduce((total, ingredient) => total + ingredient.price, 0);
+  const totalRevenue = mergedCakes.reduce((total, cake) => total + cake.revenue, 0);
+  const totalCost = mergedIngredients.reduce((total, ingredient) => total + ingredient.price, 0);
   const totalProfit = totalRevenue - totalCost;
 
   return (
@@ -202,13 +264,13 @@ const Dashboard: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {aggregatedProducts.map((product: any, index: number) => (
+              {mergedCakes.map((cake: DashboardCake, index: number) => (
                 <tr key={index}>
                   <td className="border px-4 py-2">{index + 1}</td>
-                  <td className="border px-4 py-2">{product.name}</td>
-                  <td className="border px-4 py-2">{product.quantity}</td>
-                  <td className="border px-4 py-2">{Number(product.revenue).toLocaleString()} VNĐ</td>
-                  <td className="border px-4 py-2">{formatDate(product.date)}</td>
+                  <td className="border px-4 py-2">{cake.name}</td>
+                  <td className="border px-4 py-2">{cake.quantity}</td>
+                  <td className="border px-4 py-2">{cake.revenue.toLocaleString()} VNĐ</td>
+                  <td className="border px-4 py-2">{formatDate(cake.date)}</td>
                 </tr>
               ))}
             </tbody>
@@ -222,20 +284,18 @@ const Dashboard: React.FC = () => {
                 <th className="border px-4 py-2">STT</th>
                 <th className="border px-4 py-2">Nguyên liệu</th>
                 <th className="border px-4 py-2">Số lượng</th>
-                <th className="border px-4 py-2">Đơn giá</th>
                 <th className="border px-4 py-2">Thành tiền</th>
                 <th className="border px-4 py-2">Thời điểm</th>
               </tr>
             </thead>
             <tbody>
-              {filteredIngredients.map((ingredient, index) => (
+              {mergedIngredients.map((ingredient, index) => (
                 <tr key={index}>
                   <td className="border px-4 py-2">{index + 1}</td>
                   <td className="border px-4 py-2">{ingredient.name}</td>
                   <td className="border px-4 py-2">{ingredient.quantity}</td>
-                  <td className="border px-4 py-2">{Number(ingredient.price).toLocaleString()} VNĐ</td>
-                  <td className="border px-4 py-2">{Number(ingredient.price).toLocaleString()} VNĐ</td>
-                  <td className="border px-4 py-2">{formatDate(new Date(ingredient.timeSold))}</td>
+                  <td className="border px-4 py-2">{ingredient.total.toLocaleString()} VNĐ</td>
+                  <td className="border px-4 py-2">{formatDate(ingredient.timeSold)}</td>
                 </tr>
               ))}
             </tbody>
