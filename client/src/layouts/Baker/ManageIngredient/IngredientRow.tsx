@@ -105,14 +105,12 @@ const IngredientRow: React.FC<IngredientRowProps> = ({
         {isEditing === ingredient.id ? (
           <input
             type="date"
-            value={ingredient.expiryDate instanceof Date ? ingredient.expiryDate.toISOString().split('T')[0] : ''}
+            value={new Date(ingredient.expiryDate).toISOString().split('T')[0]}
             onChange={(e) => handleChange(ingredient.id, 'expiryDate', e.target.value)}
             className="w-full border-b px-2"
           />
         ) : (
-          (ingredient.expiryDate instanceof Date
-            ? ingredient.expiryDate.toISOString().split('T')[0]
-            : ingredient.expiryDate) || ''
+          new Date(ingredient.expiryDate).toISOString().split('T')[0]
         )}
       </td>
 
