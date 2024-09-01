@@ -13,7 +13,7 @@ interface IngredientTableProps {
       price: number;
       unit: string;
       quantity: number;
-      perquantity: number;
+      perQuantity: number;
       expiryDate: Date;
     },
   ) => void;

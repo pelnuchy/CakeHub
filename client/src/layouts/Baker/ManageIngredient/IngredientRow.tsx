@@ -13,7 +13,7 @@ interface IngredientRowProps {
       price: number;
       unit: string;
       quantity: number;
-      perquantity: number;
+      perQuantity: number;
       expiryDate: Date;
     },
   ) => void;
@@ -122,11 +122,11 @@ const IngredientRow: React.FC<IngredientRowProps> = ({
             onClick={() =>
               handleSave(ingredient.id, {
                 name: ingredient.name,
-                price: Number(ingredient.price),
+                price: ingredient.price,
                 unit: ingredient.unit,
                 quantity: ingredient.quantity,
-                perquantity: ingredient.perquantity,
-                expiryDate: ingredient.expiryDate,
+                perQuantity: ingredient.perquantity,
+                expiryDate: new Date(ingredient.expiryDate),
               })
             }
             className="text-blue-500 transition duration-300 hover:text-blue-700"

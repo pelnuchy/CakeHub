@@ -7,9 +7,9 @@ import AddIngredientPopup from '../../../components/AddIngredientPopup';
 import { Ingredient } from '../../../utils/interfaces';
 import { useNavigate } from 'react-router-dom';
 
-const formatDate = (isoDate: string): string => {
+const formatDate = (isoDate: string): Date => {
   const date = new Date(isoDate);
-  return format(date, 'yyyy-MM-dd');
+  return new Date(format(date, 'yyyy-MM-dd'));
 };
 const checkExpired = (expiryDate: Date) => {
   const today = new Date();
@@ -71,7 +71,7 @@ const InventoryTable: React.FC = () => {
       price: number;
       unit: string;
       quantity: number;
-      perquantity: number;
+      perQuantity: number;
       expiryDate: Date;
     },
   ) => {
