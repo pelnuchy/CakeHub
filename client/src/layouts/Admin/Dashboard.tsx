@@ -202,7 +202,7 @@ const Dashboard: React.FC = () => {
   };
 
   const totalRevenue = mergedCakes.reduce((total, cake) => total + cake.revenue, 0);
-  const totalCost = mergedIngredients.reduce((total, ingredient) => total + ingredient.price, 0);
+  const totalCost = mergedIngredients.reduce((total, ingredient) => total + ingredient.total, 0);
   const totalProfit = totalRevenue - totalCost;
 
   return (
@@ -284,6 +284,7 @@ const Dashboard: React.FC = () => {
                 <th className="border px-4 py-2">STT</th>
                 <th className="border px-4 py-2">Nguyên liệu</th>
                 <th className="border px-4 py-2">Số lượng</th>
+                <th className="border px-4 py-2">Đơn giá</th>
                 <th className="border px-4 py-2">Thành tiền</th>
                 <th className="border px-4 py-2">Thời điểm</th>
               </tr>
@@ -293,7 +294,10 @@ const Dashboard: React.FC = () => {
                 <tr key={index}>
                   <td className="border px-4 py-2">{index + 1}</td>
                   <td className="border px-4 py-2">{ingredient.name}</td>
-                  <td className="border px-4 py-2">{ingredient.quantity}</td>
+                  <td className="border px-4 py-2">{ingredient.quantity + ' ' + ingredient.unit}</td>
+                  <td className="border px-4 py-2">
+                    {ingredient.price.toLocaleString() + '/' + ingredient.perQuantity + ingredient.unit}
+                  </td>
                   <td className="border px-4 py-2">{ingredient.total.toLocaleString()} VNĐ</td>
                   <td className="border px-4 py-2">{formatDate(ingredient.timeSold)}</td>
                 </tr>
