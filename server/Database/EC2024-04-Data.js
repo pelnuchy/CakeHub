@@ -13,6 +13,12 @@ db.users.insertMany([
     username: "baker",
     password: "$2b$10$oy5hRFVoLfsgH7AoPBD/deneGCY3GTuhutSksrnX7M1bPMRLAljnu",
     role: "baker",
+  },
+  {
+    userID: "tracustomer",
+    username: "tra",
+    password: "$2b$10$oy5hRFVoLfsgH7AoPBD/deneGCY3GTuhutSksrnX7M1bPMRLAljnu",
+    role: "customer",
   }
 ]);
 
