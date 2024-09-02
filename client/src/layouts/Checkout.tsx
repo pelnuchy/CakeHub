@@ -131,7 +131,6 @@ const Checkout: React.FC = () => {
 
   const selectedHour = parseInt(time.split(':')[0], 10);
   const availability = checkCakeAvailability(sumOfCakeToHandleOrder, cartItems, limitCake);
-  console.log(availability);
   // Tính tổng số lượng bánh trong giỏ hàng
   const totalCakesInCart = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 

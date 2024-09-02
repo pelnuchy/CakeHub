@@ -31,15 +31,6 @@ const AddIngredientPopup: React.FC<AddIngredientPopupProps> = ({ onSave, onClose
     }
   };
 
-  const handleSave = () => {
-    if (validateIngredient(ingredient)) {
-      onSave(ingredient);
-      onClose();
-    } else {
-      alert('Vui lòng kiểm tra lại thông tin nhập vào.');
-    }
-  };
-
   const validateIngredient = (ingredient: Ingredient): boolean => {
     return (
       !!ingredient.id &&
@@ -47,7 +38,7 @@ const AddIngredientPopup: React.FC<AddIngredientPopupProps> = ({ onSave, onClose
       !!ingredient.unit &&
       !!ingredient.price &&
       !!ingredient.perquantity &&
-      Number(ingredient.quantity) >= 0
+      ingredient.quantity >= 0
     );
   };
 
@@ -167,12 +158,13 @@ const AddIngredientPopup: React.FC<AddIngredientPopupProps> = ({ onSave, onClose
               id="expiryDate"
               type="date"
               name="expiryDate"
-              value={ingredient.expiryDate.toISOString().split('T')[0]} // Convert Date to string in 'YYYY-MM-DD' format
+              value={new Date(ingredient.expiryDate).toISOString()} // Convert date to YYYY-MM-DD format
               onChange={handleChange}
               min={today} // Set the min attribute to today's date
               className="my-1 block w-full border border-gray-600 pl-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
             />
           </div>
+
           <div className="mt-6 flex justify-end space-x-4">
             <button
               onClick={onClose}
@@ -182,7 +174,6 @@ const AddIngredientPopup: React.FC<AddIngredientPopupProps> = ({ onSave, onClose
             </button>
             <Button
               type="submit"
-              // onClick={handleSave}
               className="w-32 transform rounded-md bg-primary-500 px-4 py-2 text-white shadow-sm transition-transform hover:scale-105 hover:bg-primary-400"
             >
               Lưu
