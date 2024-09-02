@@ -13,8 +13,8 @@ interface IngredientRowProps {
       price: number;
       unit: string;
       quantity: number;
-      perquantity: number;
-      expiryDate: string;
+      perQuantity: number;
+      expiryDate: Date;
     },
   ) => void;
   handleChange: (id: string, field: string, value: string | number) => void;
@@ -104,17 +104,18 @@ const IngredientRow: React.FC<IngredientRowProps> = ({
       <td className="border-b px-4 py-3 text-center">
         {isEditing === ingredient.id ? (
           <input
-            type="text"
-            value={ingredient.expiryDate}
+            type="date"
+            value={new Date(ingredient.expiryDate).toISOString().split('T')[0]}
             onChange={(e) => handleChange(ingredient.id, 'expiryDate', e.target.value)}
             className="w-full border-b px-2"
           />
         ) : (
-          ingredient.expiryDate
+          new Date(ingredient.expiryDate).toISOString().split('T')[0]
         )}
       </td>
+
       <td className={`border-b px-4 py-3 text-center ${ingredient.status ? 'text-green-500' : 'text-red-500'}`}>
-        {ingredient.status ? 'Chưa hết hạn' : 'Hết hạn'}
+        {ingredient.status ? 'Còn hạn' : 'Hết hạn'}
       </td>
       <td className="flex justify-center space-x-2 px-4 py-3 text-center">
         {isEditing === ingredient.id ? (
@@ -122,11 +123,11 @@ const IngredientRow: React.FC<IngredientRowProps> = ({
             onClick={() =>
               handleSave(ingredient.id, {
                 name: ingredient.name,
-                price: Number(ingredient.price),
+                price: ingredient.price,
                 unit: ingredient.unit,
                 quantity: ingredient.quantity,
-                perquantity: ingredient.perquantity,
-                expiryDate: ingredient.expiryDate,
+                perQuantity: ingredient.perquantity,
+                expiryDate: new Date(ingredient.expiryDate),
               })
             }
             className="text-blue-500 transition duration-300 hover:text-blue-700"

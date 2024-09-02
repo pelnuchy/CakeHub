@@ -13,8 +13,8 @@ interface IngredientTableProps {
       price: number;
       unit: string;
       quantity: number;
-      perquantity: number;
-      expiryDate: string;
+      perQuantity: number;
+      expiryDate: Date;
     },
   ) => void;
   handleChange: (id: string, field: string, value: string | number) => void;

@@ -22,8 +22,6 @@ const Dashboard: React.FC = () => {
       const todayPreparingServer = await fetchTodayPreparing();
       setTodaysOrders(todayOrderedServer);
       setNewBakingSessionOrders(todayPreparingServer);
-      console.log(todayOrderedServer);
-      console.log(todayPreparingServer);
     };
     getTodayOrdered();
   }, []);

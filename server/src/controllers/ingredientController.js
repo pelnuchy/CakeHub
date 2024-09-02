@@ -60,7 +60,6 @@ ingredientController.addIngredient = async (req, res) => {
 ingredientController.updateIngredient = async (req, res) => {
     try {
         const { id } = req.params;
-        console.log(id);
         const { name, price, unit, quantity, perquantity, expiryDate } = req.body;
         const ingredient = await Ingredient.findOneAndUpdate({ ingredientID: id }, {
             ingredientName: name,

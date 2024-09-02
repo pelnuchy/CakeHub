@@ -63,7 +63,6 @@ const BakingSession: React.FC = () => {
     const getTodayOrdered = async () => {
       const todayHandlingServer = await fetchHandlingToday();
       setOrders(todayHandlingServer);
-      console.log(todayHandlingServer);
     };
     getTodayOrdered();
   }, []);

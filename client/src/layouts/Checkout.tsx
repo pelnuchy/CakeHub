@@ -14,6 +14,9 @@ const Checkout: React.FC = () => {
   const [sumOfCake, setSumOfCake] = useState<boolean[]>([]);
   const [sumOfCakeToHandleOrder, setSumOfCakeToHandleOrder] = useState<number[]>([]);
   const [limitCake, setLimitCake] = useState<number>(0);
+
+  const [isLoading, setIsLoading] = useState(true); // Bắt đầu với trạng thái tải
+
   const navigate = useNavigate();
   const { cartItems } = useCart();
 
@@ -121,13 +124,13 @@ const Checkout: React.FC = () => {
   const checkCakeAvailability = (sumOfCakeToHandleOrder: number[], cartItems: any[], limitCake: number) => {
     const hours = [13, 14, 15, 16, 17, 18];
     return hours.map((hour, index) => {
-      return limitCake - sumOfCakeToHandleOrder[index];
+      const availableCakes = limitCake - sumOfCakeToHandleOrder[index];
+      return availableCakes < 0 ? 0 : availableCakes;
     });
   };
 
   const selectedHour = parseInt(time.split(':')[0], 10);
   const availability = checkCakeAvailability(sumOfCakeToHandleOrder, cartItems, limitCake);
-
   // Tính tổng số lượng bánh trong giỏ hàng
   const totalCakesInCart = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -156,14 +159,18 @@ const Checkout: React.FC = () => {
         console.error('Error:', error);
       }
     };
-
     fetchData();
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
   }, [sdkReady, startDate]);
 
   const timeSlots = ['13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
 
   // Hàm kiểm tra xem khung giờ hiện tại đã qua hay chưa
-  const isTimeSlotDisabled = (slot:string) => {
+  const isTimeSlotDisabled = (slot: string) => {
     const now = new Date();
     const selectedDate = startDate ? new Date(startDate) : new Date();
     const isToday = now.toDateString() === selectedDate.toDateString();
@@ -171,6 +178,8 @@ const Checkout: React.FC = () => {
     const isPast = hour < now.getHours() || (hour === now.getHours() && minutes <= now.getMinutes());
     return isToday && isPast;
   };
+
+  const disabledTimes = timeSlots.filter((slot) => isTimeSlotDisabled(slot));
   return (
     <div className="container mx-auto p-8">
       <h1 className="mb-8 text-3xl font-bold">THÔNG TIN GIAO HÀNG</h1>
@@ -242,7 +251,7 @@ const Checkout: React.FC = () => {
               className="w-full rounded-lg border p-3 shadow-sm"
             >
               {timeSlots.map((slot, index) => (
-                <option key={slot} value={slot} disabled={isTimeSlotDisabled(slot)||!sumOfCake[index]}>
+                <option key={slot} value={slot} disabled={isTimeSlotDisabled(slot) || !sumOfCake[index]}>
                   {slot}
                 </option>
               ))}
@@ -252,25 +261,37 @@ const Checkout: React.FC = () => {
         <div className="flex justify-center">
           {sdkReady ? (
             cartItems.length > 0 ? (
-              canCheckout ? (
-                address ? (
-                  <div className="w-full max-w-[50vh] pt-8">
-                    <PayPalButton
-                      amount={totalPrice / 25000}
-                      onSuccess={onSuccessPaypal}
-                      onError={(err: any) => {
-                        alert('Transaction error: ' + err);
-                      }}
-                    />
-                  </div>
+              address ? (
+                time ? (
+                  !disabledTimes.includes(time) ? (
+                    isLoading ? (
+                      <div>Đang tải...</div>
+                    ) : (
+                      canCheckout ? (
+                        <div className="w-full max-w-[50vh] pt-8">
+                          <PayPalButton
+                            amount={totalPrice / 25000}
+                            onSuccess={onSuccessPaypal}
+                            onError={(err: any) => {
+                              alert('Transaction error: ' + err);
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        <div className="text-red-500">
+                          Số lượng bánh trong giỏ hàng là {totalCakesInCart} vượt quá số lượng bánh còn lại có thể đặt trong khung giờ {time} giờ.<br />
+                          Số lượng bánh còn lại có thể đặt: {availability[selectedHour - 13]}.
+                        </div>
+                      )
+                    )
+                  ) : (
+                    <div className="text-red-500">Khung giờ này đã qua. Vui lòng chọn khung giờ hoặc ngày khác.</div>
+                  )
                 ) : (
-                  <div className="text-red-500">Vui lòng điền địa chỉ giao hàng để thanh toán.</div>
+                  <div className="text-red-500">Vui lòng chọn giờ để thanh toán.</div>
                 )
               ) : (
-                <div className="text-red-500">
-                  Số lượng bánh trong giỏ hàng là {totalCakesInCart} vượt quá số lượng bánh còn lại có thể đặt trong khung giờ {time} giờ.<br />
-                  Số lượng bánh còn lại có thể đặt: {availability[selectedHour - 13]}.
-                </div>
+                <div className="text-red-500">Vui lòng điền địa chỉ giao hàng để thanh toán.</div>
               )
             ) : (
               <div className="text-red-500">Giỏ hàng của bạn đang trống.</div>

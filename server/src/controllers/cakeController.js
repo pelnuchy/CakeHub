@@ -1,16 +1,29 @@
 import Cake from "../models/Cake.js";
 import Cart from "../models/Cart.js";
 import Order from "../models/Order.js";
-import cloudinary from "cloudinary";
-import fs from "fs";
-import path from "path";
 import "dotenv/config";
 
-cloudinary.v2.config({
+import pkg from 'cloudinary';
+const { UploadApiResponse, v2: cloudinary } = pkg;
+
+import streamifier from "streamifier";
+
+cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
+const runMiddleware = async (req, res, fn) => {
+    return new Promise((resolve, reject) => {
+        fn(req, res, (result) => {
+            if (result instanceof Error) {
+                return reject(result);
+            }
+            return resolve(result);
+        });
+    });
+};
 
 const cakeController = {};
 
@@ -191,21 +204,29 @@ cakeController.searchCakesByKeyword = async (req, res) => {
     }
 };
 
+const uploadToCloudinary = (file) => {
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+            {
+                folder: "Demo", // Thay đổi tên thư mục tại đây hoặc loại bỏ dòng này để tải lên gốc
+            },
+            (error, result) => {
+                if (error) return reject(error);
+                resolve(result);
+            }
+        );
+        streamifier.createReadStream(file.buffer).pipe(stream);
+    });
+};
 cakeController.addCake = async (req, res) => {
     try {
         // Kiểm tra xem tệp có tồn tại không
-        if (!req.file || !req.file.path) {
+        if (!req.file || !req.file.buffer) {
             return res.status(400).json({ message: "No file uploaded" });
         }
 
-        // Tải lên hình ảnh lên Cloudinary
-        const result = await cloudinary.v2.uploader.upload(req.file.path);
+        const result = await uploadToCloudinary(req.file);
 
-        // Kiểm tra sự tồn tại của tệp trước khi xóa
-        const filePath = path.resolve(req.file.path);
-        if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-        }
         // Mảng chứa các hậu tố cần thêm vào mã bánh, `recipeID` tương ứng và kích thước
         const suffixesAndRecipes = [
             { suffix: 'CD-S', recipeID: 'gato_10_chanhday', size: 10, jamFilling: 'Chanh dây' },
@@ -235,7 +256,6 @@ cakeController.addCake = async (req, res) => {
             { size: 24, occasion: "birthday", price: 415000 }
         ];
 
-
         // Lặp qua mảng và tạo các đối tượng bánh mới
         const cakes = suffixesAndRecipes.map(({ suffix, recipeID, size, jamFilling }) => {
             // Tìm giá dựa trên kích thước và dịp
@@ -248,7 +268,7 @@ cakeController.addCake = async (req, res) => {
                 occasion: req.body.occasion,
                 img_url: result.secure_url,
                 description: req.body.description,
-                recipeID: recipeID,
+                recipe_id: recipeID,
                 size: size,
                 jamFilling: jamFilling, // Thêm thông tin về jamFilling
                 price: price,
@@ -263,18 +283,11 @@ cakeController.addCake = async (req, res) => {
 
         res.status(200).json({ message: "Cake added successfully" });
     } catch (error) {
-        // Kiểm tra sự tồn tại của tệp trước khi xóa nếu có lỗi xảy ra
-        if (req.file && req.file.path) {
-            const filePath = path.resolve(req.file.path);
-            if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
-            }
-        }
-
         // Trả về thông báo lỗi chi tiết
         res.status(500).json({ message: "Image upload failed", error: error.message });
     }
 };
+
 
 cakeController.getAllCakesManageCake = async (req, res) => {
     try {
