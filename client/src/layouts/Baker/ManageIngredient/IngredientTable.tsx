@@ -38,7 +38,7 @@ const IngredientTable: React.FC<IngredientTableProps> = ({
           <th className="border-b py-3">Đơn vị</th>
           <th className="border-b px-4 py-3">Số lượng tồn kho</th>
           <th className="border-b px-4 py-3">Hạn sử dụng</th>
-          <th className="border-b px-4 py-3">Status</th>
+          <th className="border-b px-4 py-3">Trạng thái</th>
           <th className="border-b px-4 py-3">Chỉnh sửa</th>
         </tr>
       </thead>
