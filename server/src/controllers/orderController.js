@@ -122,7 +122,7 @@ orderController.getOwnOrdered = async (req, res) => {
             });
         }
         const orderUser = await Order.aggregate([
-            { $match: { user_id: userID, status: { $in: ["ordered", "handling_1", "handling_2", "delivering"] } } },
+            { $match: { user_id: userID, status: { $in: ["ordered", "preparing", "handling_1", "handling_2", "delivering"] } } },
             { $unwind: "$cakes" },
             {
                 $lookup: {
