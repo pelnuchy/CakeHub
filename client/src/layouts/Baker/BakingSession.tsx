@@ -28,10 +28,6 @@ const BakingSession: React.FC = () => {
   }
   const handleStart = async (id: string) => {
     try {
-      // await axios.put(`${process.env.REACT_APP_API_URL}/update-order-status/baker/${id}?status=handling_2`);
-      // setOrders((prevOrders) =>
-      //   prevOrders.map((order) => (order.id === id ? { ...order, status: 'handling_2' } : order)),
-      // );
       const response = await axios.put(`${process.env.REACT_APP_API_URL}/baker/calculate-ingredient/${id}`);
       const status = response.status;
       if (status == 201 || status == 401)
