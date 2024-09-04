@@ -177,8 +177,12 @@ ingredientController.calculateIngredients = async (req, res) => {
             {
                 $group: {
                     _id: "$ingredientUsed_list.ingredID",
-                    ingredID: { $first: "$ingredientUsed_list.ingredID" },
-                    totalUsedQuantity: { $sum: "$total_ingred_used" }
+                    ingredID: {
+                        $first: "$ingredientUsed_list.ingredID"
+                    },
+                    totalUsedQuantity: {
+                        $sum: "$total_ingred_used"
+                    }
                 }
             },
             {
@@ -195,7 +199,9 @@ ingredientController.calculateIngredients = async (req, res) => {
                     _id: 1,
                     ingredID: "$ingredID",
                     totalUsedQuantity: "$totalUsedQuantity",
-                    ingredientQuantity: "$ingredientDetail.ingredientQuantity",
+                    ingredientQuantity:
+                        "$ingredientDetail.ingredientQuantity",
+                    ingredExpired: "$ingredientDetail.expired",
                     remainingQuantity: {
                         $subtract: [
                             "$ingredientDetail.ingredientQuantity",
@@ -210,7 +216,8 @@ ingredientController.calculateIngredients = async (req, res) => {
                     remaining_ingred_list: {
                         $push: {
                             ingredID: "$ingredID",
-                            remainingQuantity: "$remainingQuantity"
+                            remainingQuantity: "$remainingQuantity",
+                            ingredExpired: "$ingredExpired"
                         }
                     }
                 }
@@ -235,6 +242,27 @@ ingredientController.calculateIngredients = async (req, res) => {
 
         try {
             for (const ingred of remaining_ingred_list) {
+                // TH: nguyên liệu hết hạn
+                if (new Date(ingred.ingredExpired) < new Date()) {
+                    const expiredIngredient = await Ingredient.findOne({ ingredientID: ingred.ingredID });
+                    let statusMessage;
+                    if (expiredIngredient) {
+                        const expiredDate = new Date(ingred.ingredExpired).toLocaleDateString('vi-VN');
+                        statusMessage = `Nguyên liệu ${expiredIngredient.ingredientName} đã hết hạn sử dụng vào ngày ${expiredDate}`;
+                        return res.status(201).json({
+                            status: statusMessage,
+                            data: remaining_ingred_list
+                        });
+                    } else {
+                        statusMessage = `Ingredient with ID ${ingred.ingredID} not found`;
+                        return res.status(401).json({
+                            status: statusMessage,
+                            data: remaining_ingred_list
+                        });
+                    }
+                }
+
+                // TH: không đủ nguyên liệu
                 if (ingred.remainingQuantity < 0) {
                     // Truy vấn ingredientName từ collection "ingredients"
                     const ingredient_not_enough = await Ingredient.findOne({ ingredientID: ingred.ingredID });
@@ -255,13 +283,16 @@ ingredientController.calculateIngredients = async (req, res) => {
                     }
                 }
 
-                // Cập nhật ingredientQuantity
+            }
+            console.log('Ingredient quantities updated successfully.');
+            // Cập nhật ingredientQuantity
+            // Nếu tất cả nguyên liệu đều hợp lệ, tiến hành cập nhật số lượng
+            for (const ingred of remaining_ingred_list) {
                 await Ingredient.updateOne(
                     { ingredientID: ingred.ingredID },
                     { $set: { ingredientQuantity: ingred.remainingQuantity } }
                 );
             }
-            console.log('Ingredient quantities updated successfully.');
         } catch (error) {
             console.error('Error updating ingredient quantities:', error);
             return res.status(500).json({ status: 'Error', message: 'Internal server error' });
