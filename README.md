@@ -1,55 +1,144 @@
-# Getting Started with Create React App
+# E-Commerce CakeHub App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a e-commerce application built with **React**, **TypeScript**, and **Tailwind CSS**. The app includes features like cake listing, Cake details, shopping cart functionality, user authentication, and more.
 
-If you don't have yarn, you must install it.
-### `npm install --global yarn`
+## Features
 
-Check installation 
-### `yarn --version`
+- 🛒 **Cake Listing**: View a wide range of cakes with filters and search functionality.
+- 📄 **Cake Details**: Detailed cake pages with images, descriptions, and reviews.
+- 🛍️ **Shopping Cart**: Add/remove cakes from the cart, and manage quantities.
+- 🔐 **User Authentication**: Secure login, registration, and user profile management.
+- 💳 **Checkout**: Complete purchases using mock payment integration.
+- 🎨 **Tailwind CSS Styling**: Modern, responsive design using utility-first CSS framework.
+- 🔄 **State Management**: Managed with React Context API or Redux (choose based on your setup).
+- 🚀 **Deployment**: Optimized for deployment.
 
-To install modules in package.json, you need move to folder having that file then run:
-### `yarn install`
+## Technologies
 
-## Available Scripts
+This project base on [**MERN**](https://www.mongodb.com/resources/languages/mern-stack) Stack.
 
-In the project directory, you can run:
+## Getting Started
 
-### `yarn start`
+### Prerequisites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **Node.js** (v18 or later)
+- **npm** (v6 or later) or **yarn**
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Installation and run the application
 
-### `yarn test`
+1. Clone the repository:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   ```bash
+   git clone https://github.com/Shiphu2103/EC2024-04-CakeHub.git
+   ```
 
-### `yarn build`
+2. Navigate to the server directory:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   ```bash
+   cd server
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. Install dependencies:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   ```bash
+   npm install
+   ```
 
-### `yarn eject`
+   or
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+   ```bash
+   yarn install
+   ```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+4. Set up environment variables by creating a `.env` file in the root directory:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+   ```
+    DATABASE_URI=your_mongodb_uri
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+    CLIENT_ID = your_palpay_clientID
 
-## Learn More
+    CLOUDINARY_CLOUD_NAME=example_cloud_name
+    CLOUDINARY_API_KEY=example_api_key
+    CLOUDINARY_API_SECRET=example_api_secret
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+   ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+5. Start the development server:
+
+   ```bash
+   npm start
+   ```
+
+   or
+
+   ```bash
+   yarn start
+   ```
+
+6. Navigate to the app directory:
+
+   ```bash
+   cd client
+   ```
+
+7. Set up environment variables by creating a `.env` file in the root directory:
+
+   ```
+   REACT_APP_API_URL=https://api.example.com
+   ```
+
+8. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+   or
+
+   ```bash
+   yarn install
+   ```
+
+9. Set up environment variables by creating a `.env` file in the root directory:
+
+   ```
+   REACT_APP_API_URL=https://api.example.com
+   ```
+
+10. Start the development app:
+
+    ```bash
+    npm start
+    ```
+
+    or
+
+    ```bash
+    yarn start
+    ```
+
+11. Open [http://localhost:3000](http://localhost:3000) in your browser to view the app.
+
+### Tailwind CSS Configuration
+
+The Tailwind configuration is defined in the `tailwind.config.js` file. You can customize it by adding your own themes, colors, or extending the utility classes.
+
+### Deployment:
+
+Our website and database are deployed on Vercel. 
+Link: https://cake-hub.vercel.app/
+
+### Contributors
+
+- [Si Phu Pham](https://github.com/Shiphu2103)
+- [Duc Kien Hoang](https://github.com/duckien2012)
+- [Huynh Phuc Le](https://github.com/Shiphu2103)
+- [Gia Khanh Nguyen](https://github.com/KyleKennyNelson)
+
+## License
+
+This project is licensed under the MIT License.
+
+---
+Thank you, 
+Pheelcus.
