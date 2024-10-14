@@ -180,6 +180,46 @@ const Checkout: React.FC = () => {
   };
 
   const disabledTimes = timeSlots.filter((slot) => isTimeSlotDisabled(slot));
+
+  const fetchShortLinkMomo = async () => {
+      const combinedDate = combineDateAndTime(startDate, time);
+      const totalCakeQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
+      const orderDetail = {
+        shippingDate: combinedDate,
+        shippingAddress: address,
+        total_price: totalPrice,
+        status: 'ordered',
+        user_id: userInfo.userID,
+        s_cakeQuantity: totalCakeQuantity,
+        cakes: cartItems.map((item) => ({
+          cake_id: item.id,
+          cakeMessage: item.message,
+          cakeQuantity: item.quantity,
+          total_price: item.price * item.quantity,
+        })),
+      };
+
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/paymentMomo/${totalPrice}`);
+      localStorage.setItem('orderDetail', JSON.stringify(orderDetail));
+      return response.data;
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+  const onSuccessMomo = async () => {
+    try {
+      // Gửi yêu cầu tới API paymentMomo
+      const response = await fetchShortLinkMomo();
+      if (response.data.shortLink) {
+        window.location.href = response.data.shortLink;
+      } else {
+        alert('Có lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
   return (
     <div className="container mx-auto p-8">
       <h1 className="mb-8 text-3xl font-bold">THÔNG TIN GIAO HÀNG</h1>
@@ -276,6 +316,12 @@ const Checkout: React.FC = () => {
                               alert('Transaction error: ' + err);
                             }}
                           />
+                          <button
+                            className="mt-4 bg-purple-600 text-white py-2 px-4 rounded"
+                            onClick={onSuccessMomo}
+                          >
+                            Thanh toán Momo
+                          </button>
                         </div>
                       ) : (
                         <div className="text-red-500">
