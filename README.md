@@ -1,17 +1,20 @@
 # E-Commerce CakeHub App
 
 CakeHub is an e-commerce website specializing in online cake sales, built using the MERN Stack (MongoDB, Express, React, Node.js). It provides three main modules designed to enhance the experience for customers, kitchen staff, and administrators.
-###1. Customer Module
+### 1. Customer Module
 - **Online Ordering**: Easily browse and order cakes online.
 - **Order Management**: Track and manage personal orders.
 - **Online Payment**: Secure and fast payment options.
-###2. Kitchen Module
+  
+### 2. Kitchen Module
 - **Order Management**: View and manage real-time order lists to streamline the baking process.
 - **Inventory Management**: Track and manage ingredients to avoid shortages or waste.
-###3. Admin Module
+  
+### 3. Admin Module
 - **Revenue Management**: Monitor revenue through an intuitive dashboard.
 - **Reporting**: Generate detailed reports on monthly cake sales, revenue, and ingredient usage.
-###Summary
+
+### Summary
 CakeHub simplifies the online cake ordering process for customers, improves order handling for kitchen staff, and provides admins with powerful tools to track and optimize business performance.
 
 ## Features
