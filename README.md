@@ -1,6 +1,21 @@
 # E-Commerce CakeHub App
 
-This is a e-commerce application built with **React**, **TypeScript**, and **Tailwind CSS**. The app includes features like cake listing, Cake details, shopping cart functionality, user authentication, and more.
+CakeHub is an e-commerce website specializing in online cake sales, built with the MERN Stack (MongoDB, Express, React, Node.js), featuring three main modules:
+
++ Customer:
+- Conveniently order cakes online.
+- Manage personal orders and track delivery status.
+- Secure and fast online payment options.
+
++ Kitchen:
+- Manage real-time order lists to streamline the baking process.
+- Track and manage ingredient inventory to avoid shortages or waste.
+
++ Admin:
+- Monitor and manage revenue through an intuitive dashboard.
+- Generate detailed reports on monthly cake sales, revenue, and ingredient usage.
+
+CakeHub simplifies the cake ordering process for customers, enhances order management for the kitchen, and optimizes revenue tracking for admins.
 
 ## Features
 
