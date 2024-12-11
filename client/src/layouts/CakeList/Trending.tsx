@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useLayoutEffect } from 'react';
 import CakeCard from '../../components/Cake/CakeCard';
 import { useShuffledCakes } from '../../hooks/useShuffledCakes';
 import SortControl from '../Occasion/SortControl';
@@ -11,7 +11,7 @@ const Trending = () => {
   const [sortedCakes, setSortedCakes] = useState<Cake[]>([]);
   const randomCakes = useShuffledCakes(8);
   const navigate = useNavigate();
-  useEffect(() => {
+  useLayoutEffect(() => {
     setSortedCakes(sortCakes(randomCakes, sortOption));
   }, [randomCakes, sortOption]);
 

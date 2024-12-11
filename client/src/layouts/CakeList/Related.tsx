@@ -1,12 +1,12 @@
 import CakeCard from '../../components/Cake/CakeCard';
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Cake } from '../../utils/interfaces';
 const Related = () => {
   const [relatedCakes, setRelatedCakes] = useState<Cake[]>([]);
   const { id } = useParams();
-  useEffect(() => {
+  useLayoutEffect(() => {
     const fetchRelatedCakes = async () => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/get-cake-related/${id}`);

@@ -147,7 +147,7 @@ Link: https://cake-hub.vercel.app/
 
 - [Si Phu Pham](https://github.com/Shiphu2103)
 - [Duc Kien Hoang](https://github.com/duckien2012)
-- [Huynh Phuc Le](https://github.com/Shiphu2103)
+- [Huynh Phuc Le](https://github.com/pelnuchy)
 - [Gia Khanh Nguyen](https://github.com/KyleKennyNelson)
 
 ## License
@@ -155,5 +155,3 @@ Link: https://cake-hub.vercel.app/
 This project is licensed under the MIT License.
 
 ---
-Thank you, 
-Pelnuchy.
