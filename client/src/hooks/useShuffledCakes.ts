@@ -1,15 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useLayoutEffect } from 'react';
 import { shuffleArray } from '../utils/shuffleArray';
 import axios from 'axios';
 import { Cake } from '../utils/interfaces';
 export const useShuffledCakes = (numCake: number): Cake[] => {
   const [randomCakes, setRandomCakes] = useState<Cake[]>([]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const fetchAndShuffleCakes = async () => {
       const cakeDB = await fetchRandomCakes();
-      if (numCake != 0 && cakeDB != null)
-      {
+      if (numCake != 0 && cakeDB != null) {
         let shuffledCakes = cakeDB.slice(0, numCake);
         setRandomCakes(shuffledCakes);
       }

@@ -8,7 +8,7 @@ const Homepage = () => {
   const userInfo = sessionStorage.getItem('userInfo');
   const sessionStorageData = userInfo ? JSON.parse(userInfo) : null;
   return (
-    <>  
+    <>
       <Header />
       <Nav />
       <main>

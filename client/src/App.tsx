@@ -15,6 +15,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import FAQPage from './pages/FAQ';
 import NotFoundPage from './pages/404';
+import HandlePaymentMomo from './pages/HandlePaymentMomo';
 import ShoppingCart from './pages/Cart';
 import Purchase from './pages/Purchase';
 import HistoryPurchase from './pages/HistoryPurchase';
@@ -47,6 +48,7 @@ export default function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/purchase" element={<Purchase />} />
           <Route path="/purchased" element={<HistoryPurchase />} />
+          <Route path="/handlepayment" element={<HandlePaymentMomo />} />
           <Route
             path="/login"
             element={

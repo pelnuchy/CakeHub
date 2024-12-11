@@ -34,6 +34,10 @@ const Checkout: React.FC = () => {
     return combinedDate;
   };
 
+  const [selectedPayment, setSelectedPayment] = useState('');
+
+  const handlePaymentChange = (event: any) => setSelectedPayment(event.target.value);
+
   const totalCakePrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   let totalPrice = 0;
   let shippingFee = 0;
@@ -147,7 +151,9 @@ const Checkout: React.FC = () => {
         const sumOfCakeDB: number[] = await fetchSumCakeOrder(userInfo.userID);
         setSumOfCakeToHandleOrder(sumOfCakeDB);
         // chuyển số lượng bánh đã đặt trong ngày qua 6 khung giờ thành boolean
-        const changeNumToBoolean: boolean[] = sumOfCakeDB.map((quantity: number) => (quantity <= limitCake ? true : false));
+        const changeNumToBoolean: boolean[] = sumOfCakeDB.map((quantity: number) =>
+          quantity <= limitCake ? true : false,
+        );
         setSumOfCake(changeNumToBoolean);
 
         if (!window.paypal) {
@@ -180,6 +186,46 @@ const Checkout: React.FC = () => {
   };
 
   const disabledTimes = timeSlots.filter((slot) => isTimeSlotDisabled(slot));
+
+  const fetchShortLinkMomo = async () => {
+    const combinedDate = combineDateAndTime(startDate, time);
+    const totalCakeQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
+    const orderDetail = {
+      shippingDate: combinedDate,
+      shippingAddress: address,
+      total_price: totalPrice,
+      status: 'ordered',
+      user_id: userInfo.userID,
+      s_cakeQuantity: totalCakeQuantity,
+      cakes: cartItems.map((item) => ({
+        cake_id: item.id,
+        cakeMessage: item.message,
+        cakeQuantity: item.quantity,
+        total_price: item.price * item.quantity,
+      })),
+    };
+
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/paymentMomo/${totalPrice}`);
+      localStorage.setItem('orderDetail', JSON.stringify(orderDetail));
+      return response.data;
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  const onSuccessMomo = async () => {
+    try {
+      // Gửi yêu cầu tới API paymentMomo
+      const response = await fetchShortLinkMomo();
+      if (response.data.shortLink) {
+        window.location.href = response.data.shortLink;
+      } else {
+        alert('Có lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
   return (
     <div className="container mx-auto p-8">
       <h1 className="mb-8 text-3xl font-bold">THÔNG TIN GIAO HÀNG</h1>
@@ -266,23 +312,61 @@ const Checkout: React.FC = () => {
                   !disabledTimes.includes(time) ? (
                     isLoading ? (
                       <div>Đang tải...</div>
+                    ) : canCheckout ? (
+                      <div className="mb-4">
+                        <h3 className="mb-2 text-lg font-semibold">
+                          Phương thức thanh toán<span className="text-red-500">*</span>
+                        </h3>
+                        <div className="mb-4 flex items-center space-x-4">
+                          {['paypal', 'momo'].map((method) => (
+                            <label key={method} className="flex items-center space-x-2">
+                              <input
+                                type="radio"
+                                value={method}
+                                checked={selectedPayment === method}
+                                onChange={handlePaymentChange}
+                                className="peer hidden"
+                              />
+                              <span className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-primary-500 peer-checked:border-transparent peer-checked:bg-primary-500">
+                                <span className="hidden h-2 w-2 rounded-full bg-white peer-checked:block"></span>
+                              </span>
+                              <span className="text-lg text-gray-900">{method === 'paypal' ? 'PayPal' : 'Momo'}</span>
+                            </label>
+                          ))}
+                        </div>
+
+                        <div className="w-[50vh]">
+                          {selectedPayment === 'paypal' && (
+                            <PayPalButton
+                              amount={totalPrice / 25000}
+                              onSuccess={onSuccessPaypal}
+                              onError={(err: any) => {
+                                alert('Transaction error: ' + err);
+                              }}
+                            />
+                          )}
+                          {selectedPayment === 'momo' && (
+                            <button
+                              className="flex w-full items-center justify-center rounded-md bg-pink-500 px-4 py-3 font-bold text-white transition-all duration-200 hover:bg-pink-600 focus:ring-2 focus:ring-pink-400"
+                              onClick={onSuccessMomo}
+                            >
+                              <img
+                                src={'../../assets/icon/momo_icon_square_pinkbg.svg'}
+                                alt="Momo"
+                                className="mr-2 h-5 w-5"
+                              />
+                              Thanh toán bằng Momo
+                            </button>
+                          )}
+                        </div>
+                      </div>
                     ) : (
-                      canCheckout ? (
-                        <div className="w-full max-w-[50vh] pt-8">
-                          <PayPalButton
-                            amount={totalPrice / 25000}
-                            onSuccess={onSuccessPaypal}
-                            onError={(err: any) => {
-                              alert('Transaction error: ' + err);
-                            }}
-                          />
-                        </div>
-                      ) : (
-                        <div className="text-red-500">
-                          Số lượng bánh trong giỏ hàng là {totalCakesInCart} vượt quá số lượng bánh còn lại có thể đặt trong khung giờ {time} giờ.<br />
-                          Số lượng bánh còn lại có thể đặt: {availability[selectedHour - 13]}.
-                        </div>
-                      )
+                      <div className="text-red-500">
+                        Số lượng bánh trong giỏ hàng là {totalCakesInCart} vượt quá số lượng bánh còn lại có thể đặt
+                        trong khung giờ {time} giờ.
+                        <br />
+                        Số lượng bánh còn lại có thể đặt: {availability[selectedHour - 13]}.
+                      </div>
                     )
                   ) : (
                     <div className="text-red-500">Khung giờ này đã qua. Vui lòng chọn khung giờ hoặc ngày khác.</div>
